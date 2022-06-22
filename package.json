@@ -1,29 +1,33 @@
 {
-  "name": "bert",
-  "version": "1.0.0",
-  "description": "discord bot named bert",
-  "main": "index.js",
-  "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
-    "deployCommands": "node src/deploy-commands.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Cab502/bert.git"
-  },
-  "author": "cars",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Cab502/bert/issues"
-  },
-  "homepage": "https://github.com/Cab502/bert#readme",
-  "dependencies": {
-    "@discordjs/builders": "^0.15.0",
-    "@discordjs/rest": "^0.5.0",
-    "discord-api-types": "^0.34.0",
-    "discord.js": "^13.8.0",
-    "dotenv": "^16.0.1",
-    "nodemon": "^2.0.16"
-  }
+    "name": "server_server",
+    "version": "1.0.0",
+    "description": "The server that serves your server right.",
+    "main": "index.js",
+    "dependencies": {
+        "@discordjs/builders": "^0.15.0",
+        "@discordjs/rest": "^0.5.0",
+        "discord-api-types": "^0.34.0",
+        "discord.js": "^13.8.0",
+        "dotenv": "^16.0.1"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AntonWittig/Discord_Server_Server.git"
+    },
+    "keywords": [
+        "discord",
+        "bot"
+    ],
+    "author": "Anton Wittig",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/AntonWittig/Discord_Server_Server/issues"
+    },
+    "homepage": "https://github.com/AntonWittig/Discord_Server_Server#readme",
+    "devDependencies": {
+        "eslint": "^8.18.0"
+    }
 }
