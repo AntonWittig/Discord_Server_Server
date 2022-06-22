@@ -14,7 +14,7 @@ client.commands = new Collection();
 
 // #region FUNCTIONS
 // Recursively retrieve files (credits to https://stackoverflow.com/users/5551941/wyattis)
-function recReadDir(dir, done) {
+async function recReadDir(dir, done) {
 	const results = [];
 	fs.readdir(dir, function(err, list) {
 		if (err) return done(err);
@@ -41,22 +41,24 @@ function recReadDir(dir, done) {
 
 // #region COMMANDS
 // Retrieve the command files
-const commandsPath = path.join(__dirname, "src", "commands");
-const commandFiles = recReadDir(commandsPath).filter((file) => file.endsWith(".js") && !file.startsWith("_"));
+const commandsPath = path.join(__dirname, "commands");
+const commandFiles = recReadDir(commandsPath, function(err, results) {
+		if (err) throw err;
 
-// Assemble the commands and store them
-commandFiles.forEach((file) => {
-	const command = require(path.join(commandsPath, file));
-	client.commands.set(command.data.name, command);
-});
+		// Assemble the commands and store them
+		results.flat()
+			.filter((file) => file.endsWith(".js") && !path.basename(file).startsWith("_"))
+			.forEach((file) => {
+				const command = require(file);
+				client.commands.set(command.data.name, command);
+			});
+	});
 // #endregion
 
 // When the client is ready, run this code (only once)
 client.once("ready", () => {
-	console.log(
-		`Logged in as ${client.user.tag} on ${client.guilds.cache.size} server,(s)`,
-	);
-	client.user.setActivity({ name: "pornhub.com", type: "WATCHING" });
+	console.info(`Logged in successfully as ${client.user.tag}`);
+	console.info(`Add this bot to any guild (you need to be a guild admin) with this link:\nhttps://discord.com/api/oauth2/authorize?client_id=${process.env.APPLICATION_ID}&permissions=377957181504&scope=bot%20applications.commands`);
 });
 
 // When an interaction with the client is created, run this code
