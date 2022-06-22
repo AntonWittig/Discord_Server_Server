@@ -42,17 +42,17 @@ async function recReadDir(dir, done) {
 // #region COMMANDS
 // Retrieve the command files
 const commandsPath = path.join(__dirname, "commands");
-const commandFiles = recReadDir(commandsPath, function(err, results) {
-		if (err) throw err;
+recReadDir(commandsPath, function(err, results) {
+	if (err) throw err;
 
-		// Assemble the commands and store them
-		results.flat()
-			.filter((file) => file.endsWith(".js") && !path.basename(file).startsWith("_"))
-			.forEach((file) => {
-				const command = require(file);
-				client.commands.set(command.data.name, command);
-			});
-	});
+	// Assemble the commands and store them
+	results.flat()
+		.filter((file) => file.endsWith(".js") && !path.basename(file).startsWith("_"))
+		.forEach((file) => {
+			const command = require(file);
+			client.commands.set(command.data.name, command);
+		});
+});
 // #endregion
 
 // When the client is ready, run this code (only once)

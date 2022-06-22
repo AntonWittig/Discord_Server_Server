@@ -4,17 +4,23 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 // Initialize the command with a name and description
 exports.data = new SlashCommandBuilder()
 	.setName("roll_dice")
-	.setDescription("The server rolls a dice with 6 sides (standard) or you define the amount of sides")
-	.addIntegerOption(option => 
+	.setDescription("The server rolls a dice with 6 sides (standard) or you define the amount of sides (at least 1)")
+	.addIntegerOption(option =>
 		option.setName("sides")
 			.setDescription("The amount of sides")
-			.setRequired(false)
-			.setMinValue(1)
-			.setMaxValue(1000000));
+			.setRequired(false));
 
 // Execute the command
 exports.execute = async (interaction) => {
-	const sides = interaction.options.getInteger("sides");
-	const roll = Math.floor(Math.random() * sides) + 1;
-	interaction.reply(`The d${sides} roll was a ${roll}.`);
+	let sides = interaction.options.getInteger("sides");
+	if (sides == undefined) {
+		sides = 6;
+	}
+	else if (sides < 1) {
+		interaction.reply(process.env.INCORRECT_BOT_USAGE);
+	}
+	else {
+		const roll = Math.floor(Math.random() * sides) + 1;
+		interaction.reply(`The d${sides} roll was a ${roll}.`);
+	}
 };
