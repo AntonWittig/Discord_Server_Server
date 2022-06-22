@@ -13,14 +13,13 @@ exports.data = new SlashCommandBuilder()
 // Execute the command
 exports.execute = async (interaction) => {
 	let sides = interaction.options.getInteger("sides");
-	if (sides == undefined) {
+	if (sides === null) {
 		sides = 6;
 	}
 	else if (sides < 1) {
 		interaction.reply(process.env.INCORRECT_BOT_USAGE);
+		return;
 	}
-	else {
-		const roll = Math.floor(Math.random() * sides) + 1;
-		interaction.reply(`The d${sides} roll was a ${roll}.`);
-	}
+	const roll = Math.floor(Math.random() * sides) + 1;
+	interaction.reply(`The d${sides} roll was a ${roll}.`);
 };

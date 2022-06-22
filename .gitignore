@@ -143,3 +143,6 @@ dist
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# screen logs
+screenlog.*
