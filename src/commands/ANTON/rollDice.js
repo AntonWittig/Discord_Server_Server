@@ -21,5 +21,5 @@ exports.execute = async (interaction) => {
 		return;
 	}
 	const roll = Math.floor(Math.random() * sides) + 1;
-	interaction.reply(`The d${sides} roll was a ${roll}.`);
+	interaction.reply(`:game_die: The d${sides} roll was a ${roll}.`);
 };

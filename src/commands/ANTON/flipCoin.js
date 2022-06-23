@@ -10,12 +10,15 @@ exports.data = new SlashCommandBuilder()
 exports.execute = async (interaction) => {
 	const toss = Math.random() * 6001;
 	if (toss == 3001) {
-		interaction.reply("What? that can't be! The coin landed on its EDGE. What could this mean?");
+		interaction.reply({
+			content: ":coin: What? that can't be! The coin landed on its EDGE. What could this mean?",
+			fetchReply: true,
+		}).then((message) => { message.react(":astonished:"); });
 	}
 	else if (toss <= 3000) {
-		interaction.reply("The coin landed with HEADS facing up.");
+		interaction.reply(":coin: The coin landed with HEADS facing up.");
 	}
 	else {
-		interaction.reply("<a:Anton:820593477641044008> The coin landed with TAILS facing up.");
+		interaction.reply(":coin: The coin landed with TAILS facing up.");
 	}
 };
