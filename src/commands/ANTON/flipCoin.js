@@ -17,7 +17,7 @@ exports.execute = async (interaction) => {
 			.then((reply) => reply.addReaction("<a:Anton:820593477641044008>"));
 	}
 	else {
-		interaction.reply("The coin landed with TAILS facing up.")
+		interaction.reply("<:Anton:820593477641044008> The coin landed with TAILS facing up.")
 			.then((reply) => reply.addReaction("💀"));
 	}
 };
