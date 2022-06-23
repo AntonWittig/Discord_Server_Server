@@ -14,10 +14,10 @@ exports.execute = async (interaction) => {
 	}
 	else if (toss <= 3000) {
 		interaction.reply({ content: ":warning: The coin landed with HEADS facing up.", fetchReply: true })
-			.then((reply) => reply.addReaction("<a:Anton:820593477641044008>"));
+			.then((message) => message.react("<a:Anton:820593477641044008>"));
 	}
 	else {
 		interaction.reply({ content: "<:Anton:820593477641044008> The coin landed with TAILS facing up.", fetchReply: true })
-			.then((reply) => reply.addReaction("💀"));
+			.then((message) => message.react("💀"));
 	}
 };
