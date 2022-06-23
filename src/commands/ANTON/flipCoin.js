@@ -13,11 +13,11 @@ exports.execute = async (interaction) => {
 		interaction.reply("What? that can't be! The coin landed on its EDGE. What could this mean?");
 	}
 	else if (toss <= 3000) {
-		interaction.reply(":warning: The coin landed with HEADS facing up.");
-		interaction.addReaction("<a:Anton:820593477641044008>");
+		const reply = await interaction.reply(":warning: The coin landed with HEADS facing up.");
+		reply.addReaction("<a:Anton:820593477641044008>");
 	}
 	else {
-		interaction.reply("The coin landed with TAILS facing up.");
-		interaction.addReaction("💀");
+		const reply = await interaction.reply("The coin landed with TAILS facing up.");
+		reply.addReaction("💀");
 	}
 };
