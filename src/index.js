@@ -46,7 +46,7 @@ recReadDir(commandsPath, function(err, results) {
 	if (err) throw err;
 
 	// Assemble the commands and store them
-	results.flat()
+	results.flat(Infinity)
 		.filter((file) => file.endsWith(".js") && !path.basename(file).startsWith("_"))
 		.forEach((file) => {
 			const command = require(file);

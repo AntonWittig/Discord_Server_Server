@@ -1,3 +1,3 @@
 while true; do
-	node src/index.js
+	npm run dev
 done

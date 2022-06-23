@@ -24,7 +24,7 @@ async function submitCommands(commands, guildname = "") {
 		}
 		else {
 			await rest.put(
-				Routes.applicationGlobalCommands(process.env.APPLICATION_ID),
+				Routes.applicationCommands(process.env.APPLICATION_ID),
 				{ body: commands },
 			);
 			console.log("Successfully reloaded global application (/) commands.");
@@ -39,35 +39,46 @@ async function submitCommands(commands, guildname = "") {
 // #region GLOBAL COMMANDS
 // Retrieve the global command files
 const commandFilesPath = path.join(__dirname, "commands");
-const globalCommandFiles = fs.readdir(commandFilesPath).filter(file => file.endsWith(".js") && !file.startsWith("_"));
+fs.readdir(commandFilesPath, (err, files) => {
+	if (err) throw err;
 
-// Assemble and submit the global commands
-const globalCommands = [];
-globalCommandFiles.forEach(file => {
-	const command = require(path.join(commandFilesPath, file));
-	globalCommands.push(command.data.toJSON());
+	const globalCommandFiles = files.filter((file) => file.endsWith(".js") && !path.basename(file).startsWith("_"));
+
+	// Assemble and submit the global commands
+	const globalCommands = [];
+	globalCommandFiles.forEach(file => {
+		const command = require(path.join(commandFilesPath, file));
+		globalCommands.push(command.data.toJSON());
+	});
+	submitCommands(globalCommands);
 });
-submitCommands(globalCommands);
 // #endregion
 
 // #region GUILD COMMANDS
 // Retrieve the guild command folders
-const guildCommandFolders = fs.readdir(commandFilesPath, { withFileTypes: true })
-	.filter(dirent => dirent.isDirectory())
-	.map(dirent => dirent.name);
+fs.readdir(commandFilesPath, { withFileTypes: true }, (err, files) => {
+	if (err) throw err;
 
-// Iterate over each guild command folder
-guildCommandFolders.forEach(guildname => {
+	const guildCommandFolders = files.filter(dirent => dirent.isDirectory())
+		.map(dirent => dirent.name);
 
-	// Retrieve the guild command files
-	const guildCommandFiles = fs.readdir(path.join(commandFilesPath, guildname)).filter(file => file.endsWith(".js") && !file.startsWith("_"));
+	// Iterate over each guild command folder
+	guildCommandFolders.forEach(guildname => {
 
-	// Assemble and submit the commands
-	const guildCommands = [];
-	guildCommandFiles.forEach(file => {
-		const command = require(path.join(commandFilesPath, guildname, file));
-		guildCommands.push(command.data.toJSON());
+		// Retrieve the guild command files
+		fs.readdir(path.join(commandFilesPath, guildname), (err, guildFiles) => {
+			if (err) throw err;
+
+			const guildCommandFiles = guildFiles.filter((file) => file.endsWith(".js") && !path.basename(file).startsWith("_"));
+
+			// Assemble and submit the commands
+			const guildCommands = [];
+			guildCommandFiles.forEach(file => {
+				const command = require(path.join(commandFilesPath, guildname, file));
+				guildCommands.push(command.data.toJSON());
+			});
+			submitCommands(guildCommands, guildname);
+		});
 	});
-	submitCommands(guildCommands, guildname);
 });
 // #endregion
