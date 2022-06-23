@@ -68,7 +68,7 @@ client.on("interactionCreate", async (interaction) => {
 	const command = client.commands.get(interaction.commandName);
 
 	if (!command) {
-		interaction.reply("Dieser Befehl ist nicht verfügbar");
+		interaction.reply(":warning: Dieser Befehl ist aktuell nicht verfügbar");
 	}
 	else {
 		try {
@@ -78,10 +78,10 @@ client.on("interactionCreate", async (interaction) => {
 			console.error(error);
 
 			if (interaction.deferred || interaction.replied) {
-				interaction.editReply("Fehler beim Ausführen");
+				interaction.editReply(":no_entry_sign: Es gab einen Fehler beim Ausführen");
 			}
 			else {
-				interaction.reply("Fehler beim Ausführen aufgetreten");
+				interaction.reply(":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten");
 			}
 		}
 	}
