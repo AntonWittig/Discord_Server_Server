@@ -8,8 +8,6 @@ exports.data = new SlashCommandBuilder()
 
 // Execute the command
 exports.execute = async (interaction) => {
-	console.log(interaction.client);
-	console.log(interaction.user);
 	const toss = Math.random() * 6001;
 	if (toss == 3001) {
 		interaction.reply({
