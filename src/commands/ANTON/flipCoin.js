@@ -11,14 +11,14 @@ exports.execute = async (interaction) => {
 	const toss = Math.random() * 6001;
 	if (toss == 3001) {
 		interaction.reply({
-			content: ":coin: What? that can't be! The coin landed on its EDGE. What could this mean?",
+			content: ":coin: What? that can't be! The coin landed on its *EDGE*. What could this mean?",
 			fetchReply: true,
 		}).then((message) => { message.react(":astonished:"); });
 	}
 	else if (toss <= 3000) {
-		interaction.reply(":coin: The coin landed with HEADS facing up.");
+		interaction.reply(":coin: The coin landed with *HEADS* facing up.");
 	}
 	else {
-		interaction.reply(":coin: The coin landed with TAILS facing up.");
+		interaction.reply(":coin: The coin landed with *TAILS* facing up.");
 	}
 };
