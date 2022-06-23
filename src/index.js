@@ -78,7 +78,7 @@ client.on("interactionCreate", async (interaction) => {
 			console.error(error);
 
 			if (interaction.deferred || interaction.replied) {
-				interaction.editReply(":no_entry_sign: Es gab einen Fehler beim Ausführen");
+				interaction.editReply(":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten");
 			}
 			else {
 				interaction.reply(":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten");
