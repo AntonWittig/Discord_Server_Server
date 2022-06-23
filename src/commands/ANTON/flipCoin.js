@@ -13,7 +13,7 @@ exports.execute = async (interaction) => {
 		interaction.reply("What? that can't be! The coin landed on its EDGE. What could this mean?");
 	}
 	else if (toss <= 3000) {
-		interaction.deferReply(":warning: The coin landed with HEADS facing up.")
+		interaction.reply(":warning: The coin landed with HEADS facing up.")
 			.then((reply) => reply.addReaction("<a:Anton:820593477641044008>"));
 	}
 	else {
