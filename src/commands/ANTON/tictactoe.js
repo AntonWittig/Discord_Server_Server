@@ -49,11 +49,11 @@ exports.execute = async (interaction) => {
 	const row = new MessageActionRow()
 		.addComponents([
 			new MessageButton()
-				.setCustomId("tictactoe_accept_")
+				.setCustomId(`tictactoe_accept_${index}`)
 				.setLabel("Accept")
 				.setStyle("PRIMARY"),
 			new MessageButton()
-				.setCustomId("tictactoe_decline")
+				.setCustomId(`tictactoe_decline_${index}`)
 				.setLabel("Decline")
 				.setStyle("DANGER"),
 		]);
