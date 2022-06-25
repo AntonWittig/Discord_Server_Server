@@ -41,7 +41,7 @@ async function recReadDir(dir, done) {
 
 // #region COMMANDS
 // Retrieve the command files
-const commandsPath = path.join(__dirname, "commands");
+const commandsPath = path.join(__dirname, "..", "commands");
 recReadDir(commandsPath, function(err, results) {
 	if (err) throw err;
 

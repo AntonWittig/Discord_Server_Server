@@ -189,4 +189,4 @@ const tictactoe = {
 		return renderedBoard;
 	},
 };
-exports.tictactoe = tictactoe;
+exports.tictactoeRnd = tictactoe;

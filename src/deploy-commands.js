@@ -38,7 +38,7 @@ async function submitCommands(commands, guildname = "") {
 
 // #region GLOBAL COMMANDS
 // Retrieve the global command files
-const commandFilesPath = path.join(__dirname, "commands");
+const commandFilesPath = path.join(__dirname, "..", "commands");
 fs.readdir(commandFilesPath, (err, files) => {
 	if (err) throw err;
 
