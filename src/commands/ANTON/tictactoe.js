@@ -7,6 +7,28 @@ const { tictactoe } = require("../../libs/render.js");
 const games = {};
 let index = 0;
 
+const originalBoard = [["e", "e", "e"], ["e", "e", "e"], ["e", "e", "e"]];
+const originalComponents = [
+	new MessageActionRow()
+		.addComponents([
+			new MessageButton().setCustomId("tictactoe_place_0_0_").setLabel("top left"),
+			new MessageButton().setCustomId("tictactoe_place_1_0_").setLabel("top middle"),
+			new MessageButton().setCustomId("tictactoe_place_2_0_").setLabel("top right"),
+		]),
+	new MessageActionRow()
+		.addComponents([
+			new MessageButton().setCustomId("tictactoe_place_0_1_").setLabel("middle left"),
+			new MessageButton().setCustomId("tictactoe_place_1_1_").setLabel("middle"),
+			new MessageButton().setCustomId("tictactoe_place_2_1_").setLabel("middle right"),
+		]),
+	new MessageActionRow()
+		.addComponents([
+			new MessageButton().setCustomId("tictactoe_place_0_2_").setLabel("bottom left"),
+			new MessageButton().setCustomId("tictactoe_place_1_2_").setLabel("bottom middle"),
+			new MessageButton().setCustomId("tictactoe_place_2_2_").setLabel("bottom right"),
+		]),
+];
+
 // Initialize the command with a name and description
 exports.data = new SlashCommandBuilder()
 	.setName("tictactoe")
@@ -46,6 +68,18 @@ function removeButtons(interaction, additionalContent = "") {
 	});
 }
 
+function disableAlreadyPlaced(board, components) {
+	for (let i = 0; i < board.length; i++) {
+		for (let j = 0; j < board[i].length; j++) {
+			const piece = board[i][j];
+			if (piece !== "e") {
+				components[i][j].disabled = true;
+			}
+		}
+	}
+	return components;
+}
+
 function startGame(interaction, i) {
 	removeButtons(games[`game${i}`].invitation, `**The challenge has been accepted by ${interaction.user}.**`);
 	interaction.message.startThread({
@@ -53,14 +87,14 @@ function startGame(interaction, i) {
 	}).then(thread => {
 		games[`game${i}`].thread = thread;
 		delete games[`game${i}`].invitation;
-		console.log(thread);
 		thread.send({
-			content: tictactoe.renderTicTacToe([["e", "e", "e"], ["e", "e", "e"], ["e", "e", "e"]]),
-			components: [],
+			content: tictactoe.renderTicTacToe(originalBoard),
+			components: originalComponents,
 		}).then(message => {
 			games[`game${i}`].message = message;
 			games[`game${i}`].board = parseBoard(message.content);
 		});
+		console.log(games[`game${i}`]);
 	});
 }
 
@@ -84,11 +118,12 @@ exports.execute = async (interaction) => {
 				.setStyle("DANGER"),
 		]);
 
-	let start = interaction.options.getBoolean("start");
-	start = start ? start : false;
 	const opponent = interaction.options.getUser("opponent");
 	const user = interaction.user;
+	const start = interaction.options.getBoolean("start");
+	const firstUser = start ? user : opponent;
 
+	// TODO decomment this
 	// if (opponent.id === user.id) {
 	// 	interaction.reply({content: "You can't challenge yourself.", ephemeral: true});
 	// 	return;
@@ -97,7 +132,7 @@ exports.execute = async (interaction) => {
 	games[`game${index}`] = {
 		invitation: interaction,
 		user: user,
-		userStart: start,
+		nextTurn: firstUser,
 	};
 
 	if (opponent) {
@@ -111,7 +146,9 @@ exports.execute = async (interaction) => {
 };
 
 
-exports.accept = async (interaction, i) => {
+exports.accept = async (interaction, i, args = []) => {
+	console.log(args);
+
 	const game = games[`game${i}`];
 	if (game.opponent) {
 		if (game.opponent.id === interaction.user.id) {
@@ -133,7 +170,9 @@ exports.accept = async (interaction, i) => {
 	}
 };
 
-exports.decline = async (interaction, i) => {
+exports.decline = async (interaction, i, args = []) => {
+	console.log(args);
+
 	const game = games[`game${i}`];
 	if (game.opponent) {
 		if (game.opponent.id === interaction.user.id) {
@@ -157,11 +196,25 @@ exports.decline = async (interaction, i) => {
 		delete games[`game${i}`];
 	}
 };
-// interaction.reply({
-// 	content: tictactoe.renderTicTacToe(
-// 		[["e", "e", "e"], ["e", "e", "e"], ["e", "e", "e"]],
-// 	),
-// 	fetchReply: true,
-// }).then(sentMessage => {
-// 	const board = parseBoard(sentMessage.content);
-// });
+
+exports.place = async (interaction, i, args = []) => {
+	console.log(args);
+
+	const position = { x: parseInt(args[0]), y: parseInt(args[1]) };
+	const game = games[`game${i}`];
+	if (interaction.user === game.nextTurn) {
+		const board = games[`game${i}`].board = parseBoard(game.message.content);
+		const components = game.message.components;
+		if (interaction.user === game.opponent) {
+			board[position.y][position.x] = "o";
+			game[`game${i}`].nextTurn = game.user;
+		}
+		else if (interaction.user === game.user) {
+			board[position.y][position.x] = "x";
+			game[`game${i}`].nextTurn = game.opponent;
+		}
+		const newComponents = disableAlreadyPlaced(board, components);
+		game.message.edit({ content: tictactoe.renderTicTacToe(board), components: newComponents });
+	}
+	console.log(game);
+};

@@ -90,7 +90,10 @@ client.on("interactionCreate", async (interaction) => {
 		const buttonID = interaction.customId.split("_");
 		const command = client.commands.get(buttonID[0]);
 
-		command[buttonID[1]](interaction, buttonID[2]);
+		command[buttonID[1]](
+			interaction,
+			buttonID[buttonID.length - 1],
+			buttonID.slice(2, buttonID.length - 1));
 	}
 });
 
