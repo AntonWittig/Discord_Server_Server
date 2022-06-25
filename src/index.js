@@ -87,7 +87,6 @@ client.on("interactionCreate", async (interaction) => {
 		}
 	}
 	else if (interaction.isButton()) {
-		console.log(interaction.customId);
 		const buttonID = interaction.customId.split("_");
 		const command = client.commands.get(buttonID[0]);
 

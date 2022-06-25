@@ -128,7 +128,6 @@ function startGame(interaction, i) {
 			games[`game${i}`].message = message;
 			games[`game${i}`].board = parseBoard(message.content);
 		});
-		console.log(games[`game${i}`]);
 	});
 }
 
@@ -206,7 +205,6 @@ exports.accept = async (interaction, i, args = []) => {
 
 exports.decline = async (interaction, i, args = []) => {
 	console.log(args);
-	console.log(i);
 
 	const game = games[`game${i}`];
 	if (game.opponent) {
@@ -234,7 +232,6 @@ exports.decline = async (interaction, i, args = []) => {
 
 exports.place = async (interaction, i, args = []) => {
 	console.log(args);
-	console.log(Object.keys(games[`game${i}`]));
 
 	const position = { x: parseInt(args[0]), y: parseInt(args[1]) };
 	const game = games[`game${i}`];
