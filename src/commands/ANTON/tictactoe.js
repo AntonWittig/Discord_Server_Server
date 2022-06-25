@@ -226,6 +226,7 @@ exports.decline = async (interaction, i, args = []) => {
 
 exports.place = async (interaction, i, args = []) => {
 	console.log(args);
+	console.log(game);
 
 	const position = { x: parseInt(args[0]), y: parseInt(args[1]) };
 	const game = games[`game${i}`];
@@ -243,5 +244,4 @@ exports.place = async (interaction, i, args = []) => {
 		const newComponents = disableAlreadyPlaced(board, components);
 		game.message.edit({ content: tictactoe.renderTicTacToe(board), components: newComponents });
 	}
-	console.log(game);
 };
