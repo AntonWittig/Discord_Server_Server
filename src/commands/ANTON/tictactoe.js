@@ -58,7 +58,8 @@ exports.execute = async (interaction) => {
 				.setStyle("DANGER"),
 		]);
 
-	const start = interaction.options.getBoolean("start");
+	let start = interaction.options.getBoolean("start");
+	start = start ? start : false;
 	const opponent = interaction.options.getUser("opponent");
 	const user = interaction.user;
 
