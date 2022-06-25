@@ -13,45 +13,45 @@ const originalComponents = [
 		.addComponents([
 			new MessageButton()
 				.setCustomId("tictactoe_place_0_0_")
-				.setLabel("")
+				.setLabel("🡼")
 				.setStyle("SECONDARY"),
 			new MessageButton()
 				.setCustomId("tictactoe_place_1_0_")
-				.setLabel("top middle")
+				.setLabel("🢁")
 				.setStyle("SECONDARY"),
 			new MessageButton()
 				.setCustomId("tictactoe_place_2_0_")
-				.setLabel("top right")
+				.setLabel("🡽")
 				.setStyle("SECONDARY"),
 		]),
 	new MessageActionRow()
 		.addComponents([
 			new MessageButton()
 				.setCustomId("tictactoe_place_0_1_")
-				.setLabel("middle left")
+				.setLabel("🡸")
 				.setStyle("SECONDARY"),
 			new MessageButton()
 				.setCustomId("tictactoe_place_1_1_")
-				.setLabel("middle")
+				.setLabel("◆")
 				.setStyle("SECONDARY"),
 			new MessageButton()
 				.setCustomId("tictactoe_place_2_1_")
-				.setLabel("middle right")
+				.setLabel("🡺")
 				.setStyle("SECONDARY"),
 		]),
 	new MessageActionRow()
 		.addComponents([
 			new MessageButton()
 				.setCustomId("tictactoe_place_0_2_")
-				.setLabel("bottom left")
+				.setLabel("🡿")
 				.setStyle("SECONDARY"),
 			new MessageButton()
 				.setCustomId("tictactoe_place_1_2_")
-				.setLabel("bottom middle")
+				.setLabel("🡻")
 				.setStyle("SECONDARY"),
 			new MessageButton()
 				.setCustomId("tictactoe_place_2_2_")
-				.setLabel("bottom right")
+				.setLabel("🡾")
 				.setStyle("SECONDARY"),
 		]),
 ];
