@@ -13,8 +13,9 @@ const originalComponents = [
 		.addComponents([
 			new MessageButton()
 				.setCustomId("tictactoe_place_0_0_")
-				.setLabel(":arrow_upper_left:")
-				.setStyle("SECONDARY"),
+				.setLabel("")
+				.setStyle("SECONDARY")
+				.setEmoji("arrow_upper_left"),
 			new MessageButton()
 				.setCustomId("tictactoe_place_1_0_")
 				.setLabel("top middle")
