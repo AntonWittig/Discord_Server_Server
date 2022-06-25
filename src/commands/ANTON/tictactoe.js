@@ -99,9 +99,15 @@ exports.accept = async (interaction, i) => {
 			});
 			games[`game${i}`].thread = thread;
 		}
-		else {
-			interaction.reply({ content: "You can't accept this challenge.", ephemeral: true });
+		else if (games[`game${i}`].user.id === interaction.user.id) {
+			interaction.reply({ content: "You can't accept this challenge for the opponent.", ephemeral: true });
 		}
+		else {
+			interaction.reply({ content: "This challenge is not meant for you.", ephemeral: true });
+		}
+	}
+	else if (games[`game${i}`].user.id === interaction.user.id) {
+		interaction.reply({ content: "You can't accept your own challenge.", ephemeral: true });
 	}
 	else {
 		removeButtons(games[`game${i}`].invitation, `**The challenge has been accepted by ${interaction.user}.**`);
@@ -111,20 +117,25 @@ exports.accept = async (interaction, i) => {
 exports.decline = async (interaction, i) => {
 	// TODO remove
 	console.log(games);
-	if (games[`game${i}`].opponent) {
-		if (games[`game${i}`].opponent.id === interaction.user.id) {
-			removeButtons(games[`game${i}`].invitation, "**The challenge has been declined.**");
+	const game = games[`game${i}`];
+	if (game.opponent) {
+		if (game.opponent.id === interaction.user.id) {
+			removeButtons(game.invitation, "**The challenge has been declined.**");
+			games.delete(`game${i}`);
+		}
+		else if (game.user.id === interaction.user.id) {
+			removeButtons(game.invitation, "**The challenge has been canceled.**");
 			games.delete(`game${i}`);
 		}
 		else {
-			interaction.reply({ content: "You can't decline this challenge.", ephemeral: true });
+			interaction.reply({ content: "This challenge is not meant for you.", ephemeral: true });
 		}
 	}
+	else if (game.user.id === interaction.user.id) {
+		removeButtons(game.invitation, `**${interaction.user} canceled the challenge.**`);
+	}
 	else {
-		if (games[`game${i}`].user.id === interaction.user.id) {
-			removeButtons(games[`game${i}`].invitation, `**${interaction.user} canceled the challenge.**`);
-		}
-		removeButtons(games[`game${i}`].invitation, `**${interaction.user} declined the challenge.**`);
+		removeButtons(game.invitation, `**${interaction.user} declined the challenge.**`);
 		games.delete(`game${i}`);
 	}
 };
