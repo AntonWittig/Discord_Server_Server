@@ -36,6 +36,12 @@ function parseBoard(message) {
 	return board;
 }
 
+function removeButtons(interaction) {
+	interaction.fetchReply().then(message => {
+		interaction.editReply({ content: message.content, components: [] });
+	});
+}
+
 // Execute the command
 exports.execute = async (interaction) => {
 	// TODO remove
@@ -62,6 +68,7 @@ exports.execute = async (interaction) => {
 	// }
 
 	games[`game${index}`] = {
+		invitation: interaction,
 		user: user,
 		userStart: start,
 	};
@@ -77,6 +84,7 @@ exports.execute = async (interaction) => {
 };
 
 exports.accept = async (interaction, i) => {
+	removeButtons(games[`game${i}`].invitation);
 	// TODO remove
 	console.log(games);
 	if (games[`game${i}`].opponent) {
@@ -96,6 +104,7 @@ exports.accept = async (interaction, i) => {
 };
 
 exports.decline = async (interaction, i) => {
+	removeButtons(games[`game${i}`].invitation);
 	// TODO remove
 	console.log(games);
 	interaction.reply("You declined the challenge.");
