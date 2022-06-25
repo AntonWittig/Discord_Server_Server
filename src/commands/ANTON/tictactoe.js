@@ -278,7 +278,7 @@ exports.place = async (interaction, i, args = []) => {
 			game.lastInteraction.deleteReply();
 		}
 		if (checkWin(board)) {
-			interaction.reply({ content: `${interaction.user} won!`, ephemeral: true });
+			interaction.reply({ content: `${interaction.user} won!` });
 			endGame(i);
 		}
 		else {
