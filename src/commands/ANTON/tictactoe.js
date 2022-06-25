@@ -13,7 +13,7 @@ const originalComponents = [
 		.addComponents([
 			new MessageButton()
 				.setCustomId("tictactoe_place_0_0_")
-				.setLabel("top left")
+				.setLabel(":arrow_upper_left:")
 				.setStyle("SECONDARY"),
 			new MessageButton()
 				.setCustomId("tictactoe_place_1_0_")
