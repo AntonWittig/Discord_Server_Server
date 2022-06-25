@@ -243,11 +243,11 @@ exports.place = async (interaction, i, args = []) => {
 		const components = game.message.components;
 		if (interaction.user === game.opponent) {
 			board[position.y][position.x] = "o";
-			game[`game${i}`].nextTurnID = game.user.id;
+			games[`game${i}`].nextTurnID = game.user.id;
 		}
 		else if (interaction.user === game.user) {
 			board[position.y][position.x] = "x";
-			game[`game${i}`].nextTurnID = game.opponent.id;
+			games[`game${i}`].nextTurnID = game.opponent.id;
 		}
 		const newComponents = disableAlreadyPlaced(board, components);
 		game.message.edit({ content: tictactoe.renderTicTacToe(board), components: newComponents });
