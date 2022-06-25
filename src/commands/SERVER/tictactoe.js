@@ -190,6 +190,7 @@ exports.execute = async (interaction) => {
 	const firstUser = start ? user : opponent;
 
 
+	console.log("command from: " + interaction.guild.name);
 	if (opponent.id === user.id) {
 		interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
 		return;
