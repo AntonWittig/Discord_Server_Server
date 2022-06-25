@@ -38,6 +38,8 @@ function parseBoard(message) {
 
 // Execute the command
 exports.execute = async (interaction) => {
+	// TODO remove
+	console.log(games);
 	const row = new MessageActionRow()
 		.addComponents([
 			new MessageButton()
@@ -75,6 +77,8 @@ exports.execute = async (interaction) => {
 };
 
 exports.accept = async (interaction, i) => {
+	// TODO remove
+	console.log(games);
 	if (games[`game${i}`].opponent) {
 		if (games[`game${i}`].opponent.id === interaction.user.id) {
 			const thread = interaction.channel.threads.create({
@@ -92,6 +96,8 @@ exports.accept = async (interaction, i) => {
 };
 
 exports.decline = async (interaction, i) => {
+	// TODO remove
+	console.log(games);
 	interaction.reply("You declined the challenge.");
 };
 // interaction.reply({
