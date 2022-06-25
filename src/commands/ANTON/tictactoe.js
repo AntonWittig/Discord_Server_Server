@@ -205,6 +205,7 @@ exports.accept = async (interaction, i, args = []) => {
 
 exports.decline = async (interaction, i, args = []) => {
 	console.log(args);
+	console.log(i);
 
 	const game = games[`game${i}`];
 	if (game.opponent) {
