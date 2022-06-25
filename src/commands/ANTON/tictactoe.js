@@ -36,9 +36,13 @@ function parseBoard(message) {
 	return board;
 }
 
-function removeButtons(interaction) {
+function removeButtons(interaction, additionalContent = "") {
 	interaction.fetchReply().then(message => {
-		interaction.editReply({ content: message.content, components: [] });
+		let content = message.content;
+		if (additionalContent) {
+			content += "\n" + additionalContent;
+		}
+		interaction.editReply({ content: content, components: [] });
 	});
 }
 
@@ -87,9 +91,9 @@ exports.execute = async (interaction) => {
 exports.accept = async (interaction, i) => {
 	// TODO remove
 	console.log(games);
-	removeButtons(games[`game${i}`].invitation);
 	if (games[`game${i}`].opponent) {
 		if (games[`game${i}`].opponent.id === interaction.user.id) {
+			removeButtons(games[`game${i}`].invitation, "**The challenge has been accepted.**");
 			const thread = interaction.channel.threads.create({
 				name: `Tic Tac Toe game between ${games[`game${i}`].user.username} and ${games[`game${i}`].opponent.username}`,
 			});
@@ -100,15 +104,25 @@ exports.accept = async (interaction, i) => {
 		}
 	}
 	else {
-		interaction.reply("a");
+		removeButtons(games[`game${i}`].invitation, `**The challenge has been accepted by ${interaction.user}.**`);
 	}
 };
 
 exports.decline = async (interaction, i) => {
 	// TODO remove
 	console.log(games);
-	removeButtons(games[`game${i}`].invitation);
-	interaction.reply("You declined the challenge.");
+	if (games[`game${i}`].opponent) {
+		if (games[`game${i}`].opponent.id === interaction.user.id) {
+			removeButtons(games[`game${i}`].invitation, "**The challenge has been declined.**");
+		}
+		else {
+			interaction.reply({ content: "You can't decline this challenge.", ephermal: true });
+		}
+	}
+	else {
+		removeButtons(games[`game${i}`].invitation, `**${interaction.user} declined the challenge.**`);
+
+	}
 };
 // interaction.reply({
 // 	content: tictactoe.renderTicTacToe(
