@@ -48,18 +48,19 @@ function removeButtons(interaction, additionalContent = "") {
 
 function startGame(interaction, i) {
 	removeButtons(games[`game${i}`].invitation, `**The challenge has been accepted by ${interaction.user}.**`);
-	const thread = interaction.message.startThread({
+	interaction.message.startThread({
 		name: `Tic Tac Toe game between ${games[`game${i}`].user.username} and ${games[`game${i}`].opponent.username}`,
-	});
-	games[`game${i}`].thread = thread;
-	delete games[`game${i}`].invitation;
-	console.log(thread);
-	thread.channel.send({
-		content: tictactoe.renderTicTacToe([["e", "e", "e"], ["e", "e", "e"], ["e", "e", "e"]]),
-		components: [],
-	}).then(message => {
-		games[`game${i}`].message = message;
-		games[`game${i}`].board = parseBoard(message.content);
+	}).then(thread => {
+		games[`game${i}`].thread = thread;
+		delete games[`game${i}`].invitation;
+		console.log(thread);
+		thread.channel.send({
+			content: tictactoe.renderTicTacToe([["e", "e", "e"], ["e", "e", "e"], ["e", "e", "e"]]),
+			components: [],
+		}).then(message => {
+			games[`game${i}`].message = message;
+			games[`game${i}`].board = parseBoard(message.content);
+		});
 	});
 }
 
