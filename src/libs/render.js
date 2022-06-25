@@ -180,8 +180,6 @@ const tictactoe = {
 
 	renderSymbol: function(symbol) {
 		const emojiDict = tictactoe.emojiIDs[symbol];
-		console.log(tictactoe.emojiIDs);
-		console.log(emojiDict);
 		const emojiName = emojiDict.name;
 		return ":" + emojiName + ":";
 	},
@@ -190,6 +188,7 @@ const tictactoe = {
 		let renderedBoard = "";
 		for (let i = 0; i < board.length; i++) {
 			for (let j = 0; j < board[i].length; j++) {
+				console.log(board[i][j]);
 				renderedBoard += tictactoe.renderSymbol(board[i][j]);
 			}
 			if (i !== board.length - 1) renderedBoard += "\n";
