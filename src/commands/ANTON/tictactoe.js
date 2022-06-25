@@ -116,8 +116,9 @@ function startGame(interaction, i) {
 		delete games[`game${i}`].invitation;
 		const components = originalComponents;
 		for (let j = 0; j < components.length; j++) {
-			for (let k = 0; k < components[j].length; k++) {
-				components[j][k].setCustomId(`tictactoe_place_${j}_${k}_${i}`);
+			const componentRow = components[j];
+			for (let k = 0; k < componentRow.components.length; k++) {
+				componentRow.components[k].setCustomId(`tictactoe_place_${j}_${k}_${i}`);
 			}
 		}
 		thread.send({
