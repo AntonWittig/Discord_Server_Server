@@ -159,7 +159,7 @@ exports.execute = async (interaction) => {
 	games[`game${index}`] = {
 		invitation: interaction,
 		user: user,
-		nextTurn: firstUser,
+		nextTurnID: firstUser.id,
 	};
 
 	if (opponent) {
@@ -229,16 +229,16 @@ exports.place = async (interaction, i, args = []) => {
 
 	const position = { x: parseInt(args[0]), y: parseInt(args[1]) };
 	const game = games[`game${i}`];
-	if (interaction.user === game.nextTurn) {
+	if (interaction.user.id === game.nextTurnID) {
 		const board = games[`game${i}`].board = parseBoard(game.message.content);
 		const components = game.message.components;
 		if (interaction.user === game.opponent) {
 			board[position.y][position.x] = "o";
-			game[`game${i}`].nextTurn = game.user;
+			game[`game${i}`].nextTurnID = game.user.id;
 		}
 		else if (interaction.user === game.user) {
 			board[position.y][position.x] = "x";
-			game[`game${i}`].nextTurn = game.opponent;
+			game[`game${i}`].nextTurnID = game.opponent.id;
 		}
 		const newComponents = disableAlreadyPlaced(board, components);
 		game.message.edit({ content: tictactoe.renderTicTacToe(board), components: newComponents });
