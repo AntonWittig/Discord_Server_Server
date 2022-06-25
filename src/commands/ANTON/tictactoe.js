@@ -53,6 +53,14 @@ function startGame(interaction, i) {
 	});
 	games[`game${i}`].thread = thread;
 	delete games[`game${i}`].invitation;
+
+	thread.send({
+		content: tictactoe.renderTicTacToe([["e", "e", "e"], ["e", "e", "e"], ["e", "e", "e"]]),
+		components: [],
+	}).then(message => {
+		games[`game${i}`].message = message;
+		games[`game${i}`].board = parseBoard(message.content);
+	});
 }
 
 function endGame(i) {
