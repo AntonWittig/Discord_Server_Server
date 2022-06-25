@@ -189,10 +189,10 @@ exports.execute = async (interaction) => {
 	const start = interaction.options.getBoolean("start");
 	const firstUser = start ? user : opponent;
 
-	// if (opponent.id === user.id) {
-	// 	interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
-	// 	return;
-	// }
+	if (opponent.id === user.id) {
+		interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
+		return;
+	}
 
 	games[`game${index}`] = {
 		invitation: interaction,
