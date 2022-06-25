@@ -11,21 +11,48 @@ const originalBoard = [["e", "e", "e"], ["e", "e", "e"], ["e", "e", "e"]];
 const originalComponents = [
 	new MessageActionRow()
 		.addComponents([
-			new MessageButton().setCustomId("tictactoe_place_0_0_").setLabel("top left"),
-			new MessageButton().setCustomId("tictactoe_place_1_0_").setLabel("top middle"),
-			new MessageButton().setCustomId("tictactoe_place_2_0_").setLabel("top right"),
+			new MessageButton()
+				.setCustomId("tictactoe_place_0_0_")
+				.setLabel("top left")
+				.setStyle("SECONDARY"),
+			new MessageButton()
+				.setCustomId("tictactoe_place_1_0_")
+				.setLabel("top middle")
+				.setStyle("SECONDARY"),
+			new MessageButton()
+				.setCustomId("tictactoe_place_2_0_")
+				.setLabel("top right")
+				.setStyle("SECONDARY"),
 		]),
 	new MessageActionRow()
 		.addComponents([
-			new MessageButton().setCustomId("tictactoe_place_0_1_").setLabel("middle left"),
-			new MessageButton().setCustomId("tictactoe_place_1_1_").setLabel("middle"),
-			new MessageButton().setCustomId("tictactoe_place_2_1_").setLabel("middle right"),
+			new MessageButton()
+				.setCustomId("tictactoe_place_0_1_")
+				.setLabel("middle left")
+				.setStyle("SECONDARY"),
+			new MessageButton()
+				.setCustomId("tictactoe_place_1_1_")
+				.setLabel("middle")
+				.setStyle("SECONDARY"),
+			new MessageButton()
+				.setCustomId("tictactoe_place_2_1_")
+				.setLabel("middle right")
+				.setStyle("SECONDARY"),
 		]),
 	new MessageActionRow()
 		.addComponents([
-			new MessageButton().setCustomId("tictactoe_place_0_2_").setLabel("bottom left"),
-			new MessageButton().setCustomId("tictactoe_place_1_2_").setLabel("bottom middle"),
-			new MessageButton().setCustomId("tictactoe_place_2_2_").setLabel("bottom right"),
+			new MessageButton()
+				.setCustomId("tictactoe_place_0_2_")
+				.setLabel("bottom left")
+				.setStyle("SECONDARY"),
+			new MessageButton()
+				.setCustomId("tictactoe_place_1_2_")
+				.setLabel("bottom middle")
+				.setStyle("SECONDARY"),
+			new MessageButton()
+				.setCustomId("tictactoe_place_2_2_")
+				.setLabel("bottom right")
+				.setStyle("SECONDARY"),
 		]),
 ];
 
