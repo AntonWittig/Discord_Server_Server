@@ -64,7 +64,7 @@ client.once("ready", () => {
 // When an interaction with the client is created, run this code
 client.on("interactionCreate", async (interaction) => {
 	if (interaction.isCommand()) {
-		const command = client.commands.get(interaction.guilinteraction.commandName);
+		const command = client.commands.get(interaction.commandName);
 
 		if (command) {
 			try {
