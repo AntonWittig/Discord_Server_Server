@@ -78,7 +78,9 @@ function parseBoard(message) {
 			if (symbolName === "white_medium_square") {
 				lineArray.push("e");
 			}
-			lineArray.push(symbolName);
+			else {
+				lineArray.push(symbolName);
+			}
 		}
 		board.push(lineArray);
 	}
@@ -237,6 +239,7 @@ exports.place = async (interaction, i, args = []) => {
 	const game = games[`game${i}`];
 	if (interaction.user.id === game.nextTurnID) {
 		const board = games[`game${i}`].board = parseBoard(game.message.content);
+		console.log(board);
 		const components = game.message.components;
 		if (interaction.user === game.opponent) {
 			board[position.y][position.x] = "o";
