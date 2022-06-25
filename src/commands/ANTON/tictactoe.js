@@ -263,7 +263,6 @@ exports.place = async (interaction, i, args = []) => {
 	const game = games[`game${i}`];
 	if (interaction.user.id === game.nextTurnID) {
 		const board = games[`game${i}`].board = parseBoard(game.message.content);
-		console.log(board);
 		const components = game.message.components;
 		if (interaction.user === game.opponent) {
 			board[position.y][position.x] = "o";

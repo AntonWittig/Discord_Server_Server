@@ -172,12 +172,6 @@ const tictactoe = {
 		"e": { "name": "white_medium_square" },
 	},
 
-	getValidMoves: function(board) {
-		if (board !== undefined && board !== null && board.length === 3) {
-
-		}
-	},
-
 	renderSymbol: function(symbol) {
 		const emojiDict = tictactoe.emojiIDs[symbol];
 		const emojiName = emojiDict.name;
@@ -188,7 +182,6 @@ const tictactoe = {
 		let renderedBoard = "";
 		for (let i = 0; i < board.length; i++) {
 			for (let j = 0; j < board[i].length; j++) {
-				console.log(board[i][j]);
 				renderedBoard += tictactoe.renderSymbol(board[i][j]);
 			}
 			if (i !== board.length - 1) renderedBoard += "\n";
