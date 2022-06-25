@@ -107,9 +107,8 @@ exports.tictactoeFnct = tictactoe;
 // #endregion
 
 // #region CHESS
-const chess = {
-	// #region VARIABLES
-	// Define representations on board
+// Define representations on board
+const chessRep = {
 	bk: "bk",
 	bq: "bq",
 	br: "br",
@@ -123,21 +122,25 @@ const chess = {
 	wb: "wb",
 	wp: "wp",
 	e: "e",
+};
+
+const chess = {
+	// #region VARIABLES
 	// Define the representations of the emojis as board representations
 	representations: {
-		black_king_white: chess.bk, black_king_black: chess.bk, black_king_check: chess.bk,
-		black_queen_white: chess.bq, black_queen_black: chess.bq, black_queen_green: chess.bq,
-		black_rook_white: chess.br, black_rook_black: chess.br, black_rook_green: chess.br,
-		black_knight_white: chess.bn, black_knight_black: chess.bn, black_knight_green: chess.bn,
-		black_bishop_white: chess.bb, black_bishop_black: chess.bb, black_bishop_green: chess.bb,
-		black_pawn_white: chess.bp, black_pawn_black: chess.bp, black_pawn_green: chess.bp,
-		white_king_white: chess.wk, white_king_black: chess.wk, white_king_check: chess.wk,
-		white_queen_white: chess.wq, white_queen_black: chess.wq, white_queen_green: chess.wq,
-		white_rook_white: chess.wr, white_rook_black: chess.wr, white_rook_green: chess.wr,
-		white_knight_white: chess.wn, white_knight_black: chess.wn, white_knight_green: chess.wn,
-		white_bishop_white: chess.wb, white_bishop_black: chess.wb, white_bishop_green: chess.wb,
-		white_pawn_white: chess.wp, white_pawn_black: chess.wp, white_pawn_green: chess.wp,
-		empty: chess.e,
+		black_king_white: chessRep.bk, black_king_black: chessRep.bk, black_king_check: chessRep.bk,
+		black_queen_white: chessRep.bq, black_queen_black: chessRep.bq, black_queen_green: chessRep.bq,
+		black_rook_white: chessRep.br, black_rook_black: chessRep.br, black_rook_green: chessRep.br,
+		black_knight_white: chessRep.bn, black_knight_black: chessRep.bn, black_knight_green: chessRep.bn,
+		black_bishop_white: chessRep.bb, black_bishop_black: chessRep.bb, black_bishop_green: chessRep.bb,
+		black_pawn_white: chessRep.bp, black_pawn_black: chessRep.bp, black_pawn_green: chessRep.bp,
+		white_king_white: chessRep.wk, white_king_black: chessRep.wk, white_king_check: chessRep.wk,
+		white_queen_white: chessRep.wq, white_queen_black: chessRep.wq, white_queen_green: chessRep.wq,
+		white_rook_white: chessRep.wr, white_rook_black: chessRep.wr, white_rook_green: chessRep.wr,
+		white_knight_white: chessRep.wn, white_knight_black: chessRep.wn, white_knight_green: chessRep.wn,
+		white_bishop_white: chessRep.wb, white_bishop_black: chessRep.wb, white_bishop_green: chessRep.wb,
+		white_pawn_white: chessRep.wp, white_pawn_black: chessRep.wp, white_pawn_green: chessRep.wp,
+		empty: chessRep.e,
 	},
 	// #endregion
 
