@@ -53,8 +53,8 @@ function startGame(interaction, i) {
 	});
 	games[`game${i}`].thread = thread;
 	delete games[`game${i}`].invitation;
-
-	thread.send({
+	console.log(thread);
+	thread.channel.send({
 		content: tictactoe.renderTicTacToe([["e", "e", "e"], ["e", "e", "e"], ["e", "e", "e"]]),
 		components: [],
 	}).then(message => {
