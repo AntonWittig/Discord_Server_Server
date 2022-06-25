@@ -167,20 +167,19 @@ exports.chess = chess;
 
 const tictactoe = {
 	emojiIDs: {
-		"x": { "name": "x" },
-		"o": { "name": "o" },
-		"e": { "name": "white_medium_square" },
+		x: { name: "x" },
+		o: { name: "o" },
+		e: { name: "white_medium_square" },
 	},
 
 	getValidMoves: function(board) {
 		if (board !== undefined && board !== null && board.length === 3) {
-			
+
 		}
 	},
 
 	renderSymbol: function(symbol) {
-		const emojiDict = tictactoe.emojiIDs[symbol];
-		const emojiName = emojiDict.name;
+		const emojiName = tictactoe.emojiIDs[symbol].name;
 		return ":" + emojiName + ":";
 	},
 
