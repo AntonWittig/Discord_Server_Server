@@ -88,8 +88,6 @@ client.on("interactionCreate", async (interaction) => {
 	}
 	else if (interaction.isButton()) {
 		const buttonID = interaction.customId.split("_");
-		// TODO remove
-		console.log(buttonID);
 		const command = client.commands.get(buttonID[0]);
 
 		command[buttonID[1]](interaction, buttonID[2]);

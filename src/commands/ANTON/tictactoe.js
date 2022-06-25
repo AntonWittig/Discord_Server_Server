@@ -46,10 +46,23 @@ function removeButtons(interaction, additionalContent = "") {
 	});
 }
 
+function startGame(interaction, i) {
+	removeButtons(games[`game${i}`].invitation, `**The challenge has been accepted by ${interaction.user}.**`);
+	const thread = interaction.message.startThread({
+		name: `Tic Tac Toe game between ${games[`game${i}`].user.username} and ${games[`game${i}`].opponent.username}`,
+	});
+	games[`game${i}`].thread = thread;
+	delete games[`game${i}`].invitation;
+}
+
+function endGame(i) {
+	const game = games[`game${i}`];
+	delete games[`game${i}`];
+	game.thread.setLocked(true);
+}
+
 // Execute the command
 exports.execute = async (interaction) => {
-	// TODO remove
-	console.log(games);
 	const row = new MessageActionRow()
 		.addComponents([
 			new MessageButton()
@@ -68,7 +81,7 @@ exports.execute = async (interaction) => {
 	const user = interaction.user;
 
 	// if (opponent.id === user.id) {
-	// 	interaction.reply("You can't challenge yourself.");
+	// 	interaction.reply({content: "You can't challenge yourself.", ephemeral: true});
 	// 	return;
 	// }
 
@@ -88,35 +101,30 @@ exports.execute = async (interaction) => {
 	index++;
 };
 
+
 exports.accept = async (interaction, i) => {
-	// TODO remove
-	console.log(games);
-	if (games[`game${i}`].opponent) {
-		if (games[`game${i}`].opponent.id === interaction.user.id) {
-			removeButtons(games[`game${i}`].invitation, "**The challenge has been accepted.**");
-			const thread = interaction.channel.threads.create({
-				name: `Tic Tac Toe game between ${games[`game${i}`].user.username} and ${games[`game${i}`].opponent.username}`,
-			});
-			games[`game${i}`].thread = thread;
+	const game = games[`game${i}`];
+	if (game.opponent) {
+		if (game.opponent.id === interaction.user.id) {
+			startGame(interaction, i);
 		}
-		else if (games[`game${i}`].user.id === interaction.user.id) {
+		else if (game.user.id === interaction.user.id) {
 			interaction.reply({ content: "You can't accept this challenge for the opponent.", ephemeral: true });
 		}
 		else {
 			interaction.reply({ content: "This challenge is not meant for you.", ephemeral: true });
 		}
 	}
-	else if (games[`game${i}`].user.id === interaction.user.id) {
+	else if (game.user.id === interaction.user.id) {
 		interaction.reply({ content: "You can't accept your own challenge.", ephemeral: true });
 	}
 	else {
-		removeButtons(games[`game${i}`].invitation, `**The challenge has been accepted by ${interaction.user}.**`);
+		games[`game${i}`].opponent = interaction.user;
+		startGame(interaction, i);
 	}
 };
 
 exports.decline = async (interaction, i) => {
-	// TODO remove
-	console.log(games);
 	const game = games[`game${i}`];
 	if (game.opponent) {
 		if (game.opponent.id === interaction.user.id) {
@@ -133,6 +141,7 @@ exports.decline = async (interaction, i) => {
 	}
 	else if (game.user.id === interaction.user.id) {
 		removeButtons(game.invitation, `**${interaction.user} canceled the challenge.**`);
+		delete games[`game${i}`];
 	}
 	else {
 		removeButtons(game.invitation, `**${interaction.user} declined the challenge.**`);
