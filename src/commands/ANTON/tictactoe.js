@@ -12,45 +12,45 @@ const originalComponents = [
 	new MessageActionRow()
 		.addComponents([
 			new MessageButton()
-				.setCustomId("tictactoe_place_0_0_")
+				.setCustomId("tictactoe_place_0_0_i")
 				.setLabel("🡼")
 				.setStyle("SECONDARY"),
 			new MessageButton()
-				.setCustomId("tictactoe_place_1_0_")
+				.setCustomId("tictactoe_place_1_0_i")
 				.setLabel("🢁")
 				.setStyle("SECONDARY"),
 			new MessageButton()
-				.setCustomId("tictactoe_place_2_0_")
+				.setCustomId("tictactoe_place_2_0_i")
 				.setLabel("🡽")
 				.setStyle("SECONDARY"),
 		]),
 	new MessageActionRow()
 		.addComponents([
 			new MessageButton()
-				.setCustomId("tictactoe_place_0_1_")
+				.setCustomId("tictactoe_place_0_1_i")
 				.setLabel("🡸")
 				.setStyle("SECONDARY"),
 			new MessageButton()
-				.setCustomId("tictactoe_place_1_1_")
+				.setCustomId("tictactoe_place_1_1_i")
 				.setLabel("◆")
 				.setStyle("SECONDARY"),
 			new MessageButton()
-				.setCustomId("tictactoe_place_2_1_")
+				.setCustomId("tictactoe_place_2_1_i")
 				.setLabel("🡺")
 				.setStyle("SECONDARY"),
 		]),
 	new MessageActionRow()
 		.addComponents([
 			new MessageButton()
-				.setCustomId("tictactoe_place_0_2_")
+				.setCustomId("tictactoe_place_0_2_i")
 				.setLabel("🡿")
 				.setStyle("SECONDARY"),
 			new MessageButton()
-				.setCustomId("tictactoe_place_1_2_")
+				.setCustomId("tictactoe_place_1_2_i")
 				.setLabel("🡻")
 				.setStyle("SECONDARY"),
 			new MessageButton()
-				.setCustomId("tictactoe_place_2_2_")
+				.setCustomId("tictactoe_place_2_2_i")
 				.setLabel("🡾")
 				.setStyle("SECONDARY"),
 		]),
@@ -114,6 +114,12 @@ function startGame(interaction, i) {
 	}).then(thread => {
 		games[`game${i}`].thread = thread;
 		delete games[`game${i}`].invitation;
+		const components = originalComponents;
+		for (let j = 0; j < components.length; i++) {
+			for (let k = 0; k < components[i].length; j++) {
+				components[j][k].setCustomId(`tictactoe_place_${j}_${k}_${i}`);
+			}
+		}
 		thread.send({
 			content: tictactoe.renderTicTacToe(originalBoard),
 			components: originalComponents,
