@@ -161,6 +161,7 @@ function endGame(i) {
 	const game = games[`game${i}`];
 	delete games[`game${i}`];
 	game.thread.setLocked(true);
+	game.thread.setArchived(true);
 }
 
 // Execute the command
