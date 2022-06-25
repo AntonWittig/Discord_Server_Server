@@ -1,6 +1,5 @@
 // Require the necessary discord.js classes
 const { Client, Collection, Intents } = require("discord.js");
-const { debug } = require("node:console");
 
 // Require the necessary environment variables
 require("dotenv").config();

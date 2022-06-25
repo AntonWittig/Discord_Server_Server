@@ -153,6 +153,9 @@ function checkWin(board) {
 		if (diag2[0] !== "e" && diag2[0] === diag2[1] && diag2[1] === diag2[2]) {
 			return diag2[0];
 		}
+		if (board.every(row => row.every(piece => piece !== "e"))) {
+			return "e";
+		}
 	}
 	return false;
 }
@@ -160,6 +163,9 @@ function checkWin(board) {
 function endGame(i) {
 	const game = games[`game${i}`];
 	delete games[`game${i}`];
+	disableAlreadyPlaced(
+		[["x", "x", "x"], ["x", "x", "x"], ["x", "x", "x"]],
+		game.message.components);
 	game.thread.setLocked(true);
 	game.thread.setArchived(true);
 }
@@ -183,11 +189,11 @@ exports.execute = async (interaction) => {
 	const start = interaction.options.getBoolean("start");
 	const firstUser = start ? user : opponent;
 
-	// TODO decomment this
-	// if (opponent.id === user.id) {
-	// 	interaction.reply({content: "You can't challenge yourself.", ephemeral: true});
-	// 	return;
-	// }
+
+	if (opponent.id === user.id) {
+		interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
+		return;
+	}
 
 	games[`game${index}`] = {
 		invitation: interaction,
@@ -281,9 +287,14 @@ exports.place = async (interaction, i, args = []) => {
 		if (game.lastInteraction) {
 			game.lastInteraction.deleteReply();
 		}
-		if (checkWin(board)) {
-			interaction.reply({ content: `${interaction.user} won!` });
-			endGame(i);
+		const winner = checkWin(board);
+		if (winner) {
+			if (winner === "e") {
+				interaction.reply({ content: "It's a draw! Nobody won." }).then(() => endGame(i));
+			}
+			else {
+				interaction.reply({ content: `${interaction.user} won!` }).then(() => endGame(i));
+			}
 		}
 		else {
 			interaction.reply({ content: `${otherUser}, your opponent placed an "${board[position.y][position.x]}" at ${position.x}, ${position.y}` });
