@@ -100,7 +100,7 @@ exports.accept = async (interaction, i) => {
 			games[`game${i}`].thread = thread;
 		}
 		else {
-			interaction.reply({ content: "You can't accept this challenge.", ephermal: true });
+			interaction.reply({ content: "You can't accept this challenge.", ephemeral: true });
 		}
 	}
 	else {
@@ -114,14 +114,18 @@ exports.decline = async (interaction, i) => {
 	if (games[`game${i}`].opponent) {
 		if (games[`game${i}`].opponent.id === interaction.user.id) {
 			removeButtons(games[`game${i}`].invitation, "**The challenge has been declined.**");
+			games.delete(`game${i}`);
 		}
 		else {
-			interaction.reply({ content: "You can't decline this challenge.", ephermal: true });
+			interaction.reply({ content: "You can't decline this challenge.", ephemeral: true });
 		}
 	}
 	else {
+		if (games[`game${i}`].user.id === interaction.user.id) {
+			removeButtons(games[`game${i}`].invitation, `**${interaction.user} canceled the challenge.**`);
+		}
 		removeButtons(games[`game${i}`].invitation, `**${interaction.user} declined the challenge.**`);
-
+		games.delete(`game${i}`);
 	}
 };
 // interaction.reply({
