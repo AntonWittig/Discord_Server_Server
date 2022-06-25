@@ -284,8 +284,9 @@ exports.place = async (interaction, i, args = []) => {
 		else {
 			interaction.reply({ content: `${interaction.user} placed an "${board[position.y][position.x]}" at ${position.x}, ${position.y}` });
 			games[`game${i}`].lastInteraction = interaction;
-
 		}
 	}
-	interaction.reply({ content: "It's not your turn.", ephemeral: true });
+	else {
+		interaction.reply({ content: "It's not your turn.", ephemeral: true });
+	}
 };
