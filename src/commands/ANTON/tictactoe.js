@@ -190,10 +190,10 @@ exports.execute = async (interaction) => {
 	const firstUser = start ? user : opponent;
 
 
-	if (opponent.id === user.id) {
-		interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
-		return;
-	}
+	// if (opponent.id === user.id) {
+	// 	interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
+	// 	return;
+	// }
 
 	games[`game${index}`] = {
 		invitation: interaction,
@@ -290,9 +290,11 @@ exports.place = async (interaction, i, args = []) => {
 		const winner = checkWin(board);
 		if (winner) {
 			if (winner === "e") {
+				game.thread.setName("Game Over: It's a draw!");
 				interaction.reply({ content: "It's a draw! Nobody won." }).then(() => endGame(i));
 			}
 			else {
+				game.thread.setName(`Game Over: ${interaction.user.username} won!`);
 				interaction.reply({ content: `${interaction.user} won!` }).then(() => endGame(i));
 			}
 		}
