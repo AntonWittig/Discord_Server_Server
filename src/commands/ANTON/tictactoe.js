@@ -121,11 +121,11 @@ exports.decline = async (interaction, i) => {
 	if (game.opponent) {
 		if (game.opponent.id === interaction.user.id) {
 			removeButtons(game.invitation, "**The challenge has been declined.**");
-			games.delete(`game${i}`);
+			delete games[`game${i}`];
 		}
 		else if (game.user.id === interaction.user.id) {
 			removeButtons(game.invitation, "**The challenge has been canceled.**");
-			games.delete(`game${i}`);
+			delete games[`game${i}`];
 		}
 		else {
 			interaction.reply({ content: "This challenge is not meant for you.", ephemeral: true });
@@ -136,7 +136,7 @@ exports.decline = async (interaction, i) => {
 	}
 	else {
 		removeButtons(game.invitation, `**${interaction.user} declined the challenge.**`);
-		games.delete(`game${i}`);
+		delete games[`game${i}`];
 	}
 };
 // interaction.reply({
