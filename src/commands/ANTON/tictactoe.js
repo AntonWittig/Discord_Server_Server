@@ -84,9 +84,9 @@ exports.execute = async (interaction) => {
 };
 
 exports.accept = async (interaction, i) => {
-	removeButtons(games[`game${i}`].invitation);
 	// TODO remove
 	console.log(games);
+	removeButtons(games[`game${i}`].invitation);
 	if (games[`game${i}`].opponent) {
 		if (games[`game${i}`].opponent.id === interaction.user.id) {
 			const thread = interaction.channel.threads.create({
@@ -104,9 +104,9 @@ exports.accept = async (interaction, i) => {
 };
 
 exports.decline = async (interaction, i) => {
-	removeButtons(games[`game${i}`].invitation);
 	// TODO remove
 	console.log(games);
+	removeButtons(games[`game${i}`].invitation);
 	interaction.reply("You declined the challenge.");
 };
 // interaction.reply({
