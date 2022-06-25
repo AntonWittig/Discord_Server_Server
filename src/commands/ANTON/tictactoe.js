@@ -4,6 +4,9 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { extractEmojiDataFromText } = require("../../libs/messageHandling.js");
 const { tictactoe } = require("../../libs/render.js");
 
+const games = {};
+let index = 0;
+
 // Initialize the command with a name and description
 exports.data = new SlashCommandBuilder()
 	.setName("tictactoe")
@@ -33,18 +36,16 @@ function parseBoard(message) {
 	return board;
 }
 
-const dict = {};
-let i = 0;
 // Execute the command
 exports.execute = async (interaction) => {
 	const row = new MessageActionRow()
 		.addComponents([
 			new MessageButton()
-				.setCustomId("accept")
+				.setCustomId("tictactoe_accept_")
 				.setLabel("Accept")
 				.setStyle("PRIMARY"),
 			new MessageButton()
-				.setCustomId("decline")
+				.setCustomId("tictactoe_decline")
 				.setLabel("Decline")
 				.setStyle("DANGER"),
 		]);
@@ -53,18 +54,46 @@ exports.execute = async (interaction) => {
 	const opponent = interaction.options.getUser("opponent");
 	const user = interaction.user;
 
+	// if (opponent.id === user.id) {
+	// 	interaction.reply("You can't challenge yourself.");
+	// 	return;
+	// }
+
+	games[`game${index}`] = {
+		user: user,
+		userStart: start,
+	};
+
 	if (opponent) {
 		interaction.reply({ content: `${user} challenges ${opponent} for a tic tac toe game, will he accept?`, components: [row] });
-		dict[i] = "b";
-		i++;
-		console.log(dict);
+		games[`game${index}`].opponent = opponent;
+	}
+	else {
+		interaction.reply({ content: `${user} wants to play tic tac toe against anyone, do you accept?`, components: [row] });
+	}
+	index++;
+};
+
+exports.accept = async (interaction, i) => {
+	if (games[`game${i}`].opponent) {
+		if (games[`game${i}`].opponent.id === interaction.user.id) {
+			const thread = interaction.channel.threads.create({
+				name: `Tic Tac Toe game between ${games[`game${i}`].user.username} and ${games[`game${i}`].opponent.username}`,
+			});
+			games[`game${i}`].thread = thread;
+		}
+		else {
+			interaction.reply({ content: "You can't accept this challenge.", ephermal: true });
+		}
 	}
 	else {
 		interaction.reply("a");
 	}
-	if (start) return;
 };
 
+exports.decline = async (interaction, i) => {
+	interaction.reply("You declined the challenge.");
+};
 // interaction.reply({
 // 	content: tictactoe.renderTicTacToe(
 // 		[["e", "e", "e"], ["e", "e", "e"], ["e", "e", "e"]],
