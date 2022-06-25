@@ -100,7 +100,7 @@ function disableAlreadyPlaced(board, components) {
 		for (let j = 0; j < board[i].length; j++) {
 			const piece = board[i][j];
 			if (piece !== "e") {
-				components[i][j].disabled = true;
+				components[i].components[j].setDisabled(true);
 			}
 		}
 	}
