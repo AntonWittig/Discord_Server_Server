@@ -226,7 +226,7 @@ exports.decline = async (interaction, i, args = []) => {
 
 exports.place = async (interaction, i, args = []) => {
 	console.log(args);
-	console.log(games);
+	console.log(Object.keys(games[`game${i}`]));
 
 	const position = { x: parseInt(args[0]), y: parseInt(args[1]) };
 	const game = games[`game${i}`];
