@@ -120,7 +120,7 @@ function startGame(interaction, i) {
 		for (let j = 0; j < components.length; j++) {
 			const componentRow = components[j];
 			for (let k = 0; k < componentRow.components.length; k++) {
-				componentRow.components[k].setCustomId(`tictactoe_place_${j}_${k}_${i}`);
+				componentRow.components[k].setCustomId(`tictactoe_place_${k}_${j}_${i}`);
 			}
 		}
 		thread.send({
@@ -282,7 +282,7 @@ exports.place = async (interaction, i, args = []) => {
 			endGame(i);
 		}
 		else {
-			interaction.reply({ content: `${interaction.user} placed a ${board[position.y][position.x]} at ${position.x}, ${position.y}` });
+			interaction.reply({ content: `${interaction.user} placed an "${board[position.y][position.x]}" at ${position.x}, ${position.y}` });
 			games[`game${i}`].lastInteraction = interaction;
 
 		}
