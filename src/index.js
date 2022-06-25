@@ -1,5 +1,6 @@
 // Require the necessary discord.js classes
 const { Client, Collection, Intents } = require("discord.js");
+const { debug } = require("node:console");
 
 // Require the necessary environment variables
 require("dotenv").config();
@@ -63,27 +64,30 @@ client.once("ready", () => {
 
 // When an interaction with the client is created, run this code
 client.on("interactionCreate", async (interaction) => {
-	if (!interaction.isCommand()) return;
+	if (interaction.isCommand()) {
+		const command = client.commands.get(interaction.commandName);
 
-	const command = client.commands.get(interaction.commandName);
+		if (command) {
+			try {
+				await command.execute(interaction);
+			}
+			catch (error) {
+				console.error(error);
 
-	if (!command) {
-		interaction.reply(":warning: Dieser Befehl ist aktuell nicht verfügbar");
+				if (interaction.deferred || interaction.replied) {
+					interaction.editReply(":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten");
+				}
+				else {
+					interaction.reply(":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten");
+				}
+			}
+		}
+		else {
+			interaction.reply(":warning: Dieser Befehl ist aktuell nicht verfügbar");
+		}
 	}
-	else {
-		try {
-			await command.execute(interaction);
-		}
-		catch (error) {
-			console.error(error);
-
-			if (interaction.deferred || interaction.replied) {
-				interaction.editReply(":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten");
-			}
-			else {
-				interaction.reply(":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten");
-			}
-		}
+	else if (interaction.isButton()) {
+		console.log(interaction);
 	}
 });
 
