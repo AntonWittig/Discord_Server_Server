@@ -265,13 +265,16 @@ exports.place = async (interaction, i, args = []) => {
 	if (interaction.user.id === game.nextTurnID) {
 		const board = games[`game${i}`].board = parseBoard(game.message.content);
 		const components = game.message.components;
+		let otherUser;
 		if (interaction.user === game.opponent) {
 			board[position.y][position.x] = "o";
 			games[`game${i}`].nextTurnID = game.user.id;
+			otherUser = game.user;
 		}
 		else if (interaction.user === game.user) {
 			board[position.y][position.x] = "x";
 			games[`game${i}`].nextTurnID = game.opponent.id;
+			otherUser = game.opponent;
 		}
 		const newComponents = disableAlreadyPlaced(board, components);
 		game.message.edit({ content: tictactoe.renderTicTacToe(board), components: newComponents });
@@ -283,7 +286,7 @@ exports.place = async (interaction, i, args = []) => {
 			endGame(i);
 		}
 		else {
-			interaction.reply({ content: `${interaction.user} placed an "${board[position.y][position.x]}" at ${position.x}, ${position.y}` });
+			interaction.reply({ content: `${otherUser}, your opponent placed an "${board[position.y][position.x]}" at ${position.x}, ${position.y}` });
 			games[`game${i}`].lastInteraction = interaction;
 		}
 	}
