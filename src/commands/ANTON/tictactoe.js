@@ -133,6 +133,30 @@ function startGame(interaction, i) {
 	});
 }
 
+function checkWin(board) {
+	if (board !== undefined) {
+		for (let i = 0; i < board.length; i++) {
+			const row = board[i];
+			if (row[0] !== "e" && row[0] === row[1] && row[1] === row[2]) {
+				return row[0];
+			}
+			const col = [board[0][i], board[1][i], board[2][i]];
+			if (col[0] !== "e" && col[0] === col[1] && col[1] === col[2]) {
+				return col[0];
+			}
+		}
+		const diag1 = [board[0][0], board[1][1], board[2][2]];
+		if (diag1[0] !== "e" && diag1[0] === diag1[1] && diag1[1] === diag1[2]) {
+			return diag1[0];
+		}
+		const diag2 = [board[0][2], board[1][1], board[2][0]];
+		if (diag2[0] !== "e" && diag2[0] === diag2[1] && diag2[1] === diag2[2]) {
+			return diag2[0];
+		}
+	}
+	return false;
+}
+
 function endGame(i) {
 	const game = games[`game${i}`];
 	delete games[`game${i}`];
@@ -251,5 +275,18 @@ exports.place = async (interaction, i, args = []) => {
 		}
 		const newComponents = disableAlreadyPlaced(board, components);
 		game.message.edit({ content: tictactoe.renderTicTacToe(board), components: newComponents });
+		if (game.lastInteraction) {
+			game.lastInteraction.deleteReply();
+		}
+		if (checkWin(board)) {
+			interaction.reply({ content: `${interaction.user} won!`, ephemeral: true });
+			endGame(i);
+		}
+		else {
+			interaction.reply({ content: `${interaction.user} placed a ${board[position.y][position.x]} at ${position.x}, ${position.y}` });
+			games[`game${i}`].lastInteraction = interaction;
+
+		}
 	}
+	interaction.reply({ content: "It's not your turn.", ephemeral: true });
 };
