@@ -15,7 +15,6 @@ exports.extractEmojiDataFromText = function(text) {
 			if (emojiEnd === -1) {isDefault = true;}
 			else if (text[emojiStart - 1] === "a") {
 				emojiData["animated"] = true;
-				emojiStart += 1;
 			}
 			else {
 				emojiData["animated"] = false;
@@ -26,6 +25,7 @@ exports.extractEmojiDataFromText = function(text) {
 			if (emojiEnd === -1) break;
 			isDefault = true;
 		}
+		emojiStart += 1;
 		const emoji = text.substring(emojiStart, emojiEnd);
 		if (!isDefault) {
 			const emojiDataArray = emoji.split(":");

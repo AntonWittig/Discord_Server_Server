@@ -171,7 +171,7 @@ exports.execute = async (interaction) => {
 	};
 
 	if (opponent) {
-		interaction.reply({ content: `${user} challenges ${opponent} for a tic tac toe game, will he accept?`, components: [row] });
+		interaction.reply({ content: `${user} challenges ${opponent} for a tic tac toe game, will they accept?`, components: [row] });
 		games[`game${index}`].opponent = opponent;
 	}
 	else {
