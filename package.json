@@ -12,6 +12,7 @@
         "nodemon": "^2.0.16"
     },
     "scripts": {
+        "test": "mocha",
         "start": "node src/index.js",
         "dev": "nodemon src/index.js",
         "cmd": "node src/deploy-commands.js"
@@ -31,6 +32,7 @@
     },
     "homepage": "https://github.com/AntonWittig/Discord_Server_Server#readme",
     "devDependencies": {
-        "eslint": "^8.18.0"
+        "eslint": "^8.18.0",
+        "mocha": "^10.0.0"
     }
 }
