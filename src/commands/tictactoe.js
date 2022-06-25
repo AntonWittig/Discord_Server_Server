@@ -8,11 +8,11 @@ const path = require("node:path");
 
 // Require the necessary libraries for the command
 const libPath = [__dirname, "..", "libs"];
-const { generalBtnHnd } = require(path.join(libPath, "buttonHandling.js"));
-const { generalMsgHnd } = require(path.join(libPath, "messageHandling.js"));
-const { tictactoeFnct } = require(path.join(libPath, "gameHandling.js"));
-const { tictactoeRnd } = require(path.join(libPath, "render.js"));
-const deepClone = require(path.join(libPath, "deepClone.js"));
+const { generalBtnHnd } = require(path.join(...libPath, "buttonHandling.js"));
+const { generalMsgHnd } = require(path.join(...libPath, "messageHandling.js"));
+const { tictactoeFnct } = require(path.join(...libPath, "gameHandling.js"));
+const { tictactoeRnd } = require(path.join(...libPath, "render.js"));
+const deepClone = require(path.join(...libPath, "deepClone.js"));
 
 // #endregion
 

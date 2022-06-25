@@ -4,7 +4,7 @@ const path = require("node:path");
 
 // Require the necessary libraries
 const libPath = [__dirname];
-const { generalMsgHnd } = require(path.join(libPath, "messageHandling.js"));
+const { generalMsgHnd } = require(path.join(...libPath, "messageHandling.js"));
 // #endregion
 
 // #region GENERAL

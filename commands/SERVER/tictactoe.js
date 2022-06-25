@@ -8,7 +8,7 @@ if (__dirname === "commands") {
 }
 
 // Require the necessary command src
-const tictactoeSrc = require(path.join(srcPath));
+const tictactoeSrc = require(path.join(...srcPath));
 
 // export command variables and functions
 exports.data = tictactoeSrc.data;
