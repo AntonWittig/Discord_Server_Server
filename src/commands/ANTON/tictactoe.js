@@ -28,7 +28,7 @@ const originalComponents = [
 		.addComponents([
 			new MessageButton()
 				.setCustomId("tictactoe_place_0_1_i")
-				.setLabel("🡸")
+				.setLabel("⬅️")
 				.setStyle("SECONDARY"),
 			new MessageButton()
 				.setCustomId("tictactoe_place_1_1_i")
