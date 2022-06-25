@@ -59,7 +59,7 @@ recReadDir(commandsPath, function(err, results) {
 // When the client is ready, run this code (only once)
 client.once("ready", () => {
 	console.info(`Logged in successfully as ${client.user.tag}`);
-	console.info(`Add this bot to any guild (you need to be a guild admin) with this link:\nhttps://discord.com/api/oauth2/authorize?client_id=${process.env.APPLICATION_ID}&permissions=377957181504&scope=bot%20applications.commands`);
+	console.info(`Add this bot to any guild (you need to be a guild admin) with this link:\nhttps://discord.com/api/oauth2/authorize?client_id=${process.env.APPLICATION_ID}&permissions=534723950656&scope=bot%20applications.commands`);
 });
 
 // When an interaction with the client is created, run this code
