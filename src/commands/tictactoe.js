@@ -201,8 +201,10 @@ exports.execute = async (interaction) => {
 		games[`game${index}`].opponent = opponent;
 	}
 	else {
+		const guildName = interaction.guild.name.toUpperCase();
+		const tictactoeRoleID = process.env[`ROLE_ID_${guildName}_TICTACTOE`];
 		// Reply with an open invitation message
-		interaction.reply({ content: `${user} wants to play tic tac toe against anyone, do you accept?`, components: [row] });
+		interaction.reply({ content: `${user} wants to play <@&${tictactoeRoleID}> against anyone, do you accept?`, components: [row] });
 	}
 	// Increment the game index
 	index++;
