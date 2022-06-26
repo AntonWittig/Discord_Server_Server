@@ -74,15 +74,15 @@ client.on("interactionCreate", async (interaction) => {
 				console.error(error);
 
 				if (interaction.deferred || interaction.replied) {
-					interaction.editReply(":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten");
+					interaction.editReply({ content: ":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten", ephemeral: true });
 				}
 				else {
-					interaction.reply(":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten");
+					interaction.reply({ content: ":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten", ephemeral: true });
 				}
 			}
 		}
 		else {
-			interaction.reply(":warning: Dieser Befehl ist aktuell nicht verfügbar");
+			interaction.reply({ content: ":warning: Dieser Befehl ist aktuell nicht verfügbar", ephemeral: true });
 		}
 	}
 	else if (interaction.isButton()) {
