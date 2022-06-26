@@ -21,6 +21,9 @@ const deepClone = require(path.join(...libPath, "deepClone.js"));
 const games = {};
 let index = 0;
 
+// The time in milliseconds after which an unaccepted invitation will be closed (14minutes)
+const timeoutMs = 14 * 60 * 1000;
+
 // Define the original board
 const originalBoard = [
 	["e", "e", "e"],
@@ -202,6 +205,19 @@ exports.execute = async (interaction) => {
 	}
 	// Increment the game index
 	index++;
+	// Close the invitation if after the specified time the game has not been accepted or declined or the game is over
+	setTimeout(() => {
+		const game = games[`game${index}`];
+		if (game && game.invitation) {
+			// Edit the invitation to being closed if the game is not over and the invitation is still open
+			generalBtnHnd.removeAllButtons(game.invitation)
+				.then(() => {
+					generalMsgHnd.appendToReply(game.invitation, "**The invitation has been closed by the server, because it has not been accepted for too long.**");
+				});
+			// Remove the game from the games dictionary
+			delete games[`game${index}`];
+		}
+	}, timeoutMs);
 };
 // #endregion
 
