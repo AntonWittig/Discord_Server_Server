@@ -10,11 +10,13 @@ const general = {
 		// Check if the interaction has already been replied to
 		if (interaction.replied) {
 			// Fetch the reply and edit it to have no components/buttons
-			interaction.fetchReply().then(message => {
-				interaction.editReply({ content: message.content, components: [] });
-			}).then(() => {
-				return Promise.resolve(true);
-			});
+			interaction.fetchReply()
+				.then(message => {
+					interaction.editReply({ content: message.content, components: [] })
+						.then(() => {
+							return Promise.resolve(true);
+						});
+				});
 		}
 		else {
 			return Promise.reject(false);

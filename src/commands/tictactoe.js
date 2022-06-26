@@ -177,10 +177,11 @@ exports.execute = async (interaction) => {
 	// Define the first user by the start variable
 	const firstUser = start ? user : opponent;
 	// Return a command rejection message if the invoking user wants to challenge himself
-	if (opponent.id === user.id) {
-		interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
-		return;
-	}
+	// TODO uncomment
+	// if (opponent.id === user.id) {
+	// 	interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
+	// 	return;
+	// }
 	// Initialize the game dictionary with the initial interaction, the invoking user and the ID of the user to make the first move
 	games[`game${index}`] = {
 		invitation: interaction,
