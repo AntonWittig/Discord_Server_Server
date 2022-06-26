@@ -182,6 +182,7 @@ exports.execute = async (interaction) => {
 	const start = interaction.options.getBoolean("start");
 	// Define the first user and its id by the start variable
 	const firstUser = start ? user : opponent;
+	console.log(firstUser);
 	const firstUserID = firstUser === undefined ? undefined : firstUser.id;
 	// Return a command rejection message if the invoking user wants to challenge himself
 	if (opponent && opponent.id === user.id) {
