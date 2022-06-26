@@ -22,7 +22,7 @@ const games = {};
 let index = 0;
 
 // The time in milliseconds after which an unaccepted invitation will be closed (14minutes)
-const timeoutMs = 14 * 60 * 1000;
+const timeoutMs = 2 * 1000;
 
 // Define the original board
 const originalBoard = [
@@ -203,8 +203,9 @@ exports.execute = async (interaction) => {
 	else {
 		const guildName = interaction.guild.name.toUpperCase();
 		const tictactoeRoleID = process.env[`ROLE_ID_${guildName}_TICTACTOE`];
+		const roleMessagePart = tictactoeRoleID === undefined || tictactoeRoleID == null ? "tic tac toe" : `<@&${tictactoeRoleID}>`;
 		// Reply with an open invitation message
-		interaction.reply({ content: `${user} wants to play <@&${tictactoeRoleID}> against anyone, do you accept?`, components: [row] });
+		interaction.reply({ content: `${user} wants to play a game of ${roleMessagePart} against anyone, do you accept?`, components: [row] });
 	}
 	// Increment the game index
 	index++;
@@ -219,6 +220,7 @@ exports.execute = async (interaction) => {
 				});
 			// Remove the game from the games dictionary
 			delete games[`game${index}`];
+			console.log("done");
 		}
 	}, timeoutMs);
 };
