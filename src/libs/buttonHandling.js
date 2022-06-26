@@ -13,11 +13,11 @@ const general = {
 			interaction.fetchReply().then(message => {
 				interaction.editReply({ content: message.content, components: [] });
 			}).then(() => {
-				return true;
+				return Promise.resolve(true);
 			});
 		}
 		else {
-			return false;
+			return Promise.reject(false);
 		}
 	},
 
@@ -27,7 +27,7 @@ const general = {
 	 * The board from which to read the empty and unempty spaces.
 	 * @param	{Array<MessageActionRow>}	components
 	 * The components of which specific ones should be disabled.
-	 * @return {Array<MessageActionRow>}	The components with those corresponding to unempty spaces disabled.
+	 * @return {Array<MessageActionRow>}	The components matrix with those corresponding to unempty spaces disabled.
 	 */
 	disableUnempty: function(board, components) {
 		// Loop through the boards rows
