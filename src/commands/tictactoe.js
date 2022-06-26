@@ -210,7 +210,7 @@ exports.execute = async (interaction) => {
 	// Increment the game index
 	index++;
 	// Close the invitation if after the specified time the game has not been accepted or declined or the game is over
-	setTimeout(function() {
+	setTimeout(() => {
 		const game = games[`game${index}`];
 		if (game && game.invitation) {
 			// Edit the invitation to being closed if the game is not over and the invitation is still open
@@ -221,7 +221,7 @@ exports.execute = async (interaction) => {
 			// Remove the game from the games dictionary
 			delete games[`game${index}`];
 		}
-		console.log("done");
+		console.log(game);
 	}, timeoutMs);
 };
 // #endregion
