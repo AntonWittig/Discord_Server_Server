@@ -12,14 +12,14 @@ const general = {
 		// Check if the interaction has already been replied to
 		if (interaction.replied) {
 			// Fetch the reply and edit it by appending the content
-			interaction.fetchReply().then(message => {
+			return interaction.fetchReply().then(message => {
 				interaction.editReply({ content: message.content + "\n" + content });
 			}).then(() => {
-				return true;
+				return Promise.resolve(true);
 			});
 		}
 		else {
-			return false;
+			return Promise.reject(false);
 		}
 	},
 
@@ -35,11 +35,11 @@ const general = {
 		try {
 			// Edit the message by appending the content
 			message.edit({ content: message.content + "\n" + content });
-			return true;
+			return Promise.resolve(true);
 		}
 		catch (e) {
 			console.error(e);
-			return false;
+			return Promise.reject(false);
 		}
 	},
 
