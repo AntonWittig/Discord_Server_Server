@@ -220,8 +220,8 @@ exports.execute = async (interaction) => {
 				});
 			// Remove the game from the games dictionary
 			delete games[`game${index}`];
-			console.log("done");
 		}
+		console.log("done");
 	}, timeoutMs);
 };
 // #endregion
