@@ -10,7 +10,7 @@ const general = {
 		// Check if the interaction has already been replied to
 		if (interaction.replied) {
 			// Fetch the reply and edit it to have no components/buttons
-			interaction.fetchReply()
+			return interaction.fetchReply()
 				.then(message => {
 					interaction.editReply({ content: message.content, components: [] })
 						.then(() => {
