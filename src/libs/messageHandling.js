@@ -13,7 +13,7 @@ const general = {
 		if (interaction.replied) {
 			// Fetch the reply and edit it by appending the content
 			interaction.fetchReply().then(message => {
-				interaction.editReply({ content: message.content + "\n" + content, components: message.components });
+				interaction.editReply({ content: message.content + "\n" + content });
 			}).then(() => {
 				return true;
 			});
@@ -34,7 +34,7 @@ const general = {
 	appendToMessage: function(message, content) {
 		try {
 			// Edit the message by appending the content
-			message.edit({ content: message.content + "\n" + content, components: message.components });
+			message.edit({ content: message.content + "\n" + content });
 			return true;
 		}
 		catch (e) {

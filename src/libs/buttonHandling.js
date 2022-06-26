@@ -8,11 +8,11 @@ const general = {
 	 */
 	removeAllButtons: function(interaction) {
 		// Check if the interaction has already been replied to
-		if (interaction.replied) {
+		if (interaction && interaction.replied) {
 			// Fetch the reply and edit it to have no components/buttons
 			return interaction.fetchReply()
-				.then(message => {
-					interaction.editReply({ content: message.content, components: [] })
+				.then(() => {
+					interaction.editReply({ components: [] })
 						.then(() => {
 							return Promise.resolve(true);
 						});
