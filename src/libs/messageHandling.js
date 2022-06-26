@@ -82,7 +82,7 @@ const general = {
 			emojiStart += 1;
 			// Check if the emoji has been declared a default emoji or if the previous statement has been skipped
 			if (isDefault
-				|| emoji.animated === undefined) {
+				|| emojiData.animated === undefined) {
 				// Get the end of the default emoji; if there is no end break the loop
 				emojiEnd = text.indexOf(":", emojiStart);
 				if (emojiEnd === -1) break;
