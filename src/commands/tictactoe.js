@@ -88,9 +88,9 @@ const originalComponents = [
  */
 function startGame(interaction, i) {
 	// Remove Buttons from the invitation message and append that it has been accepted
-	generalMsgHnd.appendToReply(games[`game${i}`].invitation, `**The challenge has been accepted by ${interaction.user}.**`)
+	generalBtnHnd.removeAllButtons(games[`game${i}`].invitation)
 		.then(() => {
-			generalBtnHnd.removeAllButtons(games[`game${i}`].invitation);
+			generalMsgHnd.appendToReply(games[`game${i}`].invitation, `**The challenge has been accepted by ${interaction.user}.**`);
 		});
 	// Start a thread on the invitation message to play the game in
 	interaction.message.startThread({
@@ -177,11 +177,10 @@ exports.execute = async (interaction) => {
 	// Define the first user by the start variable
 	const firstUser = start ? user : opponent;
 	// Return a command rejection message if the invoking user wants to challenge himself
-	// TODO uncomment
-	// if (opponent.id === user.id) {
-	// 	interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
-	// 	return;
-	// }
+	if (opponent.id === user.id) {
+		interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
+		return;
+	}
 	// Initialize the game dictionary with the initial interaction, the invoking user and the ID of the user to make the first move
 	games[`game${index}`] = {
 		invitation: interaction,
@@ -254,17 +253,17 @@ exports.decline = async (interaction, i, args = []) => {
 	if (game.opponent) {
 		// Edit the invitation to being declined if the invoking user is the challenged user/opponent
 		if (interaction.user.id === game.opponent.id) {
-			generalMsgHnd.appendToReply(game.invitation, "**The challenge has been declined.**")
+			generalBtnHnd.removeAllButtons(game.invitation)
 				.then(() => {
-					generalBtnHnd.removeAllButtons(game.invitation);
+					generalMsgHnd.appendToReply(game.invitation, "**The challenge has been declined.**");
 				});
 			delete games[`game${i}`];
 		}
 		// Edit the invitation to being cancelled if the invoking user is the challenging user
 		else if (game.user.id === interaction.user.id) {
-			generalMsgHnd.appendToReply(game.invitation, "**The challenge has been cancelled.**")
+			generalBtnHnd.removeAllButtons(game.invitation)
 				.then(() => {
-					generalBtnHnd.removeAllButtons(game.invitation);
+					generalMsgHnd.appendToReply(game.invitation, "**The challenge has been cancelled.**");
 				});
 			delete games[`game${i}`];
 		}
@@ -275,17 +274,17 @@ exports.decline = async (interaction, i, args = []) => {
 	}
 	// Edit the invitation to being cancelled if the invoking user is the challenging user
 	else if (game.user.id === interaction.user.id) {
-		generalMsgHnd.appendToReply(game.invitation, `**${interaction.user} cancelled the challenge.**`)
+		generalBtnHnd.removeAllButtons(game.invitation)
 			.then(() => {
-				generalBtnHnd.removeAllButtons(game.invitation);
+				generalMsgHnd.appendToReply(game.invitation, `**${interaction.user} cancelled the challenge.**`);
 			});
 		delete games[`game${i}`];
 	}
 	// Edit the invitation to being declined if the invoking user is any user but the challenging user
 	else {
-		generalMsgHnd.appendToReply(game.invitation, `**${interaction.user} declined the challenge.**`)
+		generalBtnHnd.removeAllButtons(game.invitation)
 			.then(() => {
-				generalBtnHnd.removeAllButtons(game.invitation);
+				generalMsgHnd.appendToReply(game.invitation, `**${interaction.user} declined the challenge.**`);
 			});
 		delete games[`game${i}`];
 	}
