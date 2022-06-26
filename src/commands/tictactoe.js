@@ -22,7 +22,7 @@ const games = {};
 let index = 0;
 
 // The time in milliseconds after which an unaccepted invitation will be closed (14minutes)
-const timeoutMs = 2 * 1000;
+const timeoutMs = 14 * 60 * 1000;
 
 // Define the original board
 const originalBoard = [
