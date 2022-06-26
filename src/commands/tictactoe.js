@@ -180,10 +180,11 @@ exports.execute = async (interaction) => {
 	// Get the opponent user and the start option
 	const opponent = interaction.options.getUser("opponent");
 	const start = interaction.options.getBoolean("start");
-	// Define the first user by the start variable
+	// Define the first user and its id by the start variable
 	const firstUser = start ? user : opponent;
+	const firstUserID = firstUser === undefined ? undefined : firstUser.id;
 	// Return a command rejection message if the invoking user wants to challenge himself
-	if (opponent.id === user.id) {
+	if (opponent && opponent.id === user.id) {
 		interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
 		return;
 	}
@@ -191,7 +192,7 @@ exports.execute = async (interaction) => {
 	games[`game${index}`] = {
 		invitation: interaction,
 		user: user,
-		nextTurnID: firstUser.id,
+		nextTurnID: firstUserID,
 	};
 	// Check if the opponent user is specified and reply with a challenge message
 	if (opponent) {
@@ -254,6 +255,8 @@ exports.accept = async (interaction, i, args = []) => {
 	// Start the game if the invoking user is not the challenging user
 	else {
 		games[`game${i}`].opponent = interaction.user;
+		// Set the invoking user to be the starting user if the challenging user doesn't want to start
+		games[`game${i}`].nextTurnID = game.nextTurnID === undefined ? interaction.user.id : game.nextTurnID;
 		startGame(interaction, i);
 	}
 };
