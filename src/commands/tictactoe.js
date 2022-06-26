@@ -210,7 +210,7 @@ exports.execute = async (interaction) => {
 	// Increment the game index
 	index++;
 	// Close the invitation if after the specified time the game has not been accepted or declined or the game is over
-	setTimeout(() => {
+	setTimeout(function() {
 		const game = games[`game${index}`];
 		if (game && game.invitation) {
 			// Edit the invitation to being closed if the game is not over and the invitation is still open
@@ -363,13 +363,19 @@ exports.place = async (interaction, i, args = []) => {
 		if (winner) {
 			// Change the thread name to reflect a draw if a draw has been reached and post a message to the game thread
 			if (winner === "e") {
-				game.thread.setName("Game Over: It's a draw!");
-				interaction.reply({ content: "It's a draw! Nobody won." }).then(() => endGame(i));
+				game.thread.setName("Game Over: It's a draw!")
+					.then(() => {
+						interaction.reply({ content: "It's a draw! Nobody won." })
+							.then(() => endGame(i));
+					});
 			}
 			// Change the thread name to reflect the winning user and post a message to the game thread
 			else {
-				game.thread.setName(`Game Over: ${interaction.user.username} won!`);
-				interaction.reply({ content: `${interaction.user} won!` }).then(() => endGame(i));
+				game.thread.setName(`Game Over: ${interaction.user.username} won!`)
+					.then(() => {
+						interaction.reply({ content: `${interaction.user} won!` })
+							.then(() => endGame(i));
+					});
 			}
 		}
 		// Post a message to the game thread with information about the last move and ping the next user if the game is not over
