@@ -207,12 +207,12 @@ exports.execute = async (interaction) => {
 		// Reply with an open invitation message
 		interaction.reply({ content: `${user} wants to play a game of ${roleMessagePart} against anyone, do you accept?`, components: [row] });
 	}
-	// Increment the game index
+	// Increment the game index and store current for timeout
+	const thisGameIndex = index;
 	index++;
 	// Close the invitation if after the specified time the game has not been accepted or declined or the game is over
-	console.log(games);
 	setTimeout(() => {
-		const game = games[`game${index}`];
+		const game = games[`game${thisGameIndex}`];
 		if (game && game.invitation) {
 			// Edit the invitation to being closed if the game is not over and the invitation is still open
 			generalBtnHnd.removeAllButtons(game.invitation)
@@ -220,9 +220,8 @@ exports.execute = async (interaction) => {
 					generalMsgHnd.appendToReply(game.invitation, "**The invitation has been closed by the server, because it has not been accepted for too long.**");
 				});
 			// Remove the game from the games dictionary
-			delete games[`game${index}`];
+			delete games[`game${thisGameIndex}`];
 		}
-		console.log(games);
 	}, timeoutMs);
 };
 // #endregion
