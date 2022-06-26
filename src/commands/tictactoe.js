@@ -130,16 +130,19 @@ function startGame(interaction, i) {
  * The index of the game
  */
 function endGame(i) {
-	// Remove the game from the games dictionary
+	// Extract correct game from the games dictionary
 	const game = games[`game${i}`];
-	delete games[`game${i}`];
 	// Disable all the buttons on the game message
 	generalBtnHnd.disableUnempty(
 		[["x", "x", "x"], ["x", "x", "x"], ["x", "x", "x"]],
 		game.message.components);
 	// Lock the game thread and archive it
 	game.thread.setLocked(true);
-	game.thread.setArchived(true);
+	game.thread.setArchived(true)
+		.then(() => {
+			// Remove the game from the games dictionary
+			delete games[`game${i}`];
+		});
 }
 // #endregion
 
