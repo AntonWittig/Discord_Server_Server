@@ -103,7 +103,7 @@ function startGame(interaction, i) {
 		for (let j = 0; j < components.length; j++) {
 			// Copy the original components row
 			const componentRow = deepClone(components[j].components);
-			for (let k = 0; k < componentRow.components.length; k++) {
+			for (let k = 0; k < componentRow.length; k++) {
 				// Set the custom ID of the component to include the game index(i) and correct position
 				componentRow[k].setCustomId(`tictactoe_place_${k}_${j}_${i}`);
 			}
