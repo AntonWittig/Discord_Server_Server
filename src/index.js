@@ -64,7 +64,7 @@ client.once("ready", () => {
 // When an interaction with the client is created, run this code
 client.on("interactionCreate", async (interaction) => {
 	if (interaction.isCommand()) {
-		console.log(`${interaction.user.name} issued the command ${interaction.commandName}\n${interaction.options}`);
+		console.log(`${interaction.user.tag} issued the command ${interaction.commandName}\n${interaction.options}`);
 		const command = client.commands.get(interaction.commandName);
 
 		if (command) {
@@ -87,7 +87,7 @@ client.on("interactionCreate", async (interaction) => {
 		}
 	}
 	else if (interaction.isButton()) {
-		console.log(`${interaction.user.name} clicked the button ${interaction.customId}`);
+		console.log(`${interaction.user.tag} clicked the button ${interaction.customId}`);
 		const buttonID = interaction.customId.split("_");
 		const command = client.commands.get(buttonID[0]);
 
