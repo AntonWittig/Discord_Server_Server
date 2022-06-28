@@ -5,6 +5,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 
 // Require the path module for accessing the correct files
 const path = require("node:path");
+const { MessageTypes, InteractionTypes } = require("discord.js/typings/enums");
 
 // Require the necessary libraries for the command
 const libPath = [__dirname, "..", "libs"];
@@ -126,9 +127,9 @@ function startGame(interaction, i) {
 			games[`game${i}`].message = message;
 			games[`game${i}`].board = tictactoeFnct.parseBoard(message.content);
 		}).then(() => {
-			interaction.reply({ content: `It's <@${game.nextTurnID}>s turn to place a symbol.`, fetchReply: true })
-				.then(reply => {
-					games[`game${i}`].lastInteraction = reply;
+			thread.send({ content: `It's <@${game.nextTurnID}>s turn to place a symbol.`, fetchReply: true })
+				.then(startInfo => {
+					games[`game${i}`].lastInteraction = startInfo;
 				});
 		});
 	});
@@ -362,8 +363,14 @@ exports.place = async (interaction, i, args = []) => {
 		// Update the game message with the new board and components
 		game.message.edit({ content: tictactoeRnd.renderTicTacToe(board), components: newComponents });
 		// Delete the last game reply if it exists
-		if (game.lastInteraction) {
-			game.lastInteraction.delete();
+		if (game.lastInteraction && game.lastInteraction.type) {
+			// Differentiate between message and replies
+			if (typeof game.lastInteraction.type === MessageTypes) {
+				game.lastInteraction.delete();
+			}
+			else if (typeof game.lastInteraction.type === InteractionTypes) {
+				game.lastInteraction.deleteReply();
+			}
 		}
 		// Check if the game is over and who won
 		const winner = tictactoeFnct.checkWin(board);
