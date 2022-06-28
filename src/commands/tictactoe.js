@@ -90,14 +90,16 @@ const originalComponents = [
  * The index of the game
  */
 function startGame(interaction, i) {
+	// Extract correct game from the games dictionary
+	const game = games[`game${i}`];
 	// Remove Buttons from the invitation message and append that it has been accepted
-	generalBtnHnd.removeAllButtons(games[`game${i}`].invitation)
+	generalBtnHnd.removeAllButtons(game.invitation)
 		.then(() => {
-			generalMsgHnd.appendToReply(games[`game${i}`].invitation, `**The challenge has been accepted by ${interaction.user}.**`);
+			generalMsgHnd.appendToReply(game.invitation, `**The challenge has been accepted by ${interaction.user}.**`);
 		});
 	// Start a thread on the invitation message to play the game in
 	interaction.message.startThread({
-		name: `Tic Tac Toe game between ${games[`game${i}`].user.username} and ${games[`game${i}`].opponent.username}`,
+		name: `Tic Tac Toe game between ${game.user.username} and ${game.opponent.username}`,
 	}).then(thread => {
 		// Add the thread to and delete the invitation message from the game dictionary
 		games[`game${i}`].thread = thread;
@@ -123,6 +125,11 @@ function startGame(interaction, i) {
 			// Add the game message and the current(initial) board to the game dictionary
 			games[`game${i}`].message = message;
 			games[`game${i}`].board = tictactoeFnct.parseBoard(message.content);
+		}).then(() => {
+			interaction.reply({ content: `It's <@${game.nextTurnID}>s turn to place a symbol.`, fetchReply: true })
+				.then(reply => {
+					games[`game${i}`].lastInteraction = reply;
+				});
 		});
 	});
 }
@@ -356,7 +363,7 @@ exports.place = async (interaction, i, args = []) => {
 		game.message.edit({ content: tictactoeRnd.renderTicTacToe(board), components: newComponents });
 		// Delete the last game reply if it exists
 		if (game.lastInteraction) {
-			game.lastInteraction.deleteReply();
+			game.lastInteraction.delete();
 		}
 		// Check if the game is over and who won
 		const winner = tictactoeFnct.checkWin(board);
