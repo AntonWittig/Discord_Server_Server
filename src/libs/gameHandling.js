@@ -73,9 +73,9 @@ const general = {
 	 */
 	startGame: function(interaction, game, gameType, originalComponents, componentHandling, originalBoard) {
 		// Remove Buttons from the invitation message and append that it has been accepted
-		generalBtnHnd.removeAllReplyButtons(game.get("invitation"))
+		generalBtnHnd.removeAllMessageButtons(game.get("invitation"))
 			.then(() => {
-				generalMsgHnd.appendToReply(game.get("invitation"), `**The challenge has been accepted by ${interaction.user}.**`);
+				generalMsgHnd.appendToMessage(game.get("invitation"), `**The challenge has been accepted by ${interaction.user}.**`);
 			});
 		// Start a thread on the invitation message to play the game in
 		interaction.message.startThread({

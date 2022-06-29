@@ -1,29 +1,6 @@
 // #region GENERAL
 const general = {
 	/**
-	 * Append content to the reply of an interaction.
-	 * @param	{Interaction<CacheType>}	interaction
-	 * The interaction reply to which the content should be appended.
-	 * @param	{String}					content
-	 * The content to append to the message.
-	 * @return	{Promise<Boolean>}			If the appending was successful.
-	 */
-	appendToReply: function(interaction, content) {
-		try {
-			// Fetch the reply and edit it by appending the content
-			return interaction.fetchReply().then(message => {
-				interaction.editReply({ content: message.content + "\n" + content });
-			}).then(() => {
-				return Promise.resolve(true);
-			});
-		}
-		catch (e) {
-			console.error(e);
-			return Promise.reject(false);
-		}
-	},
-
-	/**
 	 * Append content to a message.
 	 * @param	{Message}			message
 	 * The message to append the content to.

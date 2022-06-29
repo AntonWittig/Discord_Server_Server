@@ -1,29 +1,6 @@
 // #region GENERAL
 const general = {
 	/**
-	 * Remove the buttons from the message of an interaction.
-	 * @param	{Interaction<CacheType>}	interaction
-	 * The interaction to remove all buttons from.
-	 * @return	{Promise<Boolean>}			If the removal was successful.
-	 */
-	removeAllReplyButtons: function(interaction) {
-		try {
-			// Fetch the reply and edit it to have no components/buttons
-			return interaction.fetchReply()
-				.then(() => {
-					interaction.editReply({ components: [] })
-						.then(() => {
-							return Promise.resolve(true);
-						});
-				});
-		}
-		catch (e) {
-			console.error(e);
-			return Promise.reject(false);
-		}
-	},
-
-	/**
 	 * Remove all interactable buttons from a message.
 	 * @param	{Message}			message
 	 * The message to remove all buttons from.
