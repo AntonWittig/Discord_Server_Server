@@ -205,13 +205,11 @@ const tictactoe = {
 	// #region FUNCTIONS
 	/**
 	 * Return the rendered representation of a single tic tac toe symbol
-	 * @param	{*}	symbol
-	 * @returns	{String}	The rendered symbol emoji
+	 * @param	{String}	symbol
+	 * The symbol to render
+	 * @returns	{String}	The rendered symbol representation
 	 */
 	renderSymbol: function(symbol) {
-		console.log("tictactoe.renderSymbol");
-		console.log(symbol);
-
 		// Get the emoji ID of the symbol and return the emoji
 		const emojiDict = tictactoe.emojiIDs[symbol];
 		const emojiName = emojiDict.name;
@@ -220,8 +218,9 @@ const tictactoe = {
 
 	/**
 	 * Return the rendered representation of a tic tac toe board
-	 * @param	{*}			board
-	 * @returns	{String}	The rendered board
+	 * @param	{Array<Array<String>>}	board
+	 * The board to render
+	 * @returns	{String}				The rendered board
 	 */
 	renderTicTacToe: function(board) {
 		// Initialize the rendered board

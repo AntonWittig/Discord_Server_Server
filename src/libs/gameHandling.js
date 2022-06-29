@@ -24,17 +24,13 @@ const GameType = {
 const general = {
 	/**
 	 * This function is used to extract the board data from a message.
-	 * @param	{String}						message
+	 * @param	{String}				message
 	 * The message to extract the board data from.
-	 * @param	{Dictionary<String, String>}	representations
+	 * @param	{Object}				representations
 	 * The representations of emojis on the game board
-	 * @return	{Array<Array<String>>}			The board of the game
+	 * @return	{Array<Array<String>>}	The board of the game
 	 */
 	parseBoard: function(message, representations = undefined) {
-		console.log("general.parseBoard");
-		console.log(typeof message);
-		console.log(typeof representations);
-
 		// Initialize the board
 		const board = [];
 		// Split the message into lines
@@ -62,32 +58,32 @@ const general = {
 
 	/**
 	 * Starts a new game after an invitation has been accepted
-	 * @param	{Interaction<CacheType>}	interaction
+	 * @param	{Interaction<CacheType>}		interaction
 	 * The interaction object for the "Accept" Button interaction
-	 * @param	{Integer}					i
-	 * The index of the game
+	 * @param	{Map<String, Object|String>}	game
+	 * The game dictionary holding various game data
+	 * @param	{GameType}						gameType
+	 * The type of game to start
+	 * @param	{MessageActionRow}				originalComponents
+	 * The original components matrix of the message
+	 * @param	{Function}						componentHandling
+	 * The function to handle/edit the original components of the message
+	 * @param	{Array<Array<String>>}			originalBoard
+	 * The original/initial board of the game
 	 */
 	startGame: function(interaction, game, gameType, originalComponents, componentHandling, originalBoard) {
-		console.log("general.startGame");
-		console.log(typeof interaction);
-		console.log(typeof game);
-		console.log(typeof gameType);
-		console.log(typeof originalComponents);
-		console.log(typeof componentHandling);
-		console.log(typeof originalBoard);
-
 		// Remove Buttons from the invitation message and append that it has been accepted
-		generalBtnHnd.removeAllReplyButtons(game.invitation)
+		generalBtnHnd.removeAllReplyButtons(game.get("invitation"))
 			.then(() => {
-				generalMsgHnd.appendToReply(game.invitation, `**The challenge has been accepted by ${interaction.user}.**`);
+				generalMsgHnd.appendToReply(game.get("invitation"), `**The challenge has been accepted by ${interaction.user}.**`);
 			});
 		// Start a thread on the invitation message to play the game in
 		interaction.message.startThread({
-			name: `${GameType[gameType]} game between ${game.challenger.username} and ${game.opponent.username}`,
+			name: `${GameType[gameType]} game between ${game.get("challenger").username} and ${game.get("opponent").username}`,
 		}).then(thread => {
 		// Add the thread to and delete the invitation message from the game dictionary
-			game.thread = thread;
-			delete game.invitation;
+			game.set("thread", thread);
+			game.delete("invitation");
 			// Copy the original components matrix
 			const components = deepClone(originalComponents);
 			// Handle game components
@@ -98,12 +94,12 @@ const general = {
 				components: originalComponents,
 			}).then(message => {
 			// Add the game message and the current(initial) board to the game dictionary
-				game.message = message;
-				game.board = tictactoe.parseBoard(message.content);
+				game.set("message", message);
+				game.set("board", tictactoe.parseBoard(message.content));
 			}).then(() => {
-				thread.send({ content: `It's <@${game.nextTurnID}>s turn to place a symbol.`, fetchReply: true })
+				thread.send({ content: `It's <@${game.get("nextTurnID")}>s turn to place a symbol.`, fetchReply: true })
 					.then(startInfo => {
-						game.lastInteraction = startInfo;
+						game.set("lastInteraction", startInfo);
 					});
 			});
 		});
@@ -111,8 +107,10 @@ const general = {
 
 	/**
 	 * End a game after a player has won or a draw has been reached
-	 * @param	{Map}	games
-	 * @param	{*}	gameIndex
+	 * @param	{Map<String, Map>}	games
+	 * The games dictionary holding the dictionarys of all active games
+	 * @param	{Integer}			gameIndex
+	 * The index of the game to end
 	 */
 	endGame: function(games, gameIndex) {
 		console.log("general.endGame");
@@ -211,9 +209,6 @@ const tictactoe = {
 	 * @return	{Array<Array<String>>}	The board of the game
 	 */
 	parseBoard: function(message) {
-		console.log("tictactoe.parseBoard");
-		console.log(typeof message);
-
 		return general.parseBoard(message, tictactoe.representations);
 	},
 
@@ -262,19 +257,14 @@ const tictactoe = {
 
 	/**
 	 * Start a tic tac toe game.
-	 * @param	{Interaction<CacheType>}	interaction
+	 * @param	{Interaction<CacheType>}		interaction
 	 * The interaction of a user accepting the invitation
-	 * @param	{Dictionary<>}				game
+	 * @param	{Map<String, Object|String>}	game
 	 * The game to which the user was invited/ the game to start
-	 * @param	{Integer}					gameIndex
+	 * @param	{Integer}						gameIndex
 	 * the index of the game in the games dictionary
 	 */
 	startGame: function(interaction, game, gameIndex) {
-		console.log("tictactoe.startGame");
-		console.log(typeof interaction);
-		console.log(typeof game);
-		console.log(typeof gameIndex);
-
 		// Define function to handle game components
 		const componentsHandling = (components) => {
 			// Loop through the components and the component rows set the correct custom IDs
@@ -295,8 +285,10 @@ const tictactoe = {
 
 	/**
 	 * End a game after a player has won or a draw has been reached
-	 * @param	{*}	games
-	 * @param	{*}	gameIndex
+	 * @param	{Map<String, Map>}	games
+	 * The games dictionary holding the dictionarys of all active games
+	 * @param	{Integer}			gameIndex
+	 * The index of the game in the games dictionary
 	 */
 	endGame: function(games, gameIndex) {
 		console.log("tictactoe.endGame");

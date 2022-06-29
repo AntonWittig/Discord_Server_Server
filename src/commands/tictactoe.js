@@ -63,17 +63,17 @@ exports.execute = async (interaction) => {
 		return;
 	}
 	// Initialize the game dictionary with the initial interaction, the invoking user and the ID of the user to make the first move
-	games.set(`game${index}`, {
-		invitation: interaction,
-		challenger: user,
-		nextTurnID: firstUserID,
-	});
+	games.set(`game${index}`, new Map([
+		["interaction", interaction],
+		["challenger", user],
+		["nextTurnID", firstUserID],
+	]));
 	const game = games.get(`game${index}`);
 	// Check if the opponent user is specified and reply with a challenge message
 	if (opponent) {
 		interaction.reply({ content: `${user} challenges ${opponent} for a tic tac toe game, will they accept?`, components: [row] });
 		// Add the opponent to the game dictionary
-		game.opponent = opponent;
+		game.set("opponent", opponent);
 	}
 	else {
 		const guildName = interaction.guild.name.toUpperCase();
@@ -87,11 +87,11 @@ exports.execute = async (interaction) => {
 	index++;
 	// Close the invitation if after the specified time the game has not been accepted or declined or the game is over
 	setTimeout(() => {
-		if (game && game.invitation) {
+		if (game && game.has("invitation")) {
 			// Edit the invitation to being closed if the game is not over and the invitation is still open
-			generalBtnHnd.removeAllReplyButtons(game.invitation)
+			generalBtnHnd.removeAllReplyButtons(game.get("invitation"))
 				.then(() => {
-					generalMsgHnd.appendToReply(game.invitation, "**The invitation has been closed by the server, because it has not been accepted for too long.**");
+					generalMsgHnd.appendToReply(game.get("invitation"), "**The invitation has been closed by the server, because it has not been accepted for too long.**");
 				});
 			// Remove the game from the games dictionary
 			games.delete(`game${thisGameIndex}`);
@@ -112,13 +112,13 @@ exports.accept = async (interaction, i, args = []) => {
 		return;
 	}
 	// Check if an opponent has been specified in the invitation
-	if (game.opponent) {
+	if (game.has("opponent")) {
 		// Check if the invoking user is the challenged user/opponent and start the game if so
-		if (interaction.user.id === game.opponent.id) {
+		if (interaction.user.id === game.get("opponent").id) {
 			tictactoeFnct.startGame(interaction, game, i);
 		}
 		// Reply with a rejection message if the invoking user is the challenging user
-		else if (interaction.user.id === game.challenger.id) {
+		else if (interaction.user.id === game.get("challenger").id) {
 			interaction.reply({ content: "You can't accept this challenge for the opponent.", ephemeral: true });
 		}
 		// Reply with a rejection message if the invoking user is neither the challenging user nor the challenged user/opponent
@@ -127,14 +127,14 @@ exports.accept = async (interaction, i, args = []) => {
 		}
 	}
 	// Reply with a rejection message if the invoking user wants to accept their own open invitation has been specified
-	else if (interaction.user.id === game.challenger.id) {
+	else if (interaction.user.id === game.get("challenger").id) {
 		interaction.reply({ content: "You can't accept your own challenge.", ephemeral: true });
 	}
 	// Start the game if the invoking user is not the challenging user
 	else {
-		game.opponent = interaction.user;
+		game.set("opponent", interaction.user);
 		// Set the invoking user to be the starting user if the challenging user doesn't want to start
-		game.nextTurnID = game.nextTurnID === undefined ? interaction.user.id : game.nextTurnID;
+		game.set("nextTurnID", game.get("nextTurnID") === undefined ? interaction.user.id : game.get("nextTurnID"));
 		tictactoeFnct.startGame(interaction, i);
 	}
 };
@@ -150,20 +150,20 @@ exports.decline = async (interaction, i, args = []) => {
 		return;
 	}
 	// Check if an opponent has been specified in the invitation
-	if (game.opponent) {
+	if (game.get("opponent")) {
 		// Edit the invitation to being declined if the invoking user is the challenged user/opponent
-		if (interaction.user.id === game.opponent.id) {
-			generalBtnHnd.removeAllReplyButtons(game.invitation)
+		if (interaction.user.id === game.get("opponent").id) {
+			generalBtnHnd.removeAllReplyButtons(game.get("invitation"))
 				.then(() => {
-					generalMsgHnd.appendToReply(game.invitation, "**The challenge has been declined.**");
+					generalMsgHnd.appendToReply(game.get("invitation"), "**The challenge has been declined.**");
 				});
 			games.delete(`game${i}`);
 		}
 		// Edit the invitation to being cancelled if the invoking user is the challenging user
-		else if (game.challenger.id === interaction.user.id) {
-			generalBtnHnd.removeAllReplyButtons(game.invitation)
+		else if (game.get("challenger").id === interaction.user.id) {
+			generalBtnHnd.removeAllReplyButtons(game.get("invitation"))
 				.then(() => {
-					generalMsgHnd.appendToReply(game.invitation, "**The challenge has been cancelled.**");
+					generalMsgHnd.appendToReply(game.get("invitation"), "**The challenge has been cancelled.**");
 				});
 			games.delete(`game${i}`);
 		}
@@ -173,18 +173,18 @@ exports.decline = async (interaction, i, args = []) => {
 		}
 	}
 	// Edit the invitation to being cancelled if the invoking user is the challenging user
-	else if (game.challenger.id === interaction.user.id) {
-		generalBtnHnd.removeAllReplyButtons(game.invitation)
+	else if (game.get("challenger").id === interaction.user.id) {
+		generalBtnHnd.removeAllReplyButtons(game.get("invitation"))
 			.then(() => {
-				generalMsgHnd.appendToReply(game.invitation, `**${interaction.user} cancelled the challenge.**`);
+				generalMsgHnd.appendToReply(game.get("invitation"), `**${interaction.user} cancelled the challenge.**`);
 			});
 		games.delete(`game${i}`);
 	}
 	// Edit the invitation to being declined if the invoking user is any user but the challenging user
 	else {
-		generalBtnHnd.removeAllReplyButtons(game.invitation)
+		generalBtnHnd.removeAllReplyButtons(game.get("invitation"))
 			.then(() => {
-				generalMsgHnd.appendToReply(game.invitation, `**${interaction.user} declined the challenge.**`);
+				generalMsgHnd.appendToReply(game.get("invitation"), `**${interaction.user} declined the challenge.**`);
 			});
 		games.delete(`game${i}`);
 	}
@@ -203,39 +203,40 @@ exports.place = async (interaction, i, args = []) => {
 		return;
 	}
 	// Check if its the invoking users turn
-	if (interaction.user.id === game.nextTurnID) {
+	if (interaction.user.id === game.get("nextTurnID")) {
 		// Parse the game message to get the current board and create necessary otherUser variable
-		const board = game.board = tictactoeFnct.parseBoard(game.message.content);
+		const board = tictactoeFnct.parseBoard(game.get("message").content);
+		game.set("board", board);
 		let otherUser;
 		// Check if the invoking user is the challenged user/opponent
-		if (interaction.user === game.opponent) {
+		if (interaction.user === game.get("opponent")) {
 			// Place a circle on the board at the parsed position
 			board[position.y][position.x] = "o";
 			// Set the nextTurnID and otherUser variable to the non-invoking user
-			game.nextTurnID = game.challenger.id;
-			otherUser = game.challenger;
+			game.set("nextTurnID", game.get("challenger").id);
+			otherUser = game.get("challenger");
 		}
 		// Check if the invoking user is the challenging user
-		else if (interaction.user === game.challenger) {
+		else if (interaction.user === game.get("challenger")) {
 			// Place a cross on the board at the parsed position
 			board[position.y][position.x] = "x";
 			// Set the nextTurnID and otherUser variable to the non-invoking user
-			game.nextTurnID = game.opponent.id;
-			otherUser = game.opponent;
+			game.set("nextTurnID", game.get("opponent").id);
+			otherUser = game.get("opponent");
 		}
 		// Get the current game components/buttons and disable all on whichs corresponding position a circle or cross has been placed
-		const components = game.message.components;
+		const components = game.get("message").components;
 		const newComponents = generalBtnHnd.disableUnempty(board, components);
 		// Update the game message with the new board and components
-		game.message.edit({ content: tictactoeRnd.renderTicTacToe(board), components: newComponents });
+		game.get("message").edit({ content: tictactoeRnd.renderTicTacToe(board), components: newComponents });
 		// Delete the last game reply if it exists
-		if (game.lastInteraction && game.lastInteraction.type) {
+		if (game.get("lastInteraction")) {
 			// Differentiate between message and replies
-			if (game.lastInteraction instanceof Message) {
-				game.lastInteraction.delete();
+			if (game.get("lastInteraction") instanceof Message) {
+				game.get("lastInteraction").delete();
 			}
-			else if (game.lastInteraction instanceof Interaction) {
-				game.lastInteraction.deleteReply();
+			else if (game.get("lastInteraction") instanceof Interaction) {
+				game.get("lastInteraction").deleteReply();
 			}
 		}
 		// Check if the game is over and who won
@@ -243,18 +244,18 @@ exports.place = async (interaction, i, args = []) => {
 		if (winner) {
 			// Change the thread name to reflect a draw if a draw has been reached and post a message to the game thread
 			if (winner === "e") {
-				game.thread.setName("Game Over: It's a draw!")
+				game.get("thread").setName("Game Over: It's a draw!")
 					.then(() => {
 						interaction.reply({ content: "It's a draw! Nobody won." })
-							.then(() => tictactoeFnct.endGame(i));
+							.then(() => tictactoeFnct.endGame(games, i));
 					});
 			}
 			// Change the thread name to reflect the winning user and post a message to the game thread
 			else {
-				game.thread.setName(`Game Over: ${interaction.user.username} won!`)
+				game.get("thread").setName(`Game Over: ${interaction.user.username} won!`)
 					.then(() => {
 						interaction.reply({ content: `${interaction.user} won!` })
-							.then(() => tictactoeFnct.endGame(i));
+							.then(() => tictactoeFnct.endGame(games, i));
 					});
 			}
 		}
@@ -262,7 +263,7 @@ exports.place = async (interaction, i, args = []) => {
 		else {
 			interaction.reply({ content: `${otherUser}, your opponent placed an "${board[position.y][position.x]}" at ${position.x}, ${position.y}` });
 			// Set this interaction as the last interaction
-			game.lastInteraction = interaction;
+			game.set("lastInteraction", interaction);
 		}
 	}
 	// Reply with a rejection message if its not the invoking users turn
