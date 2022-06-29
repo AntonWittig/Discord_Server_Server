@@ -9,7 +9,6 @@ const path = require("node:path");
 const libPath = [__dirname];
 const { generalMsgHnd } = require(path.join(...libPath, "messageHandling.js"));
 const { generalBtnHnd } = require(path.join(...libPath, "buttonHandling.js"));
-const { tictactoeFnct } = require(path.join(...libPath, "gameHandling.js"));
 const { tictactoeRnd } = require(path.join(...libPath, "render.js"));
 const deepClone = require(path.join(...libPath, "deepClone.js"));
 // #endregion
@@ -100,7 +99,7 @@ const general = {
 			}).then(message => {
 			// Add the game message and the current(initial) board to the game dictionary
 				game.message = message;
-				game.board = tictactoeFnct.parseBoard(message.content);
+				game.board = tictactoe.parseBoard(message.content);
 			}).then(() => {
 				thread.send({ content: `It's <@${game.nextTurnID}>s turn to place a symbol.`, fetchReply: true })
 					.then(startInfo => {
