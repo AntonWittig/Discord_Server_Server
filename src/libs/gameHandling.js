@@ -79,7 +79,7 @@ const general = {
 			});
 		// Start a thread on the invitation message to play the game in
 		interaction.message.startThread({
-			name: `${GameType[gameType]} game between ${game.get("challenger").username} and ${game.get("opponent").username}`,
+			name: `${gameType} game between ${game.get("challenger").username} and ${game.get("opponent").username}`,
 		}).then(thread => {
 		// Add the thread to and delete the invitation message from the game dictionary
 			game.set("thread", thread);
