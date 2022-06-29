@@ -143,7 +143,7 @@ exports.decline = async (interaction, i, args = []) => {
 	// By default ignore extra arguments
 	args;
 	// Extract correct game from the games dictionary
-	const game = games[`game${i}`];
+	const game = games.get(`game${i}`);
 	// Send a rejection message if the game has already ended
 	if (!game) {
 		interaction.reply({ content: "The game has already ended.", ephemeral: true });
@@ -196,7 +196,7 @@ exports.place = async (interaction, i, args = []) => {
 	// Parse extra arguments to get the column(x) and row(y)
 	const position = { x: parseInt(args[0]), y: parseInt(args[1]) };
 	// Extract correct game from the games dictionary
-	const game = games[`game${i}`];
+	const game = games.get(`game${i}`);
 	// Send a rejection message if the game has already ended
 	if (!game) {
 		interaction.reply({ content: "The game has already ended.", ephemeral: true });
