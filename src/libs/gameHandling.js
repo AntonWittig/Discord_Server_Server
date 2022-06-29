@@ -111,7 +111,7 @@ const general = {
 
 	/**
 	 * End a game after a player has won or a draw has been reached
-	 * @param	{}	games
+	 * @param	{Map}	games
 	 * @param	{*}	gameIndex
 	 */
 	endGame: function(games, gameIndex) {
@@ -120,18 +120,20 @@ const general = {
 		console.log(typeof gameIndex);
 
 		// Extract correct game from the games dictionary
-		const game = games[`game${gameIndex}`];
-		// Disable all the buttons on the game message
-		generalBtnHnd.removeAllMessageButtons(game.message)
-			.then(() => {
-				// Lock the game thread and archive it
-				game.thread.setLocked(true);
-				game.thread.setArchived(true)
-					.then(() => {
-						// Remove the game from the games dictionary
-						delete games[`game${gameIndex}`];
-					});
-			});
+		const game = games.get(`game${gameIndex}`);
+		if (game) {
+			// Disable all the buttons on the game message
+			generalBtnHnd.removeAllMessageButtons(game.message)
+				.then(() => {
+					// Lock the game thread and archive it
+					game.thread.setLocked(true);
+					game.thread.setArchived(true)
+						.then(() => {
+							// Remove the game from the games dictionary
+							games.delete(`game${gameIndex}`);
+						});
+				});
+		}
 	},
 };
 // #endregion
@@ -291,20 +293,17 @@ const tictactoe = {
 		general.startGame(interaction, game, GameType.TicTacToe, tictactoe.originalComponents, componentsHandling, tictactoe.originalBoard);
 	},
 
+	/**
+	 * End a game after a player has won or a draw has been reached
+	 * @param	{*}	games
+	 * @param	{*}	gameIndex
+	 */
 	endGame: function(games, gameIndex) {
-		// Extract correct game from the games dictionary
-		const game = games[`game${gameIndex}`];
-		// Disable all the buttons on the game message
-		generalBtnHnd.disableUnempty(
-			[["x", "x", "x"], ["x", "x", "x"], ["x", "x", "x"]],
-			game.message.components);
-		// Lock the game thread and archive it
-		game.thread.setLocked(true);
-		game.thread.setArchived(true)
-			.then(() => {
-				// Remove the game from the games dictionary
-				delete games[`game${gameIndex}`];
-			});
+		console.log("tictactoe.endGame");
+		console.log(typeof games);
+		console.log(typeof gameIndex);
+
+		general.endGame(games, gameIndex);
 	},
 };
 exports.tictactoeFnct = tictactoe;
