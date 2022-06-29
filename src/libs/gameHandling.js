@@ -113,24 +113,19 @@ const general = {
 	 * The index of the game to end
 	 */
 	endGame: function(games, gameIndex) {
-		console.log("general.endGame");
-		console.log(typeof games);
-		console.log(typeof gameIndex);
-
 		// Extract correct game from the games dictionary
 		const game = games.get(`game${gameIndex}`);
 		if (game) {
 			// Disable all the buttons on the game message
-			generalBtnHnd.removeAllMessageButtons(game.message)
-				.then(() => {
-					// Lock the game thread and archive it
-					game.thread.setLocked(true);
-					game.thread.setArchived(true)
-						.then(() => {
-							// Remove the game from the games dictionary
-							games.delete(`game${gameIndex}`);
-						});
+			generalBtnHnd.removeAllMessageButtons(game.get("message")).then(() => {
+				// Lock the game thread and archive it
+				game.get("thread").setLocked(true).then(() => {
+					game.get("thread").setArchived(true).then(() => {
+						// Remove the game from the games dictionary
+						games.delete(`game${gameIndex}`);
+					});
 				});
+			});
 		}
 	},
 };
@@ -288,10 +283,6 @@ const tictactoe = {
 	 * The index of the game in the games dictionary
 	 */
 	endGame: function(games, gameIndex) {
-		console.log("tictactoe.endGame");
-		console.log(typeof games);
-		console.log(typeof gameIndex);
-
 		general.endGame(games, gameIndex);
 	},
 };
