@@ -1,11 +1,10 @@
 // #region IMPORTS
 // Require the necessary discord.js class
-const { MessageActionRow, MessageButton } = require("discord.js");
+const { MessageActionRow, MessageButton, Message, Interaction } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 // Require the path module for accessing the correct files
 const path = require("node:path");
-const { MessageTypes, InteractionTypes } = require("discord.js/typings/enums");
 
 // Require the necessary libraries for the command
 const libPath = [__dirname, "..", "libs"];
@@ -232,10 +231,10 @@ exports.place = async (interaction, i, args = []) => {
 		// Delete the last game reply if it exists
 		if (game.lastInteraction && game.lastInteraction.type) {
 			// Differentiate between message and replies
-			if (typeof game.lastInteraction.type === MessageTypes) {
+			if (game.lastInteraction instanceof Message) {
 				game.lastInteraction.delete();
 			}
-			else if (typeof game.lastInteraction.type === InteractionTypes) {
+			else if (game.lastInteraction instanceof Interaction) {
 				game.lastInteraction.deleteReply();
 			}
 		}
