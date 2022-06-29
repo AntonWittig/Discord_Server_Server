@@ -83,7 +83,7 @@ exports.execute = async (interaction) => {
 		interaction.reply({ content: `${user} wants to play a game of ${roleMessagePart} against anyone, do you accept?`, components: [row] });
 	}
 	// Store reply as invitation
-	game.set("invitation", interaction.fetchReply());
+	game.set("invitation", await interaction.fetchReply());
 	// Increment the game index and store current for timeout
 	const thisGameIndex = index;
 	index++;
