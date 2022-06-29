@@ -9,9 +9,7 @@ const general = {
 	 * @return	{Promise<Boolean>}			If the appending was successful.
 	 */
 	appendToReply: function(interaction, content) {
-		console.log("B");
-		// Check if the interaction has already been replied to
-		if (interaction.replied) {
+		try {
 			// Fetch the reply and edit it by appending the content
 			return interaction.fetchReply().then(message => {
 				interaction.editReply({ content: message.content + "\n" + content });
@@ -19,7 +17,8 @@ const general = {
 				return Promise.resolve(true);
 			});
 		}
-		else {
+		catch (e) {
+			console.error(e);
 			return Promise.reject(false);
 		}
 	},
@@ -33,10 +32,6 @@ const general = {
 	 * @return	{Promise<Boolean>}	If the appending was successful.
 	 */
 	appendToMessage: function(message, content) {
-		console.log("general.appendToMessage");
-		console.log(typeof message);
-		console.log(typeof content);
-
 		try {
 			// Edit the message by appending the content
 			message.edit({ content: message.content + "\n" + content });

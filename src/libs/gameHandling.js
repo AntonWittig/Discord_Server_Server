@@ -64,7 +64,7 @@ const general = {
 	 * The game dictionary holding various game data
 	 * @param	{GameType}						gameType
 	 * The type of game to start
-	 * @param	{MessageActionRow}				originalComponents
+	 * @param	{Array<MessageActionRow>}		originalComponents
 	 * The original components matrix of the message
 	 * @param	{Function}						componentHandling
 	 * The function to handle/edit the original components of the message

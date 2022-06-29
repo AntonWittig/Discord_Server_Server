@@ -7,9 +7,7 @@ const general = {
 	 * @return	{Promise<Boolean>}			If the removal was successful.
 	 */
 	removeAllReplyButtons: function(interaction) {
-		console.log("A");
-		// Check if the interaction has already been replied to
-		if (interaction && interaction.replied) {
+		try {
 			// Fetch the reply and edit it to have no components/buttons
 			return interaction.fetchReply()
 				.then(() => {
@@ -19,7 +17,8 @@ const general = {
 						});
 				});
 		}
-		else {
+		catch (e) {
+			console.error(e);
 			return Promise.reject(false);
 		}
 	},
@@ -31,16 +30,14 @@ const general = {
 	 * @returns	{Promise<Boolean>}	If the removal was successful.
 	 */
 	removeAllMessageButtons: function(message) {
-		console.log("general.removeAllMessageButtons");
-		console.log(typeof message);
-
 		// Check if the message exists and edit components to none
-		if (message) {
-			return message.edit({ components: [] }).then(() => {
-				return Promise.resolve(true);
-			});
+		try {
+			// Edit the message by appending the content
+			message.edit({ components: [] });
+			return Promise.resolve(true);
 		}
-		else {
+		catch (e) {
+			console.error(e);
 			return Promise.reject(false);
 		}
 	},
@@ -54,10 +51,6 @@ const general = {
 	 * @return {Array<MessageActionRow>}	The components matrix with those corresponding to unempty spaces disabled.
 	 */
 	disableUnempty: function(board, components) {
-		console.log("general.disableUnempty");
-		console.log(typeof board);
-		console.log(typeof components);
-
 		// Loop through the boards rows
 		for (let i = 0; i < board.length; i++) {
 			// Loop through the boards columns
