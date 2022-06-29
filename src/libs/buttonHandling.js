@@ -7,6 +7,7 @@ const general = {
 	 * @return	{Promise<Boolean>}			If the removal was successful.
 	 */
 	removeAllReplyButtons: function(interaction) {
+		console.log("A");
 		// Check if the interaction has already been replied to
 		if (interaction && interaction.replied) {
 			// Fetch the reply and edit it to have no components/buttons

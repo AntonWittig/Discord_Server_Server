@@ -219,9 +219,6 @@ const tictactoe = {
 	 * @return	{String|Boolean}		The winner or false if no winner has been found.
 	 */
 	checkWin: function(board) {
-		console.log("tictactoe.checkWin");
-		console.log(typeof board);
-
 		// Check if the board has been defined
 		if (board !== undefined) {
 			// Loop over the board side length

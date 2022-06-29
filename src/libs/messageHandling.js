@@ -9,6 +9,7 @@ const general = {
 	 * @return	{Promise<Boolean>}			If the appending was successful.
 	 */
 	appendToReply: function(interaction, content) {
+		console.log("B");
 		// Check if the interaction has already been replied to
 		if (interaction.replied) {
 			// Fetch the reply and edit it by appending the content
