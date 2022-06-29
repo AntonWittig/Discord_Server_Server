@@ -146,3 +146,7 @@ dist
 
 # screen logs
 screenlog.*
+
+# automatic updating
+gitupdate.sh
+update.sh
