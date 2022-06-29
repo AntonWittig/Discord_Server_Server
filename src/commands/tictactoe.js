@@ -115,7 +115,7 @@ exports.accept = async (interaction, i, args = []) => {
 	if (game.opponent) {
 		// Check if the invoking user is the challenged user/opponent and start the game if so
 		if (interaction.user.id === game.opponent.id) {
-			tictactoeFnct.startGame(interaction, i);
+			tictactoeFnct.startGame(interaction, game, i);
 		}
 		// Reply with a rejection message if the invoking user is the challenging user
 		else if (interaction.user.id === game.challenger.id) {

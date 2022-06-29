@@ -72,7 +72,7 @@ client.on("interactionCreate", async (interaction) => {
 				await command.execute(interaction);
 			}
 			catch (error) {
-				console.error(error);
+				console.error("Error:" + error);
 
 				if (interaction.deferred || interaction.replied) {
 					interaction.editReply({ content: ":no_entry_sign: Ein Fehler ist beim Ausführen aufgetreten", ephemeral: true });
