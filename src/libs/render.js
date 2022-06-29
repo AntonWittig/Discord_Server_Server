@@ -1,17 +1,36 @@
+// #region GENERAL
 const general = {
+	/**
+	 * Get the team a piece belongs to.
+	 * @param	{String}	piece
+	 * The piece to get the team of.
+	 * @returns	{String}	The abbreviation of the team the piece belongs to.
+	 */
 	getPieceTeam: function(piece) {
+		console.log("general.getPieceTeam");
+		console.log(typeof piece);
+
 		if (piece !== "e") return piece.substring(0, 1);
 		else return "e";
 	},
 
+	/**
+	 * Get the type of a piece.
+	 * @param	{String}	piece
+	 * The piece to get the type of.
+	 * @returns	{String}	The type of the piece.
+	 */
 	getPieceType: function(piece) {
 		if (piece !== "e") return piece.substring(1, 2);
 		else return "e";
 	},
 };
 exports.general = general;
+// #endregion
 
+// #region CHESS
 const chess = {
+	// #region VARIABLES
 	emojiIDs: {
 		"bk": { "name": "black_king_", "white": "989558908886585355", "black": "989558906822992012", "check": "989558907976429568" },
 		"bq": { "name": "black_queen_", "white": "989558921968619601", "black": "989558917539446844", "green": "989558921196863488" },
@@ -58,17 +77,22 @@ const chess = {
 		"2": "2onFirst",
 		"m": "moved",
 	},
+	// #endregion
 
+	// #region FUNCTIONS
 	// coordinate system starts at top left corner with 0,0; x increases to the right, y increases to the bottom
+	// TODO
 	getBaseColor: function(x, y) {
 		return chess.baseBoardColors[(x + y) % 2];
 	},
 
+	// TODO
 	pawnMoveType: function(piece) {
 		if (general.getPieceType(piece) !== "p") return "";
 		return chess.pawnMoveTypes[piece.substring(2, 3)];
 	},
 
+	// TODO
 	getValidMoves: function(position, board) {
 		const validMoves = [];
 		if (position.x < 0 || position.x >= 8
@@ -118,6 +142,7 @@ const chess = {
 		return validMoves;
 	},
 
+	// TODO
 	renderPiece: function(board, position, attacked = false, blackChecked = false, whiteChecked = false) {
 		const piece = board[position.y][position.x];
 
@@ -162,31 +187,57 @@ const chess = {
 		chess.moves.p.w.y.forEach(element => element *= -1);
 		return board;
 	},
+	// #endregion
 };
 exports.chess = chess;
+// #endregion
 
+// #region TICTACTOE
 const tictactoe = {
+	// #region VARIABLES
 	emojiIDs: {
 		"x": { "name": "x" },
 		"o": { "name": "o" },
 		"e": { "name": "white_medium_square" },
 	},
+	// #endregion
 
+	// #region FUNCTIONS
+	/**
+	 * Return the rendered representation of a single tic tac toe symbol
+	 * @param	{*}	symbol
+	 * @returns	{String}	The rendered symbol emoji
+	 */
 	renderSymbol: function(symbol) {
+		console.log("tictactoe.renderSymbol");
+		console.log(symbol);
+
+		// Get the emoji ID of the symbol and return the emoji
 		const emojiDict = tictactoe.emojiIDs[symbol];
 		const emojiName = emojiDict.name;
 		return ":" + emojiName + ":";
 	},
 
+	/**
+	 * Return the rendered representation of a tic tac toe board
+	 * @param	{*}			board
+	 * @returns	{String}	The rendered board
+	 */
 	renderTicTacToe: function(board) {
+		// Initialize the rendered board
 		let renderedBoard = "";
+		// Loop through the board
 		for (let i = 0; i < board.length; i++) {
 			for (let j = 0; j < board[i].length; j++) {
+				// Render the symbol of each position and add it to the rendered board
 				renderedBoard += tictactoe.renderSymbol(board[i][j]);
 			}
+			// Add a new line to the rendered board
 			if (i !== board.length - 1) renderedBoard += "\n";
 		}
 		return renderedBoard;
 	},
+	// #endregion
 };
 exports.tictactoeRnd = tictactoe;
+// #endregion

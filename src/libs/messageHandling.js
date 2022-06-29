@@ -9,6 +9,10 @@ const general = {
 	 * @return	{Promise<Boolean>}			If the appending was successful.
 	 */
 	appendToReply: function(interaction, content) {
+		console.log("general.appendToReply");
+		console.log(typeof interaction);
+		console.log(typeof content);
+
 		// Check if the interaction has already been replied to
 		if (interaction.replied) {
 			// Fetch the reply and edit it by appending the content
@@ -32,6 +36,10 @@ const general = {
 	 * @return	{Promise<Boolean>}	If the appending was successful.
 	 */
 	appendToMessage: function(message, content) {
+		console.log("general.appendToMessage");
+		console.log(typeof message);
+		console.log(typeof content);
+
 		try {
 			// Edit the message by appending the content
 			message.edit({ content: message.content + "\n" + content });
@@ -50,6 +58,9 @@ const general = {
 	 * @return	{Array<Dictionary<String,Boolean|String>>}	The extracted emojis.
 	 */
 	extractEmojiDataFromText: function(text) {
+		console.log("general.extractEmojiDataFromText");
+		console.log(typeof text);
+
 		// Initialize the emojis array
 		const emojis = [];
 		// Initialize the position in the text

@@ -1,10 +1,24 @@
 // #region IMPORTS
+// Require the necessary discord.js class
+const { MessageActionRow, MessageButton } = require("discord.js");
+
 // Require the path module for accessing the correct files
 const path = require("node:path");
 
 // Require the necessary libraries
 const libPath = [__dirname];
 const { generalMsgHnd } = require(path.join(...libPath, "messageHandling.js"));
+const { generalBtnHnd } = require(path.join(...libPath, "buttonHandling.js"));
+const { tictactoeFnct } = require(path.join(...libPath, "gameHandling.js"));
+const { tictactoeRnd } = require(path.join(...libPath, "render.js"));
+const deepClone = require(path.join(...libPath, "deepClone.js"));
+// #endregion
+
+// #region VARIABLES
+const GameType = {
+	TicTacToe: "Tic Tac Toe",
+	Chess: "Chess",
+};
 // #endregion
 
 // #region GENERAL
@@ -18,6 +32,10 @@ const general = {
 	 * @return	{Array<Array<String>>}			The board of the game
 	 */
 	parseBoard: function(message, representations = undefined) {
+		console.log("general.parseBoard");
+		console.log(typeof message);
+		console.log(typeof representations);
+
 		// Initialize the board
 		const board = [];
 		// Split the message into lines
@@ -42,16 +60,148 @@ const general = {
 		}
 		return board;
 	},
+
+	/**
+	 * Starts a new game after an invitation has been accepted
+	 * @param	{Interaction<CacheType>}	interaction
+	 * The interaction object for the "Accept" Button interaction
+	 * @param	{Integer}					i
+	 * The index of the game
+	 */
+	startGame: function(interaction, game, gameType, originalComponents, componentHandling, originalBoard) {
+		console.log("general.startGame");
+		console.log(typeof interaction);
+		console.log(typeof game);
+		console.log(typeof gameType);
+		console.log(typeof originalComponents);
+		console.log(typeof componentHandling);
+		console.log(typeof originalBoard);
+
+		// Remove Buttons from the invitation message and append that it has been accepted
+		generalBtnHnd.removeAllReplyButtons(game.invitation)
+			.then(() => {
+				generalMsgHnd.appendToReply(game.invitation, `**The challenge has been accepted by ${interaction.user}.**`);
+			});
+		// Start a thread on the invitation message to play the game in
+		interaction.message.startThread({
+			name: `${GameType[gameType]} game between ${game.challenger.username} and ${game.opponent.username}`,
+		}).then(thread => {
+		// Add the thread to and delete the invitation message from the game dictionary
+			game.thread = thread;
+			delete game.invitation;
+			// Copy the original components matrix
+			const components = deepClone(originalComponents);
+			// Handle game components
+			componentHandling(components);
+			// Send a message with the rendered board and the updated components to the thread
+			thread.send({
+				content: tictactoeRnd.renderTicTacToe(originalBoard),
+				components: originalComponents,
+			}).then(message => {
+			// Add the game message and the current(initial) board to the game dictionary
+				game.message = message;
+				game.board = tictactoeFnct.parseBoard(message.content);
+			}).then(() => {
+				thread.send({ content: `It's <@${game.nextTurnID}>s turn to place a symbol.`, fetchReply: true })
+					.then(startInfo => {
+						game.lastInteraction = startInfo;
+					});
+			});
+		});
+	},
+
+	/**
+	 * End a game after a player has won or a draw has been reached
+	 * @param	{}	games
+	 * @param	{*}	gameIndex
+	 */
+	endGame: function(games, gameIndex) {
+		console.log("general.endGame");
+		console.log(typeof games);
+		console.log(typeof gameIndex);
+
+		// Extract correct game from the games dictionary
+		const game = games[`game${gameIndex}`];
+		// Disable all the buttons on the game message
+		generalBtnHnd.removeAllMessageButtons(game.message)
+			.then(() => {
+				// Lock the game thread and archive it
+				game.thread.setLocked(true);
+				game.thread.setArchived(true)
+					.then(() => {
+						// Remove the game from the games dictionary
+						delete games[`game${gameIndex}`];
+					});
+			});
+	},
 };
 // #endregion
 
 // #region TICTACTOE
 const tictactoe = {
+	// #region VARIABLES
 	representations: {
 		x: "x",
 		o: "o",
 		white_medium_square: "e",
 	},
+
+	// Define the original board
+	originalBoard: [
+		["e", "e", "e"],
+		["e", "e", "e"],
+		["e", "e", "e"],
+	],
+
+	// Define the original game interaction components for placing symbols
+	originalComponents: [
+	// First row
+		new MessageActionRow().addComponents([
+		// Top left placing button
+			new MessageButton()
+				.setCustomId("tictactoe_place_0_0_i")
+				.setLabel("↖️").setStyle("SECONDARY"),
+			// Top middle placing button
+			new MessageButton()
+				.setCustomId("tictactoe_place_1_0_i")
+				.setLabel("⬆️").setStyle("SECONDARY"),
+			// Top right placing button
+			new MessageButton()
+				.setCustomId("tictactoe_place_2_0_i")
+				.setLabel("↗️").setStyle("SECONDARY"),
+		]),
+		// Second row
+		new MessageActionRow().addComponents([
+		// Middle left placing button
+			new MessageButton()
+				.setCustomId("tictactoe_place_0_1_i")
+				.setLabel("⬅️").setStyle("SECONDARY"),
+			// Middle middle placing button
+			new MessageButton()
+				.setCustomId("tictactoe_place_1_1_i")
+				.setLabel("⏹️").setStyle("SECONDARY"),
+			// Middle right placing button
+			new MessageButton()
+				.setCustomId("tictactoe_place_2_1_i")
+				.setLabel("➡️").setStyle("SECONDARY"),
+		]),
+		// Third row
+		new MessageActionRow().addComponents([
+		// Bottom left placing button
+			new MessageButton()
+				.setCustomId("tictactoe_place_0_2_i")
+				.setLabel("↙️").setStyle("SECONDARY"),
+			// Bottom middle placing button
+			new MessageButton()
+				.setCustomId("tictactoe_place_1_2_i")
+				.setLabel("⬇️").setStyle("SECONDARY"),
+			// Bottom right placing button
+			new MessageButton()
+				.setCustomId("tictactoe_place_2_2_i")
+				.setLabel("↘️").setStyle("SECONDARY"),
+		]),
+	],
+	// #endregion
 
 	/**
 	 * This function is used to extract the tictactoe board data from a message.
@@ -60,6 +210,9 @@ const tictactoe = {
 	 * @return	{Array<Array<String>>}	The board of the game
 	 */
 	parseBoard: function(message) {
+		console.log("tictactoe.parseBoard");
+		console.log(typeof message);
+
 		return general.parseBoard(message, tictactoe.representations);
 	},
 
@@ -70,6 +223,9 @@ const tictactoe = {
 	 * @return	{String|Boolean}		The winner or false if no winner has been found.
 	 */
 	checkWin: function(board) {
+		console.log("tictactoe.checkWin");
+		console.log(typeof board);
+
 		// Check if the board has been defined
 		if (board !== undefined) {
 			// Loop over the board side length
@@ -102,11 +258,61 @@ const tictactoe = {
 		}
 		return false;
 	},
+
+	/**
+	 * Start a tic tac toe game.
+	 * @param	{Interaction<CacheType>}	interaction
+	 * The interaction of a user accepting the invitation
+	 * @param	{Dictionary<>}				game
+	 * The game to which the user was invited/ the game to start
+	 * @param	{Integer}					gameIndex
+	 * the index of the game in the games dictionary
+	 */
+	startGame: function(interaction, game, gameIndex) {
+		console.log("tictactoe.startGame");
+		console.log(typeof interaction);
+		console.log(typeof game);
+		console.log(typeof gameIndex);
+
+		// Define function to handle game components
+		const componentsHandling = (components) => {
+			// Loop through the components and the component rows set the correct custom IDs
+			for (let j = 0; j < components.length; j++) {
+			// Copy the original components row
+				const componentRow = deepClone(components[j].components);
+				for (let k = 0; k < componentRow.length; k++) {
+				// Set the custom ID of the component to include the game index(i) and correct position
+					componentRow[k].setCustomId(`tictactoe_place_${k}_${j}_${gameIndex}`);
+				}
+				// Replace original component rows with copied component rows
+				components[j].setComponents(componentRow);
+			}
+		};
+		// Call general startGame function
+		general.startGame(interaction, game, GameType.TicTacToe, tictactoe.originalComponents, componentsHandling, tictactoe.originalBoard);
+	},
+
+	endGame: function(games, gameIndex) {
+		// Extract correct game from the games dictionary
+		const game = games[`game${gameIndex}`];
+		// Disable all the buttons on the game message
+		generalBtnHnd.disableUnempty(
+			[["x", "x", "x"], ["x", "x", "x"], ["x", "x", "x"]],
+			game.message.components);
+		// Lock the game thread and archive it
+		game.thread.setLocked(true);
+		game.thread.setArchived(true)
+			.then(() => {
+				// Remove the game from the games dictionary
+				delete games[`game${gameIndex}`];
+			});
+	},
 };
 exports.tictactoeFnct = tictactoe;
 // #endregion
 
 // #region CHESS
+// #region VARIABLES
 // Define representations on board
 const chessRep = {
 	bk: "bk",
@@ -125,7 +331,6 @@ const chessRep = {
 };
 
 const chess = {
-	// #region VARIABLES
 	// Define the representations of the emojis as board representations
 	representations: {
 		black_king_white: chessRep.bk, black_king_black: chessRep.bk, black_king_check: chessRep.bk,
@@ -151,6 +356,9 @@ const chess = {
 	 * @return	{Array<Array<String>>}	The board of the game
 	 */
 	parseBoard: function(message) {
+		console.log("chess.parseBoard");
+		console.log(typeof message);
+
 		return general.parseBoard(message, chess.representations);
 	},
 
