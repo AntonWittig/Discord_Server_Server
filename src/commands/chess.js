@@ -193,8 +193,8 @@ exports.select = async (interaction, i, args = []) => {
 		game.get("message").edit({
 			"content": chessRnd.renderGame(
 				instance.board(),
-				instance.moves(moveFilter)
-					.map(move => square ? move.to : move.from),
+				piece ? instance.moves(moveFilter)
+					.map(move => square ? move.to : move.from) : [],
 				instance.turn() === "b",
 			),
 		});

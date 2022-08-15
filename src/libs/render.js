@@ -115,7 +115,7 @@ const chess = {
 
 	translatePositionToNotation: function(position) {
 		if (typeof position === "object" && position.x && position.y) {
-			return String.fromCharCode(position.x + 96) + (8 - position.y);
+			return String.fromCharCode(position.x + 97) + (8 - position.y);
 		}
 		return null;
 	},
@@ -128,7 +128,7 @@ const chess = {
 			if (flipped) {
 				for (let i = board.length - 1; i >= 0; i--) {
 					for (let j = board[i].length - 1; j >= 0; j--) {
-						console.log(board[i][j]);
+						console.log("x: " + j + "; y: " + i + "; " + board[i][j]);
 						const attacked = attackedPositions.some(
 							pos => pos.includes(chess.translatePositionToNotation({ x: j, y: i })));
 						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
@@ -139,7 +139,7 @@ const chess = {
 			else {
 				for (let i = 0; i < board.length; i++) {
 					for (let j = 0; j < board[i].length; j++) {
-						console.log(board[i][j]);
+						console.log("x: " + j + "; y: " + i + "; " + board[i][j]);
 						const attacked = attackedPositions.some(
 							pos => pos.includes(chess.translatePositionToNotation({ x: j, y: i })));
 						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
