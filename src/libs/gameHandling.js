@@ -308,21 +308,6 @@ exports.tictactoeFnct = tictactoe;
 
 // #region CHESS
 // #region VARIABLES
-const chessRep = {
-	bk: "bk",
-	bq: "bq",
-	br: "br",
-	bn: "bn",
-	bb: "bb",
-	bp: "bp",
-	wk: "wk",
-	wq: "wq",
-	wr: "wr",
-	wn: "wn",
-	wb: "wb",
-	wp: "wp",
-	e: "e",
-};
 // Define ascii representations of the pieces
 const ascii = {
 	bk: "♚",
@@ -342,19 +327,43 @@ const ascii = {
 const chessVars = {
 	// Define the representations of the emojis as board representations
 	representations: {
-		black_king_white: chessRep.bk, black_king_black: chessRep.bk, black_king_check: chessRep.bk,
-		black_queen_white: chessRep.bq, black_queen_black: chessRep.bq, black_queen_green: chessRep.bq,
-		black_rook_white: chessRep.br, black_rook_black: chessRep.br, black_rook_green: chessRep.br,
-		black_knight_white: chessRep.bn, black_knight_black: chessRep.bn, black_knight_green: chessRep.bn,
-		black_bishop_white: chessRep.bb, black_bishop_black: chessRep.bb, black_bishop_green: chessRep.bb,
-		black_pawn_white: chessRep.bp, black_pawn_black: chessRep.bp, black_pawn_green: chessRep.bp,
-		white_king_white: chessRep.wk, white_king_black: chessRep.wk, white_king_check: chessRep.wk,
-		white_queen_white: chessRep.wq, white_queen_black: chessRep.wq, white_queen_green: chessRep.wq,
-		white_rook_white: chessRep.wr, white_rook_black: chessRep.wr, white_rook_green: chessRep.wr,
-		white_knight_white: chessRep.wn, white_knight_black: chessRep.wn, white_knight_green: chessRep.wn,
-		white_bishop_white: chessRep.wb, white_bishop_black: chessRep.wb, white_bishop_green: chessRep.wb,
-		white_pawn_white: chessRep.wp, white_pawn_black: chessRep.wp, white_pawn_green: chessRep.wp,
-		empty: chessRep.e,
+		black_king_white: chessjs.BLACK + chessjs.KING,
+		black_king_black: chessjs.BLACK + chessjs.KING,
+		black_king_check: chessjs.BLACK + chessjs.KING,
+		black_queen_white: chessjs.BLACK + chessjs.QUEEN,
+		black_queen_black: chessjs.BLACK + chessjs.QUEEN,
+		black_queen_green: chessjs.BLACK + chessjs.QUEEN,
+		black_rook_white: chessjs.BLACK + chessjs.ROOK,
+		black_rook_black: chessjs.BLACK + chessjs.ROOK,
+		black_rook_green: chessjs.BLACK + chessjs.ROOK,
+		black_knight_white: chessjs.BLACK + chessjs.KNIGHT,
+		black_knight_black: chessjs.BLACK + chessjs.KNIGHT,
+		black_knight_green: chessjs.BLACK + chessjs.KNIGHT,
+		black_bishop_white: chessjs.BLACK + chessjs.BISHOP,
+		black_bishop_black: chessjs.BLACK + chessjs.BISHOP,
+		black_bishop_green: chessjs.BLACK + chessjs.BISHOP,
+		black_pawn_white: chessjs.BLACK + chessjs.PAWN,
+		black_pawn_black: chessjs.BLACK + chessjs.PAWN,
+		black_pawn_green: chessjs.BLACK + chessjs.PAWN,
+		white_king_white: chessjs.WHITE + chessjs.KING,
+		white_king_black: chessjs.WHITE + chessjs.KING,
+		white_king_check: chessjs.WHITE + chessjs.KING,
+		white_queen_white: chessjs.WHITE + chessjs.QUEEN,
+		white_queen_black: chessjs.WHITE + chessjs.QUEEN,
+		white_queen_green: chessjs.WHITE + chessjs.QUEEN,
+		white_rook_white: chessjs.WHITE + chessjs.ROOK,
+		white_rook_black: chessjs.WHITE + chessjs.ROOK,
+		white_rook_green: chessjs.WHITE + chessjs.ROOK,
+		white_knight_white: chessjs.WHITE + chessjs.KNIGHT,
+		white_knight_black: chessjs.WHITE + chessjs.KNIGHT,
+		white_knight_green: chessjs.WHITE + chessjs.KNIGHT,
+		white_bishop_white: chessjs.WHITE + chessjs.BISHOP,
+		white_bishop_black: chessjs.WHITE + chessjs.BISHOP,
+		white_bishop_green: chessjs.WHITE + chessjs.BISHOP,
+		white_pawn_white: chessjs.WHITE + chessjs.PAWN,
+		white_pawn_black: chessjs.WHITE + chessjs.PAWN,
+		white_pawn_green: chessjs.WHITE + chessjs.PAWN,
+		empty: chessjs.EMPTY,
 	},
 	// Define the original game interaction components for making moves
 	originalComponents: [
@@ -404,7 +413,7 @@ const chess = {
 		game.whiteID = game.whiteID === null ? interaction.user.id : game.whiteID;
 		game.blackID = game.blackID === null ? interaction.user.id : game.blackID;
 		// Create game instance
-		const chessInstance = new chessjs.Chess();
+		const chessInstance = chessjs.Chess();
 		game.set("instance", chessInstance);
 		// Define function to handle game components
 		const componentsHandling = (components) => {
