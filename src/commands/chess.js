@@ -197,7 +197,6 @@ exports.select = async (interaction, i, args = []) => {
 				instance.turn() === "b",
 			),
 		});
-		interaction.deferUpdate();
 	}
 	// Reply with a rejection message if its not the invoking users turn
 	else {
