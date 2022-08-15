@@ -199,6 +199,7 @@ exports.select = async (interaction, i, args = []) => {
 			),
 		});
 		console.log("test");
+		interaction.deferUpdate();
 	}
 	// Reply with a rejection message if its not the invoking users turn
 	else {

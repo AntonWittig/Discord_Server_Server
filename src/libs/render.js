@@ -122,7 +122,7 @@ const chess = {
 
 	translatePositionToNotation: function(position) {
 		if (typeof position === "object" && position.x && position.y) {
-			return String.fromCharCode(position.x + 97) + (position.y + 1);
+			return String.fromCharCode(position.x + 97) + (8 - position.y);
 		}
 		return null;
 	},
