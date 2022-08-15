@@ -76,8 +76,11 @@ const general = {
 	 * The original/initial board of the game
 	 */
 	startGame: function(interaction, game, gameType, originalBoard = [], originalComponents = [], componentHandling = null) {
+
+		console.log(tictactoeRnd);
+		console.log(chessRnd);
 		// Define namespaces depending on game type
-		let gameNamespace, renderNamespace = {};
+		let gameNamespace = {}, renderNamespace = {};
 		console.log(gameNamespace);
 		console.log(renderNamespace);
 		switch (gameType) {
