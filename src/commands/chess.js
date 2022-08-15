@@ -1,6 +1,6 @@
 // #region IMPORTS
 // Require the necessary discord.js classes
-const { MessageActionRow, MessageButton } = require("discord.js");
+const { MessageActionRow, MessageButton, Message, Interaction } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 // #endregion
 
@@ -172,7 +172,7 @@ exports.select = async (interaction, i, args = []) => {
 				components[rowIndex]
 					.addComponents([new MessageButton()
 						.setCustomId(`chess_${mainCommand}_${piece}_${squares[j]}_${i}`)
-						.setLabel(squares[j]).setStyle("SECONDARY")]);
+						.setLabel(square[j].split("_")[1]).setStyle("SECONDARY")]);
 				if (j === squares.length - 1) {
 					if (squares.length % 5 === 0) {
 						components.push(new MessageActionRow());
@@ -233,8 +233,6 @@ exports.move = async (interaction, i, args = []) => {
 			"piece": piece,
 		});
 		if (move) {
-			console.log(instance.turn());
-			console.log("w: " + game.get("whiteID") + " b: " + game.get("blackID"));
 			game.set("nextTurnID", instance.turn() === "w" ?
 				game.get("whiteID") : game.get("blackID"));
 			const newMoves = instance.moves({ "verbose": true });
@@ -260,6 +258,41 @@ exports.move = async (interaction, i, args = []) => {
 					),
 					"components": components,
 				});
+			}
+			// Delete the last game reply if it exists
+			if (game.get("lastInteraction")) {
+			// Differentiate between message and replies
+				if (game.get("lastInteraction") instanceof Message) {
+					game.get("lastInteraction").delete();
+				}
+				else if (game.get("lastInteraction") instanceof Interaction) {
+					game.get("lastInteraction").deleteReply();
+				}
+			}
+			// Check if the game is over and who won
+			if (instance.in_checkmate()) {
+				// Change the thread name to reflect the winning user and post a message to the game thread
+				game.get("thread").setName(`Game Over: ${interaction.user.username} won!`)
+					.then(() => {
+						interaction.reply({ content: `${interaction.user} won!` })
+							.then(() => chessFnct.endGame(games, i));
+					});
+			}
+			else if (instance.in_draw() || instance.in_threefold_repetition() || instance.in_stalemate() || instance.game_over()) {
+				// Change the thread name to reflect a draw if a draw has been reached and post a message to the game thread
+				game.get("thread").setName("Game Over: It's a draw!")
+					.then(() => {
+						interaction.reply({ content: "It's a draw! Nobody won." })
+							.then(() => chessFnct.endGame(games, i));
+					});
+			}
+			else {
+				// Post a message to the game thread with information about the last move and ping the next user if the game is not over
+				const checkInfo = instance.in_check() ? ", you are checked!" : "";
+				const nextUser = game.get("challenger").id === interaction.user.id ? game.get("opponent") : game.get("challenger");
+				interaction.reply({ content: `${nextUser}, your opponent moved his ${chessVars.names[move.piece]} from ${move.from} to ${move.to}${checkInfo}` });
+				// Set this interaction as the last interaction
+				game.set("lastInteraction", interaction);
 			}
 			interaction.deferUpdate();
 		}

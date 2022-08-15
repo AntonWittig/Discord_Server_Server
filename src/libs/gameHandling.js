@@ -360,6 +360,16 @@ const chessVars = {
 		wn: "♘",
 		wp: "♙",
 	},
+
+	names: {
+		k: "king",
+		q: "queen",
+		r: "rook",
+		n: "knight",
+		b: "bishop",
+		p: "pawn",
+	},
+
 	// Define the original game interaction components for making moves
 	originalComponents: [
 	// First row
@@ -385,7 +395,6 @@ const chess = {
 	 * The message to extract the board data from.
 	 * @return	{Array<Array<String>>}	The board of the game
 	 */
-	// TODO
 	parseBoard: function(message) {
 		return general.parseBoard(message, chessVars.representations);
 	},

@@ -130,7 +130,7 @@ const chess = {
 							pos => pos.includes(chess.translatePositionToNotation({ x: j, y: i })));
 						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
 					}
-					renderedBoard += "a" + (i + 1);
+					renderedBoard += "a" + (8 - i);
 					if (i !== 0) renderedBoard += "\n";
 				}
 			}
