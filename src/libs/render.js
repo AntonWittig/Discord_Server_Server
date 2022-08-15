@@ -7,9 +7,6 @@ const general = {
 	 * @returns	{String}	The abbreviation of the team the piece belongs to.
 	 */
 	getPieceTeam: function(piece) {
-		console.log("general.getPieceTeam");
-		console.log(typeof piece);
-
 		if (piece !== "e") return piece.substring(0, 1);
 		else return "e";
 	},
@@ -124,7 +121,6 @@ const chess = {
 
 	// TODO: call with chessinstance.moves{verbose: true}
 	renderGame: function(board, attackedPositions = [], flipped = false) {
-		console.log(attackedPositions);
 		if (board !== undefined && board !== null && board.length === 8) {
 			let renderedBoard = "";
 			if (flipped) {

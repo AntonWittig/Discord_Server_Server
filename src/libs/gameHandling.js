@@ -387,9 +387,6 @@ const chess = {
 	 */
 	// TODO
 	parseBoard: function(message) {
-		console.log("chess.parseBoard");
-		console.log(typeof message);
-
 		return general.parseBoard(message, chessVars.representations);
 	},
 
