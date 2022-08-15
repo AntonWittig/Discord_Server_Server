@@ -112,7 +112,7 @@ const chess = {
 		const emojiName = emojiDict.name + baseColor;
 		const emojiID = emojiDict[baseColor];
 		console.log("emojiName: " + emojiName + "; emojiID: " + emojiID);
-		return "<:" + emojiName + ":" + emojiID + ">";
+		return ":" + emojiName + ":";
 	},
 
 	translatePositionToXY: function(position) {
