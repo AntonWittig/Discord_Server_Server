@@ -97,7 +97,7 @@ const chess = {
 		console.log("renderPiece: " + piece);
 
 		let baseColor = chess.getBaseColor(position.x, position.y);
-		if (piece.type === "k") {
+		if (piece !== null && piece.type === "k") {
 			if ((checked === "b" && piece.color === "b")
 				|| (checked === "w" && piece.color === "w")) {
 				baseColor = chess.baseBoardColors[3];
@@ -131,7 +131,6 @@ const chess = {
 
 	// TODO: call with chessinstance.moves{verbose: true}
 	renderGame: function(board, attackedPositions = [], flipped = false) {
-		console.log("renderGame: " + board);
 		if (board !== undefined && board !== null && board.length === 8) {
 			let renderedBoard = "";
 			if (flipped) {
