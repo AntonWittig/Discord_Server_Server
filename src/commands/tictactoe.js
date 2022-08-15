@@ -1,6 +1,6 @@
 // #region IMPORTS
-// Require the necessary discord.js class
-const { MessageActionRow, MessageButton, Message, Interaction } = require("discord.js");
+// Require the necessary discord.js classes
+const { Message, Interaction } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 // Require the path module for accessing the correct files
@@ -8,6 +8,7 @@ const path = require("node:path");
 
 // Require the necessary libraries for the command
 const libPath = [__dirname, "..", "libs"];
+const { generalInvHnd } = require(path.join(...libPath, "invitationHandling.js"));
 const { generalBtnHnd } = require(path.join(...libPath, "buttonHandling.js"));
 const { generalMsgHnd } = require(path.join(...libPath, "messageHandling.js"));
 const { tictactoeFnct } = require(path.join(...libPath, "gameHandling.js"));
@@ -37,31 +38,17 @@ exports.data = new SlashCommandBuilder()
 
 // The command execution function to invite other users to a tictactoe game
 exports.execute = async (interaction) => {
-	// Initialize the "Accept" and "Decline" buttons
-	const row = new MessageActionRow()
-		.addComponents([
-			new MessageButton()
-				.setCustomId(`tictactoe_accept_${index}`)
-				.setLabel("Accept")
-				.setStyle("PRIMARY"),
-			new MessageButton()
-				.setCustomId(`tictactoe_decline_${index}`)
-				.setLabel("Decline")
-				.setStyle("DANGER"),
-		]);
 	// Get the invoking user
 	const user = interaction.user;
 	// Get the opponent user and the start option
-	const opponent = interaction.options.getUser("opponent");
+	const opponent = interaction.options.getUser("opponent") || null;
 	const start = interaction.options.getBoolean("start");
 	// Define the first user and its id by the start variable
 	const firstUser = start ? user : opponent;
-	const firstUserID = firstUser === undefined || firstUser === null ? undefined : firstUser.id;
-	// Return a command rejection message if the invoking user wants to challenge himself
-	if (opponent && opponent.id === user.id) {
-		interaction.reply({ content: "You can't challenge yourself.", ephemeral: true });
-		return;
-	}
+	const firstUserID = firstUser ? firstUser.id : null;
+	// Create and send the invitation or rejection message
+	interaction.reply(generalInvHnd.createGameInvitation(interaction, "tictactoe", index));
+	if (opponent && opponent.id === user.id) return;
 	// Initialize the game dictionary with the initial interaction, the invoking user and the ID of the user to make the first move
 	games.set(`game${index}`, new Map([
 		["interaction", interaction],
@@ -69,19 +56,6 @@ exports.execute = async (interaction) => {
 		["nextTurnID", firstUserID],
 	]));
 	const game = games.get(`game${index}`);
-	// Check if the opponent user is specified and reply with a challenge message
-	if (opponent) {
-		interaction.reply({ content: `${user} challenges ${opponent} for a tic tac toe game, will they accept?`, components: [row] });
-		// Add the opponent to the game dictionary
-		game.set("opponent", opponent);
-	}
-	else {
-		const guildName = interaction.guild.name.toUpperCase();
-		const tictactoeRoleID = process.env[`ROLE_ID_${guildName}_TICTACTOE`];
-		const roleMessagePart = tictactoeRoleID === undefined || tictactoeRoleID == null ? "tic tac toe" : `<@&${tictactoeRoleID}>`;
-		// Reply with an open invitation message
-		interaction.reply({ content: `${user} wants to play a game of ${roleMessagePart} against anyone, do you accept?`, components: [row] });
-	}
 	// Store reply as invitation
 	game.set("invitation", await interaction.fetchReply());
 	// Increment the game index and store current for timeout
@@ -102,94 +76,23 @@ exports.execute = async (interaction) => {
 };
 // #endregion
 
-// #region INVITATION BUTTONS // TODO - move to libs (invitationHandling.js)
+// #region INVITATION BUTTONS
 exports.accept = async (interaction, i, args = []) => {
 	// By default ignore extra arguments
 	args;
 	// Extract correct game from the games dictionary
 	const game = games.get(`game${i}`);
-	// Send a rejection message if the game has already ended
-	if (!game) {
-		interaction.reply({ content: "The game has already ended.", ephemeral: true });
-		return;
-	}
-	// Check if an opponent has been specified in the invitation
-	if (game.has("opponent")) {
-		// Check if the invoking user is the challenged user/opponent and start the game if so
-		if (interaction.user.id === game.get("opponent").id) {
-			tictactoeFnct.startGame(interaction, game, i);
-		}
-		// Reply with a rejection message if the invoking user is the challenging user
-		else if (interaction.user.id === game.get("challenger").id) {
-			interaction.reply({ content: "You can't accept this challenge for the opponent.", ephemeral: true });
-		}
-		// Reply with a rejection message if the invoking user is neither the challenging user nor the challenged user/opponent
-		else {
-			interaction.reply({ content: "This challenge is not meant for you.", ephemeral: true });
-		}
-	}
-	// Reply with a rejection message if the invoking user wants to accept their own open invitation has been specified
-	else if (interaction.user.id === game.get("challenger").id) {
-		interaction.reply({ content: "You can't accept your own challenge.", ephemeral: true });
-	}
-	// Start the game if the invoking user is not the challenging user
-	else {
-		game.set("opponent", interaction.user);
-		// Set the invoking user to be the starting user if the challenging user doesn't want to start
-		game.set("nextTurnID", game.get("nextTurnID") === undefined ? interaction.user.id : game.get("nextTurnID"));
-		tictactoeFnct.startGame(interaction, i);
-	}
+	// Handle the Accept button interaction and potentially start the game
+	interaction.reply(generalInvHnd.handleAccept(interaction, game, i, tictactoeFnct.startGame));
+	if (!game) return;
 };
 
 exports.decline = async (interaction, i, args = []) => {
 	// By default ignore extra arguments
 	args;
-	// Extract correct game from the games dictionary
-	const game = games.get(`game${i}`);
-	// Send a rejection message if the game has already ended
-	if (!game) {
-		interaction.reply({ content: "The game has already ended.", ephemeral: true });
-		return;
-	}
-	// Check if an opponent has been specified in the invitation
-	if (game.get("opponent")) {
-		// Edit the invitation to being declined if the invoking user is the challenged user/opponent
-		if (interaction.user.id === game.get("opponent").id) {
-			generalBtnHnd.removeAllMessageButtons(game.get("invitation"))
-				.then(() => {
-					generalMsgHnd.appendToMessage(game.get("invitation"), "**The challenge has been declined.**");
-				});
-			games.delete(`game${i}`);
-		}
-		// Edit the invitation to being cancelled if the invoking user is the challenging user
-		else if (game.get("challenger").id === interaction.user.id) {
-			generalBtnHnd.removeAllMessageButtons(game.get("invitation"))
-				.then(() => {
-					generalMsgHnd.appendToMessage(game.get("invitation"), "**The challenge has been cancelled.**");
-				});
-			games.delete(`game${i}`);
-		}
-		// Reply with a rejection message if the invoking user is neither the challenging user nor the challenged user/opponent
-		else {
-			interaction.reply({ content: "This challenge is not meant for you.", ephemeral: true });
-		}
-	}
-	// Edit the invitation to being cancelled if the invoking user is the challenging user
-	else if (game.get("challenger").id === interaction.user.id) {
-		generalBtnHnd.removeAllMessageButtons(game.get("invitation"))
-			.then(() => {
-				generalMsgHnd.appendToMessage(game.get("invitation"), `**${interaction.user} cancelled the challenge.**`);
-			});
-		games.delete(`game${i}`);
-	}
-	// Edit the invitation to being declined if the invoking user is any user but the challenging user
-	else {
-		generalBtnHnd.removeAllMessageButtons(game.get("invitation"))
-			.then(() => {
-				generalMsgHnd.appendToMessage(game.get("invitation"), `**${interaction.user} declined the challenge.**`);
-			});
-		games.delete(`game${i}`);
-	}
+	// Decline the invitation if the request is valid
+	interaction.reply(generalInvHnd.handleDecline(interaction, games, index));
+	if (!games.get(`game${i}`)) return;
 };
 // #endregion
 
@@ -230,7 +133,7 @@ exports.place = async (interaction, i, args = []) => {
 		const components = game.get("message").components;
 		const newComponents = generalBtnHnd.disableUnempty(board, components);
 		// Update the game message with the new board and components
-		game.get("message").edit({ content: tictactoeRnd.renderTicTacToe(board), components: newComponents });
+		game.get("message").edit({ content: tictactoeRnd.renderGame(board), components: newComponents });
 		// Delete the last game reply if it exists
 		if (game.get("lastInteraction")) {
 			// Differentiate between message and replies
