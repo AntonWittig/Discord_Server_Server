@@ -56,7 +56,7 @@ exports.execute = async (interaction) => {
 		["challenger", user],
 		["nextTurnID", firstUserID],
 		["whiteID", firstUserID],
-		["blackID", user.id === firstUserID ? user.id : opponent.id],
+		["blackID", user.id === firstUserID ? null : user.id],
 	]));
 	const game = games.get(`game${index}`);
 	// Store reply as invitation
@@ -85,6 +85,12 @@ exports.accept = async (interaction, i, args = []) => {
 	args;
 	// Extract correct game from the games dictionary
 	const game = games.get(`game${i}`);
+	if (game.get("whiteID") === null) {
+		game.set("whiteID", interaction.user.id);
+	}
+	else if (game.get("blackID") === null) {
+		game.set("blackID", interaction.user.id);
+	}
 	// Handle the Accept button interaction and potentially start the game
 	interaction.reply(generalInvHnd.handleAccept(interaction, game, i, chessFnct.startGame));
 	if (!game) return;
