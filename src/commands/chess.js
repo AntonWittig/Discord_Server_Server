@@ -148,7 +148,6 @@ exports.select = async (interaction, i, args = []) => {
 					amountPerType[m.piece].froms += m.from;
 				}
 			}
-			console.log(amountPerType);
 			const components = [];
 			let rowIndex = -1;
 			for (let j = 0; j < pieces.length; j++) {
@@ -156,15 +155,13 @@ exports.select = async (interaction, i, args = []) => {
 					components.push(new MessageActionRow());
 					rowIndex++;
 				}
-				if (amountPerType[pieces[j][1]] === 1) {
-					console.log("only one " + pieces[j]);
+				if (amountPerType[pieces[j][1]].amount === 1) {
 					components[rowIndex]
 						.addComponents([new MessageButton()
 							.setCustomId(`chess_select_${pieces[j]}_${amountPerType[pieces[j][1]].froms}_${i}`)
 							.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
 				}
 				else {
-					console.log("multiple " + pieces[j]);
 					components[rowIndex]
 						.addComponents([new MessageButton()
 							.setCustomId(`chess_select_${pieces[j]}_${i}`)
@@ -264,6 +261,20 @@ exports.move = async (interaction, i, args = []) => {
 			const newMoves = instance.moves({ "verbose": true });
 			const pieces = [...new Set(newMoves
 				.map(newMove => newMove.color + newMove.piece))];
+			const amountPerType = {
+				p: { amount: 0, froms: "" },
+				n: { amount: 0, froms: "" },
+				b: { amount: 0, froms: "" },
+				r: { amount: 0, froms: "" },
+				q: { amount: 0, froms: "" },
+				k: { amount: 0, froms: "" },
+			};
+			for (const m of newMoves) {
+				if (!amountPerType[m.piece].froms.includes(m.from)) {
+					amountPerType[m.piece].amount++;
+					amountPerType[m.piece].froms += m.from;
+				}
+			}
 			const components = [];
 			let rowIndex = -1;
 			for (let j = 0; j < pieces.length; j++) {
@@ -271,20 +282,28 @@ exports.move = async (interaction, i, args = []) => {
 					components.push(new MessageActionRow());
 					rowIndex++;
 				}
-				components[rowIndex].addComponents([
-					new MessageButton()
-						.setCustomId(`chess_select_${pieces[j]}_${i}`)
-						.setLabel(chessVars.ascii[pieces[j]])
-						.setStyle("SECONDARY")]);
-				message.edit({
-					"content": chessRnd.renderGame(
-						instance.board(),
-						[],
-						instance.turn() === "b",
-					),
-					"components": components,
-				});
+				if (amountPerType[pieces[j][1]].amount === 1) {
+					components[rowIndex]
+						.addComponents([new MessageButton()
+							.setCustomId(`chess_select_${pieces[j]}_${amountPerType[pieces[j][1]].froms}_${i}`)
+							.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
+				}
+				else {
+					components[rowIndex].addComponents([
+						new MessageButton()
+							.setCustomId(`chess_select_${pieces[j]}_${i}`)
+							.setLabel(chessVars.ascii[pieces[j]])
+							.setStyle("SECONDARY")]);
+				}
 			}
+			message.edit({
+				"content": chessRnd.renderGame(
+					instance.board(),
+					[],
+					instance.turn() === "b",
+				),
+				"components": components,
+			});
 			// Delete the last game reply if it exists
 			if (game.get("lastInteraction")) {
 			// Differentiate between message and replies
