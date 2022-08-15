@@ -1,10 +1,9 @@
 // #region IMPORTS
 // Require the necessary discord.js class
 const { MessageActionRow, MessageButton } = require("discord.js");
-const { debug } = require("node:console");
 
 // Import the chess module for handling chess games
-const chessjs = import("chess.js");
+const chessjs = import("chess.js").then(module => module);
 
 // Require the path module for accessing the correct files
 const path = require("node:path");
