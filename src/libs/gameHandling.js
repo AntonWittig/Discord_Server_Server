@@ -78,6 +78,8 @@ const general = {
 	startGame: function(interaction, game, gameType, originalBoard = [], originalComponents = [], componentHandling = null) {
 		// Define namespaces depending on game type
 		let gameNamespace, renderNamespace = {};
+		console.log(gameNamespace);
+		console.log(renderNamespace);
 		switch (gameType) {
 		case GameType.TicTacToe:
 			gameNamespace = tictactoe;
@@ -88,6 +90,8 @@ const general = {
 			renderNamespace = chessRnd;
 			break;
 		}
+		console.log(gameNamespace);
+		console.log(renderNamespace);
 		// Remove Buttons from the invitation message and append that it has been accepted
 		generalBtnHnd.removeAllMessageButtons(game.get("invitation"))
 			.then(() => {
@@ -415,9 +419,6 @@ const chess = {
 		game.blackID = game.blackID === null ? interaction.user.id : game.blackID;
 		// Create game instance
 		const chessInstance = chessjs.Chess;
-		console.log(chessjs);
-		console.log(chessjs.Chess);
-		console.log(chessInstance);
 		game.set("instance", chessInstance);
 		// Define function to handle game components
 		const componentsHandling = (components) => {
