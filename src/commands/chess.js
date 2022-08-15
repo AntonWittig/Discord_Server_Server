@@ -195,7 +195,7 @@ exports.select = async (interaction, i, args = []) => {
 				instance.board(),
 				instance.moves(moveFilter)
 					.map(move => square ? move.to : move.from),
-				instance.turn() === "w",
+				instance.turn() === "b",
 			),
 		});
 		console.log("test");
