@@ -130,6 +130,7 @@ const chess = {
 							pos => pos.includes(chess.translatePositionToNotation({ x: j, y: i })));
 						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
 					}
+					renderedBoard += "a" + (i + 1);
 					if (i !== 0) renderedBoard += "\n";
 				}
 			}
@@ -140,6 +141,7 @@ const chess = {
 							pos => pos.includes(chess.translatePositionToNotation({ x: j, y: i })));
 						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
 					}
+					renderedBoard += "h" + (8 - i);
 					if (i !== board.length - 1) renderedBoard += "\n";
 				}
 			}
