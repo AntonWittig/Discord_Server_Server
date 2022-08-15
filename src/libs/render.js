@@ -137,7 +137,7 @@ const chess = {
 					for (let j = board[i].length - 1; j >= 0; j--) {
 						console.log(board[i][j]);
 						const attacked = attackedPositions.some(
-							pos => pos.Contains(chess.translatePositionToNotation({ x: j, y: i })));
+							pos => pos.includes(chess.translatePositionToNotation({ x: j, y: i })));
 						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
 					}
 					if (i !== 0) renderedBoard += "\n";
@@ -148,7 +148,7 @@ const chess = {
 					for (let j = 0; j < board[i].length; j++) {
 						console.log(board[i][j]);
 						const attacked = attackedPositions.some(
-							pos => pos.Contains(chess.translatePositionToNotation({ x: j, y: i })));
+							pos => pos.includes(chess.translatePositionToNotation({ x: j, y: i })));
 						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
 					}
 					if (i !== board.length - 1) renderedBoard += "\n";
