@@ -113,16 +113,9 @@ const chess = {
 		return "<:" + emojiName + ":" + emojiID + ">";
 	},
 
-	translatePositionToXY: function(position) {
-		if (typeof position === "string" && position.length === 2) {
-			return { x: position.charCodeAt(0) - 97, y: position.charCodeAt(1) - 49 };
-		}
-		return null;
-	},
-
 	translatePositionToNotation: function(position) {
 		if (typeof position === "object" && position.x && position.y) {
-			return String.fromCharCode(position.x + 97) + (8 - position.y);
+			return String.fromCharCode(position.x + 96) + (8 - position.y);
 		}
 		return null;
 	},

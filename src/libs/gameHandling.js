@@ -212,6 +212,7 @@ const tictactoeVars = {
 		]),
 	],
 };
+exports.tictactoeVars = tictactoeVars;
 // #endregion
 
 // #region TICTACTOE
@@ -343,6 +344,22 @@ const chessVars = {
 		w_pawn: "wp",
 		_: "e",
 	},
+
+	// Define ascii representations of the pieces
+	ascii: {
+		bk: "♚",
+		bq: "♛",
+		br: "♜",
+		bb: "♝",
+		bn: "♞",
+		bp: "♟",
+		wk: "♔",
+		wq: "♕",
+		wr: "♖",
+		wb: "♗",
+		wn: "♘",
+		wp: "♙",
+	},
 	// Define the original game interaction components for making moves
 	originalComponents: [
 	// First row
@@ -358,6 +375,7 @@ const chessVars = {
 		]),
 	],
 };
+exports.chessVars = chessVars;
 // #endregion
 
 const chess = {

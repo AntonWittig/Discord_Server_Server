@@ -12,7 +12,7 @@ const libPath = [__dirname, "..", "libs"];
 const { generalInvHnd } = require(path.join(...libPath, "invitationHandling.js"));
 const { generalBtnHnd } = require(path.join(...libPath, "buttonHandling.js"));
 const { generalMsgHnd } = require(path.join(...libPath, "messageHandling.js"));
-const { chessFnct } = require(path.join(...libPath, "gameHandling.js"));
+const { chessFnct, chessVars } = require(path.join(...libPath, "gameHandling.js"));
 const { chessRnd } = require(path.join(...libPath, "render.js"));
 const { extractEmojiDataFromText } = require(path.join(...libPath, "messageHandling.js"));
 
@@ -145,7 +145,7 @@ exports.select = async (interaction, i, args = []) => {
 				components[rowIndex]
 					.addComponents([new MessageButton()
 						.setCustomId(`chess_select_${pieces[j]}_${i}`)
-						.setLabel(chessFnct.ascii[pieces[j]]).setStyle("SECONDARY")]);
+						.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
 			}
 			message.edit({ "components": components });
 		}
@@ -249,7 +249,7 @@ exports.move = async (interaction, i, args = []) => {
 				components[rowIndex].addComponent(
 					new MessageButton()
 						.setCustomId(`chess_select_${moves[j].color + moves[j].piece}_${i}`)
-						.setLabel(chessFnct.ascii[moves[j].color + moves[j].piece])
+						.setLabel(chessVars.ascii[moves[j].color + moves[j].piece])
 						.setStyle("SECONDARY"));
 				message.edit({
 					"content": chessRnd.renderGame(
