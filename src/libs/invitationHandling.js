@@ -2,9 +2,6 @@
 // Require the necessary discord.js class
 const { MessageButton, MessageActionRow } = require("discord.js");
 
-// Require the monad module for handling nullable values
-const { maybe } = require("monad");
-
 // Require the path module for accessing the correct files
 const path = require("node:path");
 
@@ -52,10 +49,8 @@ const general = {
 		}
 		else {
 			const guildName = interaction.guild.name.toUpperCase();
-			const tictactoeRoleID = maybe(process.env[`ROLE_ID_${guildName}_TICTACTOE`] || null);
-			const roleMessagePart = tictactoeRoleID
-				.bind(() => `<@&${tictactoeRoleID}>`)
-				.getOr("tic tac toe");
+			const tictactoeRoleID = process.env[`ROLE_ID_${guildName}_TICTACTOE`];
+			const roleMessagePart = tictactoeRoleID ? `<@&${tictactoeRoleID}>` : "tic tac toe";
 			// Reply with an open invitation message
 			return { content: `${user} wants to play a game of ${roleMessagePart} against anyone, do you accept?`, components: [row] };
 		}
