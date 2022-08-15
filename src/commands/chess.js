@@ -200,7 +200,7 @@ exports.select = async (interaction, i, args = []) => {
 						components.push(new MessageActionRow());
 						rowIndex++;
 					}
-					const deselectID = square ? `chess_select_${piece}_${i}` :
+					const deselectID = square && !game.get("single").includes(piece[1]) ? `chess_select_${piece}_${i}` :
 						`chess_select_${i}`;
 					components[rowIndex]
 						.addComponents([new MessageButton()
