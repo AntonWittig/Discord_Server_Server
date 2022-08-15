@@ -92,7 +92,7 @@ exports.accept = async (interaction, i, args = []) => {
 		game.set("blackID", interaction.user.id);
 	}
 	// Handle the Accept button interaction and potentially start the game
-	interaction.reply(generalInvHnd.handleAccept(interaction, game, i, chessFnct.startGame));
+	generalInvHnd.handleAccept(interaction, game, i, chessFnct.startGame);
 	if (!game) return;
 };
 
@@ -100,7 +100,7 @@ exports.decline = async (interaction, i, args = []) => {
 	// By default ignore extra arguments
 	args;
 	// Decline the invitation if the request is valid
-	interaction.reply(generalInvHnd.handleDecline(interaction, games, index));
+	generalInvHnd.handleDecline(interaction, games, index);
 	if (!games.get(`game${i}`)) return;
 };
 // #endregion

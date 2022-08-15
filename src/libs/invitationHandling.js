@@ -70,7 +70,7 @@ const general = {
 	 */
 	handleAccept: function(interaction, game, index, startFunction) {
 		// Return a rejection message if the game has already ended
-		if (!game) return { content: "The game has already ended.", ephemeral: true };
+		if (!game) interaction.reply({ content: "The game has already ended.", ephemeral: true });
 		// Check if an opponent has been specified in the invitation
 		if (game.has("opponent")) {
 			// Check if the invoking user is the challenged user/opponent and start the game if so
@@ -79,16 +79,16 @@ const general = {
 			}
 			// Return a rejection message if the invoking user is the challenging user
 			else if (interaction.user.id === game.get("challenger").id) {
-				return { content: "You can't accept this challenge for the opponent.", ephemeral: true };
+				interaction.reply({ content: "You can't accept this challenge for the opponent.", ephemeral: true });
 			}
 			// Return a rejection message if the invoking user is neither the challenging user nor the challenged user/opponent
 			else {
-				return { content: "This challenge is not meant for you.", ephemeral: true };
+				interaction.reply({ content: "This challenge is not meant for you.", ephemeral: true });
 			}
 		}
 		// Return a rejection message if the invoking user wants to accept their own open invitation has been specified
 		else if (interaction.user.id === game.get("challenger").id) {
-			return { content: "You can't accept your own challenge.", ephemeral: true };
+			interaction.reply({ content: "You can't accept your own challenge.", ephemeral: true });
 		}
 		// Start the game if the invoking user is not the challenging user
 		else {
