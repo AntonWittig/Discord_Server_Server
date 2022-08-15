@@ -1,6 +1,9 @@
 // Require the necessary discord.js class
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
+// Require the monad module for handling nullable values
+const { maybe } = require("monad");
+
 // Initialize the command with a name and description
 exports.data = new SlashCommandBuilder()
 	.setName("roll_dice")
@@ -12,11 +15,8 @@ exports.data = new SlashCommandBuilder()
 
 // Execute the command
 exports.execute = async (interaction) => {
-	let sides = interaction.options.getInteger("sides");
-	if (sides === null) {
-		sides = 6;
-	}
-	else if (sides < 1) {
+	const sides = maybe(interaction.options.getInteger("sides")).getOr(6);
+	if (sides < 1) {
 		interaction.reply(process.env.INCORRECT_BOT_USAGE);
 		return;
 	}
