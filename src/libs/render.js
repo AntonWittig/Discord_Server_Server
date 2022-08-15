@@ -157,7 +157,7 @@ const chess = {
 	},
 	// #endregion
 };
-exports.chess = chess;
+exports.chessRnd = chess;
 // #endregion
 
 // #region TICTACTOE
