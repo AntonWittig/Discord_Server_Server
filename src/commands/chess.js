@@ -169,10 +169,11 @@ exports.select = async (interaction, i, args = []) => {
 					components.push(new MessageActionRow());
 					rowIndex++;
 				}
+				const destinationSquare = squares[j].length > 2 ? squares[j].split("_")[1] : squares[j];
 				components[rowIndex]
 					.addComponents([new MessageButton()
 						.setCustomId(`chess_${mainCommand}_${piece}_${squares[j]}_${i}`)
-						.setLabel(square[j].split("_")[1]).setStyle("SECONDARY")]);
+						.setLabel(destinationSquare).setStyle("SECONDARY")]);
 				if (j === squares.length - 1) {
 					if (squares.length % 5 === 0) {
 						components.push(new MessageActionRow());
