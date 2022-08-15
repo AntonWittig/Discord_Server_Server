@@ -141,10 +141,18 @@ exports.select = async (interaction, i, args = []) => {
 					components.push(new MessageActionRow());
 					rowIndex++;
 				}
-				components[rowIndex]
-					.addComponents([new MessageButton()
-						.setCustomId(`chess_select_${pieces[j]}_${i}`)
-						.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
+				if (pieces.length === 1) {
+					components[rowIndex]
+						.addComponents([new MessageButton()
+							.setCustomId(`chess_select_${pieces[j]}_${moves[0].from}_${i}`)
+							.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
+				}
+				else {
+					components[rowIndex]
+						.addComponents([new MessageButton()
+							.setCustomId(`chess_select_${pieces[j]}_${i}`)
+							.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
+				}
 			}
 			message.edit({ "components": components });
 		}
@@ -273,6 +281,7 @@ exports.move = async (interaction, i, args = []) => {
 			// Check if the game is over and who won
 			if (instance.in_checkmate()) {
 				// Change the thread name to reflect the winning user and post a message to the game thread
+				setTimeout(() => { console.log("game was won"); }, 1000);
 				game.get("thread").setName(`Game Over: ${interaction.user.username} won!`)
 					.then(() => {
 						interaction.reply({ content: `${interaction.user} won!` })
@@ -281,6 +290,7 @@ exports.move = async (interaction, i, args = []) => {
 			}
 			else if (instance.in_draw() || instance.in_threefold_repetition() || instance.in_stalemate() || instance.game_over()) {
 				// Change the thread name to reflect a draw if a draw has been reached and post a message to the game thread
+				setTimeout(() => { console.log("game was drawn"); }, 1000);
 				game.get("thread").setName("Game Over: It's a draw!")
 					.then(() => {
 						interaction.reply({ content: "It's a draw! Nobody won." })
