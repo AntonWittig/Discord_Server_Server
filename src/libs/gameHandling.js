@@ -3,11 +3,8 @@
 const { MessageActionRow, MessageButton } = require("discord.js");
 
 // Import the chess module for handling chess games
-const chessPromise = import("chess.js");
-let chessjs;
-chessPromise.then(chess => {
-	chessjs = chess;
-});
+const chessjs = import("chess.js");
+
 // Require the path module for accessing the correct files
 const path = require("node:path");
 
@@ -330,43 +327,43 @@ const ascii = {
 const chessVars = {
 	// Define the representations of the emojis as board representations
 	representations: {
-		black_king_white: chessjs.BLACK + chessjs.KING,
-		black_king_black: chessjs.BLACK + chessjs.KING,
-		black_king_check: chessjs.BLACK + chessjs.KING,
-		black_queen_white: chessjs.BLACK + chessjs.QUEEN,
-		black_queen_black: chessjs.BLACK + chessjs.QUEEN,
-		black_queen_green: chessjs.BLACK + chessjs.QUEEN,
-		black_rook_white: chessjs.BLACK + chessjs.ROOK,
-		black_rook_black: chessjs.BLACK + chessjs.ROOK,
-		black_rook_green: chessjs.BLACK + chessjs.ROOK,
-		black_knight_white: chessjs.BLACK + chessjs.KNIGHT,
-		black_knight_black: chessjs.BLACK + chessjs.KNIGHT,
-		black_knight_green: chessjs.BLACK + chessjs.KNIGHT,
-		black_bishop_white: chessjs.BLACK + chessjs.BISHOP,
-		black_bishop_black: chessjs.BLACK + chessjs.BISHOP,
-		black_bishop_green: chessjs.BLACK + chessjs.BISHOP,
-		black_pawn_white: chessjs.BLACK + chessjs.PAWN,
-		black_pawn_black: chessjs.BLACK + chessjs.PAWN,
-		black_pawn_green: chessjs.BLACK + chessjs.PAWN,
-		white_king_white: chessjs.WHITE + chessjs.KING,
-		white_king_black: chessjs.WHITE + chessjs.KING,
-		white_king_check: chessjs.WHITE + chessjs.KING,
-		white_queen_white: chessjs.WHITE + chessjs.QUEEN,
-		white_queen_black: chessjs.WHITE + chessjs.QUEEN,
-		white_queen_green: chessjs.WHITE + chessjs.QUEEN,
-		white_rook_white: chessjs.WHITE + chessjs.ROOK,
-		white_rook_black: chessjs.WHITE + chessjs.ROOK,
-		white_rook_green: chessjs.WHITE + chessjs.ROOK,
-		white_knight_white: chessjs.WHITE + chessjs.KNIGHT,
-		white_knight_black: chessjs.WHITE + chessjs.KNIGHT,
-		white_knight_green: chessjs.WHITE + chessjs.KNIGHT,
-		white_bishop_white: chessjs.WHITE + chessjs.BISHOP,
-		white_bishop_black: chessjs.WHITE + chessjs.BISHOP,
-		white_bishop_green: chessjs.WHITE + chessjs.BISHOP,
-		white_pawn_white: chessjs.WHITE + chessjs.PAWN,
-		white_pawn_black: chessjs.WHITE + chessjs.PAWN,
-		white_pawn_green: chessjs.WHITE + chessjs.PAWN,
-		empty: chessjs.EMPTY,
+		black_king_white: "bk",
+		black_king_black: "bk",
+		black_king_check: "bk",
+		black_queen_white: "bq",
+		black_queen_black: "bq",
+		black_queen_green: "bq",
+		black_rook_white: "br",
+		black_rook_black: "br",
+		black_rook_green: "br",
+		black_knight_white: "bn",
+		black_knight_black: "bn",
+		black_knight_green: "bn",
+		black_bishop_white: "bb",
+		black_bishop_black: "bb",
+		black_bishop_green: "bb",
+		black_pawn_white: "bp",
+		black_pawn_black: "bp",
+		black_pawn_green: "bp",
+		white_king_white: "wk",
+		white_king_black: "wk",
+		white_king_check: "wk",
+		white_queen_white: "wq",
+		white_queen_black: "wq",
+		white_queen_green: "wq",
+		white_rook_white: "wr",
+		white_rook_black: "wr",
+		white_rook_green: "wr",
+		white_knight_white: "wn",
+		white_knight_black: "wn",
+		white_knight_green: "wn",
+		white_bishop_white: "wb",
+		white_bishop_black: "wb",
+		white_bishop_green: "wb",
+		white_pawn_white: "wp",
+		white_pawn_black: "wp",
+		white_pawn_green: "wp",
+		empty: "e",
 	},
 	// Define the original game interaction components for making moves
 	originalComponents: [
