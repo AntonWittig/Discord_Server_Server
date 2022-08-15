@@ -76,13 +76,8 @@ const general = {
 	 * The original/initial board of the game
 	 */
 	startGame: function(interaction, game, gameType, originalBoard = [], originalComponents = [], componentHandling = null) {
-
-		console.log(tictactoeRnd);
-		console.log(chessRnd);
 		// Define namespaces depending on game type
 		let gameNamespace = {}, renderNamespace = {};
-		console.log(gameNamespace);
-		console.log(renderNamespace);
 		switch (gameType) {
 		case GameType.TicTacToe:
 			gameNamespace = tictactoe;
@@ -93,8 +88,6 @@ const general = {
 			renderNamespace = chessRnd;
 			break;
 		}
-		console.log(gameNamespace);
-		console.log(renderNamespace);
 		// Remove Buttons from the invitation message and append that it has been accepted
 		generalBtnHnd.removeAllMessageButtons(game.get("invitation"))
 			.then(() => {

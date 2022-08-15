@@ -111,6 +111,7 @@ const chess = {
 		const emojiDict = chess.emojiIDs[id];
 		const emojiName = emojiDict.name + baseColor;
 		const emojiID = emojiDict[baseColor];
+		console.log("emojiName: " + emojiName + "; emojiID: " + emojiID);
 		return "<:" + emojiName + ":" + emojiID + ">";
 	},
 
@@ -130,6 +131,7 @@ const chess = {
 
 	// TODO: call with chessinstance.moves{verbose: true}
 	renderGame: function(board, attackedPositions = [], flipped = false) {
+		console.log("renderGame: " + board);
 		if (board !== undefined && board !== null && board.length === 8) {
 			let renderedBoard = "";
 			if (flipped) {
@@ -152,6 +154,7 @@ const chess = {
 					if (i !== board.length - 1) renderedBoard += "\n";
 				}
 			}
+			console.log("renderedBoard: " + renderedBoard);
 			return renderedBoard;
 		}
 	},
