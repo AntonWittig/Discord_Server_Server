@@ -134,6 +134,20 @@ exports.select = async (interaction, i, args = []) => {
 		if (!piece) {
 			const pieces = [...new Set(moves
 				.map(move => move.color + move.piece))];
+			const amountPerType = {
+				p: { amount: 0, froms: "" },
+				n: { amount: 0, froms: "" },
+				b: { amount: 0, froms: "" },
+				r: { amount: 0, froms: "" },
+				q: { amount: 0, froms: "" },
+				k: { amount: 0, froms: "" },
+			};
+			for (const m of moves) {
+				if (!amountPerType[m.piece].froms.includes(m.from)) {
+					amountPerType[m.piece].amount++;
+					amountPerType[m.piece].froms += m.from;
+				}
+			}
 			const components = [];
 			let rowIndex = -1;
 			for (let j = 0; j < pieces.length; j++) {
@@ -141,7 +155,12 @@ exports.select = async (interaction, i, args = []) => {
 					components.push(new MessageActionRow());
 					rowIndex++;
 				}
-				// TODO shorten process of selecting by not needing to select single pieces like queen or king
+				if (amountPerType[pieces[j][1]] === 1) {
+					components[rowIndex]
+						.addComponents([new MessageButton()
+							.setCustomId(`chess_select_${pieces[j]}_${amountPerType[pieces[j][1]].froms}_${i}`)
+							.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
+				}
 				components[rowIndex]
 					.addComponents([new MessageButton()
 						.setCustomId(`chess_select_${pieces[j]}_${i}`)
@@ -274,21 +293,25 @@ exports.move = async (interaction, i, args = []) => {
 			// Check if the game is over and who won
 			if (instance.in_checkmate()) {
 				// Change the thread name to reflect the winning user and post a message to the game thread
-				setTimeout(() => { console.log("game was won"); }, 1000);
-				game.get("thread").setName(`Game Over: ${interaction.user.username} won!`)
-					.then(() => {
-						interaction.reply({ content: `${interaction.user} won!` })
-							.then(() => chessFnct.endGame(games, i));
-					});
+				setTimeout(() => {
+					game.get("thread").setName(`Game Over: ${interaction.user.username} won!`)
+						.then(() => {
+							interaction.reply({ content: `${interaction.user} won!` })
+								.then(() => chessFnct.endGame(games, i));
+						});
+				}, 1000);
+
 			}
 			else if (instance.in_draw() || instance.in_threefold_repetition() || instance.in_stalemate() || instance.game_over()) {
 				// Change the thread name to reflect a draw if a draw has been reached and post a message to the game thread
-				setTimeout(() => { console.log("game was drawn"); }, 1000);
-				game.get("thread").setName("Game Over: It's a draw!")
-					.then(() => {
-						interaction.reply({ content: "It's a draw! Nobody won." })
-							.then(() => chessFnct.endGame(games, i));
-					});
+				setTimeout(() => {
+					game.get("thread").setName("Game Over: It's a draw!")
+						.then(() => {
+							interaction.reply({ content: "It's a draw! Nobody won." })
+								.then(() => chessFnct.endGame(games, i));
+						});
+				}, 1000);
+
 			}
 			else {
 				// Post a message to the game thread with information about the last move and ping the next user if the game is not over
