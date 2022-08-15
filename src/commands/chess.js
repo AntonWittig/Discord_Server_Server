@@ -107,7 +107,6 @@ exports.decline = async (interaction, i, args = []) => {
 
 // #region GAME BUTTONS
 exports.select = async (interaction, i, args = []) => {
-	console.log(instance.turn());
 	// Parse extra arguments to get the piece
 	const piece = args.length > 0 ? args[0] : null;
 	const square = args.length > 1 ? args[1] : null;
@@ -116,6 +115,7 @@ exports.select = async (interaction, i, args = []) => {
 	const game = games.get(`game${i}`);
 	const message = game.get("message");
 	const instance = game.get("instance");
+	console.log(instance.turn());
 	// Send a rejection message if the game has already ended
 	if (!game) {
 		interaction.reply({ content: "The game has already ended.", ephemeral: true });
