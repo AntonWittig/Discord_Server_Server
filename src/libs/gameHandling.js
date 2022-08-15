@@ -1,6 +1,7 @@
 // #region IMPORTS
 // Require the necessary discord.js class
 const { MessageActionRow, MessageButton } = require("discord.js");
+const { debug } = require("node:console");
 
 // Import the chess module for handling chess games
 const chessjs = import("chess.js");
@@ -414,6 +415,9 @@ const chess = {
 		game.blackID = game.blackID === null ? interaction.user.id : game.blackID;
 		// Create game instance
 		const chessInstance = chessjs.Chess;
+		console.log(chessjs);
+		console.log(chessjs.Chess);
+		console.log(chessInstance);
 		game.set("instance", chessInstance);
 		// Define function to handle game components
 		const componentsHandling = (components) => {
@@ -431,7 +435,7 @@ const chess = {
 			}
 		};
 		// Call general startGame function
-		general.startGame(interaction, game, GameType.Chess, chessInstance.board(), chessVars.originalComponents, componentsHandling);
+		general.startGame(interaction, game, GameType.Chess, chessInstance.board, chessVars.originalComponents, componentsHandling);
 	},
 
 	/**
