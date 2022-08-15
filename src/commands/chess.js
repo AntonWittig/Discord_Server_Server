@@ -143,9 +143,9 @@ exports.select = async (interaction, i, args = []) => {
 					rowIndex++;
 				}
 				components[rowIndex]
-					.addComponent(new MessageButton()
+					.addComponents([new MessageButton()
 						.setCustomId(`chess_select_${pieces[j]}_${i}`)
-						.setLabel(chessFnct.ascii[pieces[j]]).setStyle("SECONDARY"));
+						.setLabel(chessFnct.ascii[pieces[j]]).setStyle("SECONDARY")]);
 			}
 			message.edit({ "components": components });
 		}
@@ -171,9 +171,9 @@ exports.select = async (interaction, i, args = []) => {
 					rowIndex++;
 				}
 				components[rowIndex]
-					.addComponent(new MessageButton()
+					.addComponents([new MessageButton()
 						.setCustomId(`chess_${mainCommand}_${piece}_${squares[j]}_${i}`)
-						.setLabel(squares[j]).setStyle("SECONDARY"));
+						.setLabel(squares[j]).setStyle("SECONDARY")]);
 				if (j === squares.length - 1) {
 					if (squares.length % 5 === 0) {
 						components.push(new MessageActionRow());
@@ -182,9 +182,9 @@ exports.select = async (interaction, i, args = []) => {
 					const deselectID = square ? `chess_select_${piece}_${i}` :
 						`chess_select_${i}`;
 					components[rowIndex]
-						.addComponent(new MessageButton()
+						.addComponents([new MessageButton()
 							.setCustomId(deselectID)
-							.setLabel("🔙").setStyle("DANGER"));
+							.setLabel("🔙").setStyle("DANGER")]);
 				}
 			}
 			console.log(components);
