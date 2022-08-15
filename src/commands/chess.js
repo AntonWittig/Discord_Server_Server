@@ -107,6 +107,7 @@ exports.decline = async (interaction, i, args = []) => {
 
 // #region GAME BUTTONS
 exports.select = async (interaction, i, args = []) => {
+	console.log(instance.turn());
 	// Parse extra arguments to get the piece
 	const piece = args.length > 0 ? args[0] : null;
 	const square = args.length > 1 ? args[1] : null;
@@ -235,6 +236,8 @@ exports.move = async (interaction, i, args = []) => {
 			"piece": piece,
 		});
 		if (move) {
+			console.log(instance.turn());
+			console.log("w: " + game.get("whiteID") + " b: " + game.get("blackID"));
 			game.set("nextTurnID", instance.turn() === "w" ?
 				game.get("whiteID") : game.get("blackID"));
 			const newMoves = instance.moves({ "verbose": true });
@@ -261,6 +264,7 @@ exports.move = async (interaction, i, args = []) => {
 					"components": components,
 				});
 			}
+			interaction.deferUpdate();
 		}
 		else {
 			interaction.reply({ content: "Invalid move.", ephemeral: true });
