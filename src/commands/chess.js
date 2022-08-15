@@ -57,6 +57,7 @@ exports.execute = async (interaction) => {
 		["nextTurnID", firstUserID],
 		["whiteID", firstUserID],
 		["blackID", user.id === firstUserID ? null : user.id],
+		["single", ""],
 	]));
 	const game = games.get(`game${index}`);
 	// Store reply as invitation
@@ -113,14 +114,13 @@ exports.select = async (interaction, i, args = []) => {
 
 	// Extract correct game from the games dictionary
 	const game = games.get(`game${i}`);
-	const message = game.get("message");
-	const instance = game.get("instance");
-	console.log(instance.turn());
 	// Send a rejection message if the game has already ended
 	if (!game) {
 		interaction.reply({ content: "The game has already ended.", ephemeral: true });
 		return;
 	}
+	const message = game.get("message");
+	const instance = game.get("instance");
 	// Check if its the invoking users turn
 	if (interaction.user.id === game.get("nextTurnID")) {
 		let moveFilter = { "verbose": true };
@@ -135,16 +135,15 @@ exports.select = async (interaction, i, args = []) => {
 			const pieces = [...new Set(moves
 				.map(move => move.color + move.piece))];
 			const amountPerType = {
-				p: { amount: 0, froms: "" },
-				n: { amount: 0, froms: "" },
-				b: { amount: 0, froms: "" },
-				r: { amount: 0, froms: "" },
-				q: { amount: 0, froms: "" },
-				k: { amount: 0, froms: "" },
+				p: { froms: "" },
+				n: { froms: "" },
+				b: { froms: "" },
+				r: { froms: "" },
+				q: { froms: "" },
+				k: { froms: "" },
 			};
 			for (const m of moves) {
 				if (!amountPerType[m.piece].froms.includes(m.from)) {
-					amountPerType[m.piece].amount++;
 					amountPerType[m.piece].froms += m.from;
 				}
 			}
@@ -155,7 +154,7 @@ exports.select = async (interaction, i, args = []) => {
 					components.push(new MessageActionRow());
 					rowIndex++;
 				}
-				if (amountPerType[pieces[j][1]].amount === 1) {
+				if (game.get("single").includes(pieces[j][1])) {
 					components[rowIndex]
 						.addComponents([new MessageButton()
 							.setCustomId(`chess_select_${pieces[j]}_${amountPerType[pieces[j][1]].froms}_${i}`)
@@ -239,13 +238,13 @@ exports.move = async (interaction, i, args = []) => {
 
 	// Extract correct game from the games dictionary
 	const game = games.get(`game${i}`);
-	const message = game.get("message");
-	const instance = game.get("instance");
 	// Send a rejection message if the game has already ended
 	if (!game) {
 		interaction.reply({ content: "The game has already ended.", ephemeral: true });
 		return;
 	}
+	const message = game.get("message");
+	const instance = game.get("instance");
 	// Check if its the invoking users turn
 	if (interaction.user.id === game.get("nextTurnID")) {
 		// Check if the move is valid
@@ -256,6 +255,7 @@ exports.move = async (interaction, i, args = []) => {
 			"piece": piece,
 		});
 		if (move) {
+			game.set("single", "");
 			game.set("nextTurnID", instance.turn() === "w" ?
 				game.get("whiteID") : game.get("blackID"));
 			const newMoves = instance.moves({ "verbose": true });
@@ -283,6 +283,7 @@ exports.move = async (interaction, i, args = []) => {
 					rowIndex++;
 				}
 				if (amountPerType[pieces[j][1]].amount === 1) {
+					game.set("single", game.get("single") + pieces[j][1]);
 					components[rowIndex]
 						.addComponents([new MessageButton()
 							.setCustomId(`chess_select_${pieces[j]}_${amountPerType[pieces[j][1]].froms}_${i}`)
@@ -324,7 +325,6 @@ exports.move = async (interaction, i, args = []) => {
 								.then(() => chessFnct.endGame(games, i));
 						});
 				}, 1000);
-
 			}
 			else if (instance.in_draw() || instance.in_threefold_repetition() || instance.in_stalemate() || instance.game_over()) {
 				// Change the thread name to reflect a draw if a draw has been reached and post a message to the game thread
