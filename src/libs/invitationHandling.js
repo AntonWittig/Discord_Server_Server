@@ -49,8 +49,8 @@ const general = {
 		}
 		else {
 			const guildName = interaction.guild.name.toUpperCase();
-			const tictactoeRoleID = process.env[`ROLE_ID_${guildName}_TICTACTOE`];
-			const roleMessagePart = tictactoeRoleID ? `<@&${tictactoeRoleID}>` : "tic tac toe";
+			const roleID = process.env[`ROLE_ID_${guildName}_${gameName.toUpperCase()}`];
+			const roleMessagePart = roleID ? `<@&${roleID}>` : gameName;
 			// Reply with an open invitation message
 			return { content: `${user} wants to play a game of ${roleMessagePart} against anyone, do you accept?`, components: [row] };
 		}
