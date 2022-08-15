@@ -198,7 +198,6 @@ exports.select = async (interaction, i, args = []) => {
 				instance.turn() === "b",
 			),
 		});
-		console.log("test");
 		interaction.deferUpdate();
 	}
 	// Reply with a rejection message if its not the invoking users turn
@@ -246,11 +245,11 @@ exports.move = async (interaction, i, args = []) => {
 					components.push(new MessageActionRow());
 					rowIndex++;
 				}
-				components[rowIndex].addComponent(
+				components[rowIndex].addComponents([
 					new MessageButton()
 						.setCustomId(`chess_select_${moves[j].color + moves[j].piece}_${i}`)
 						.setLabel(chessVars.ascii[moves[j].color + moves[j].piece])
-						.setStyle("SECONDARY"));
+						.setStyle("SECONDARY")]);
 				message.edit({
 					"content": chessRnd.renderGame(
 						instance.board(),
