@@ -136,7 +136,7 @@ exports.select = async (interaction, i, args = []) => {
 			const pieces = [...new Set(moves
 				.map(move => move.color + move.piece))];
 			const components = [];
-			let rowIndex = 0;
+			let rowIndex = -1;
 			for (let j = 0; j < pieces.length; j++) {
 				if (j % 5 === 0) {
 					components.push(new MessageActionRow());
@@ -164,7 +164,7 @@ exports.select = async (interaction, i, args = []) => {
 				mainCommand = "select";
 			}
 			const components = [];
-			let rowIndex = 0;
+			let rowIndex = -1;
 			for (let j = 0; j < squares.length; j++) {
 				if (j % 5 === 0) {
 					components.push(new MessageActionRow());
@@ -238,7 +238,7 @@ exports.move = async (interaction, i, args = []) => {
 			game.set("nextTurnID", instance.turn() === "w" ?
 				game.get("whiteID") : game.get("blackID"));
 			const components = [];
-			let rowIndex = 0;
+			let rowIndex = -1;
 			const moves = instance.moves({ "verbose": true });
 			for (let j = 0; j < moves.length; j++) {
 				if (j % 5 === 0) {
