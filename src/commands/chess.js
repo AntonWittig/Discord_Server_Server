@@ -141,18 +141,11 @@ exports.select = async (interaction, i, args = []) => {
 					components.push(new MessageActionRow());
 					rowIndex++;
 				}
-				if (!pieces.some(p => p.slice(1) === pieces[j].slice(1))) {
-					components[rowIndex]
-						.addComponents([new MessageButton()
-							.setCustomId(`chess_select_${pieces[j]}_${moves[0].from}_${i}`)
-							.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
-				}
-				else {
-					components[rowIndex]
-						.addComponents([new MessageButton()
-							.setCustomId(`chess_select_${pieces[j]}_${i}`)
-							.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
-				}
+				// TODO shorten process of selecting by not needing to select single pieces like queen or king
+				components[rowIndex]
+					.addComponents([new MessageButton()
+						.setCustomId(`chess_select_${pieces[j]}_${i}`)
+						.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
 			}
 			message.edit({ "components": components });
 		}
