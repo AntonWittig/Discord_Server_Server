@@ -2,8 +2,8 @@
 // Require the necessary discord.js class
 const { MessageActionRow, MessageButton } = require("discord.js");
 
-// Require the chess module for handling chess games
-const chessjs = require("chess.js");
+// Import the chess module for handling chess games
+const chessjs = import("chess.js");
 
 // Require the path module for accessing the correct files
 const path = require("node:path");
@@ -146,9 +146,8 @@ const general = {
 };
 // #endregion
 
-// #region TICTACTOE
-const tictactoe = {
-	// #region VARIABLES
+// #region VARIABLES
+const tictactoeVars = {
 	representations: {
 		x: "x",
 		o: "o",
@@ -164,9 +163,9 @@ const tictactoe = {
 
 	// Define the original game interaction components for placing symbols
 	originalComponents: [
-	// First row
+		// First row
 		new MessageActionRow().addComponents([
-		// Top left placing button
+			// Top left placing button
 			new MessageButton()
 				.setCustomId("tictactoe_place_0_0_i")
 				.setLabel("↖️").setStyle("SECONDARY"),
@@ -181,7 +180,7 @@ const tictactoe = {
 		]),
 		// Second row
 		new MessageActionRow().addComponents([
-		// Middle left placing button
+			// Middle left placing button
 			new MessageButton()
 				.setCustomId("tictactoe_place_0_1_i")
 				.setLabel("⬅️").setStyle("SECONDARY"),
@@ -196,7 +195,7 @@ const tictactoe = {
 		]),
 		// Third row
 		new MessageActionRow().addComponents([
-		// Bottom left placing button
+			// Bottom left placing button
 			new MessageButton()
 				.setCustomId("tictactoe_place_0_2_i")
 				.setLabel("↙️").setStyle("SECONDARY"),
@@ -210,8 +209,11 @@ const tictactoe = {
 				.setLabel("↘️").setStyle("SECONDARY"),
 		]),
 	],
-	// #endregion
+};
+// #endregion
 
+// #region TICTACTOE
+const tictactoe = {
 	/**
 	 * This function is used to extract the tictactoe board data from a message.
 	 * @param	{String}				message
@@ -219,7 +221,7 @@ const tictactoe = {
 	 * @return	{Array<Array<String>>}	The board of the game
 	 */
 	parseBoard: function(message) {
-		return general.parseBoard(message, tictactoe.representations);
+		return general.parseBoard(message, tictactoeVars.representations);
 	},
 
 	/**
@@ -287,7 +289,7 @@ const tictactoe = {
 			}
 		};
 		// Call general startGame function
-		general.startGame(interaction, game, GameType.TicTacToe, tictactoe.originalBoard, tictactoe.originalComponents, componentsHandling);
+		general.startGame(interaction, game, GameType.TicTacToe, tictactoeVars.originalBoard, tictactoeVars.originalComponents, componentsHandling);
 	},
 
 	/**
@@ -306,7 +308,6 @@ exports.tictactoeFnct = tictactoe;
 
 // #region CHESS
 // #region VARIABLES
-// Define representations on board
 const chessRep = {
 	bk: "bk",
 	bq: "bq",
@@ -322,24 +323,23 @@ const chessRep = {
 	wp: "wp",
 	e: "e",
 };
-
-const chess = {
-	// Define ascii representations of the pieces
-	ascii: {
-		bk: "♚",
-		bq: "♛",
-		br: "♜",
-		bb: "♝",
-		bn: "♞",
-		bp: "♟",
-		wk: "♔",
-		wq: "♕",
-		wr: "♖",
-		wb: "♗",
-		wn: "♘",
-		wp: "♙",
-	},
-
+// Define ascii representations of the pieces
+const ascii = {
+	bk: "♚",
+	bq: "♛",
+	br: "♜",
+	bb: "♝",
+	bn: "♞",
+	bp: "♟",
+	wk: "♔",
+	wq: "♕",
+	wr: "♖",
+	wb: "♗",
+	wn: "♘",
+	wp: "♙",
+};
+// Define representations on board
+const chessVars = {
 	// Define the representations of the emojis as board representations
 	representations: {
 		black_king_white: chessRep.bk, black_king_black: chessRep.bk, black_king_check: chessRep.bk,
@@ -356,7 +356,6 @@ const chess = {
 		white_pawn_white: chessRep.wp, white_pawn_black: chessRep.wp, white_pawn_green: chessRep.wp,
 		empty: chessRep.e,
 	},
-
 	// Define the original game interaction components for making moves
 	originalComponents: [
 	// First row
@@ -364,15 +363,17 @@ const chess = {
 			// White pawn selecting button
 			new MessageButton()
 				.setCustomId("chess_select_wp_")
-				.setLabel(chess.ascii.wp).setStyle("SECONDARY"),
+				.setLabel(ascii.wp).setStyle("SECONDARY"),
 			// White knight selecting button
 			new MessageButton()
 				.setCustomId("chess_select_wn_")
-				.setLabel(chess.ascii.wn).setStyle("SECONDARY"),
+				.setLabel(ascii.wn).setStyle("SECONDARY"),
 		]),
 	],
-	// #endregion
+};
+// #endregion
 
+const chess = {
 	/**
 	 * This function is used to extract the chess board data from a message.
 	 * @param	{String}				message
@@ -384,7 +385,7 @@ const chess = {
 		console.log("chess.parseBoard");
 		console.log(typeof message);
 
-		return general.parseBoard(message, chess.representations);
+		return general.parseBoard(message, chessVars.representations);
 	},
 
 	/**
@@ -421,7 +422,7 @@ const chess = {
 			}
 		};
 		// Call general startGame function
-		general.startGame(interaction, game, GameType.Chess, chessInstance.board(), chess.originalComponents, componentsHandling);
+		general.startGame(interaction, game, GameType.Chess, chessInstance.board(), chessVars.originalComponents, componentsHandling);
 	},
 
 	/**
