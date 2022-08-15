@@ -94,7 +94,6 @@ const chess = {
 
 	renderPiece: function(board, position, attacked = false, checked = "") {
 		const piece = board[position.y][position.x];
-		console.log("renderPiece: " + piece);
 
 		let baseColor = chess.getBaseColor(position.x, position.y);
 		if (piece !== null && piece.type === "k") {
@@ -111,7 +110,6 @@ const chess = {
 		const emojiDict = chess.emojiIDs[id];
 		const emojiName = emojiDict.name;
 		const emojiID = emojiDict[baseColor];
-		console.log("emojiName: " + emojiName + "; emojiID: " + emojiID);
 		return "<:" + emojiName + ":" + emojiID + ">";
 	},
 

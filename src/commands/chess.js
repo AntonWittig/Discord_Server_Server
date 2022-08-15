@@ -111,13 +111,13 @@ exports.select = async (interaction, i, args = []) => {
 	const piece = args.length > 0 ? args[0] : null;
 	const square = args.length > 1 ? args[1] : null;
 
+	// Extract correct game from the games dictionary
+	const game = games.get(`game${i}`);
 	// Send a rejection message if the game has already ended
 	if (!game) {
 		interaction.reply({ content: "The game has already ended.", ephemeral: true });
 		return;
 	}
-	// Extract correct game from the games dictionary
-	const game = games.get(`game${i}`);
 	const message = game.get("message");
 	const instance = game.get("instance");
 	// Check if its the invoking users turn
