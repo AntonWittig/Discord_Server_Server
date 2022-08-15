@@ -413,7 +413,7 @@ const chess = {
 		game.whiteID = game.whiteID === null ? interaction.user.id : game.whiteID;
 		game.blackID = game.blackID === null ? interaction.user.id : game.blackID;
 		// Create game instance
-		const chessInstance = chessjs.Chess();
+		const chessInstance = chessjs.Chess;
 		game.set("instance", chessInstance);
 		// Define function to handle game components
 		const componentsHandling = (components) => {
