@@ -119,8 +119,7 @@ const chess = {
 		return null;
 	},
 
-	// TODO: call with chessinstance.moves{verbose: true}
-	renderGame: function(board, attackedPositions = [], flipped = false) {
+	renderGame: function(board, attackedPositions = [], flipped = false, checked = "") {
 		if (board !== undefined && board !== null && board.length === 8) {
 			let renderedBoard = "";
 			if (flipped) {
@@ -128,7 +127,7 @@ const chess = {
 					for (let j = board[i].length - 1; j >= 0; j--) {
 						const attacked = attackedPositions.some(
 							pos => pos.includes(chess.translatePositionToNotation({ x: j, y: i })));
-						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
+						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked, checked);
 					}
 					renderedBoard += "a" + (8 - i);
 					if (i !== 0) renderedBoard += "\n";
@@ -139,7 +138,7 @@ const chess = {
 					for (let j = 0; j < board[i].length; j++) {
 						const attacked = attackedPositions.some(
 							pos => pos.includes(chess.translatePositionToNotation({ x: j, y: i })));
-						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
+						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked, checked);
 					}
 					renderedBoard += "h" + (8 - i);
 					if (i !== board.length - 1) renderedBoard += "\n";

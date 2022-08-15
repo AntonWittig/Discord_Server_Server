@@ -210,12 +210,14 @@ exports.select = async (interaction, i, args = []) => {
 			}
 			message.edit({ "components": components });
 		}
+		const checked = instance.in_check() ? instance.turn() : "";
 		game.get("message").edit({
 			"content": chessRnd.renderGame(
 				instance.board(),
 				piece ? instance.moves(moveFilter)
 					.map(move => square ? move.to : move.from) : [],
 				instance.turn() === "b",
+				checked,
 			),
 		});
 		interaction.deferUpdate();
@@ -297,11 +299,13 @@ exports.move = async (interaction, i, args = []) => {
 							.setStyle("SECONDARY")]);
 				}
 			}
+			const checked = instance.in_check() ? instance.turn() : "";
 			message.edit({
 				"content": chessRnd.renderGame(
 					instance.board(),
 					[],
 					instance.turn() === "b",
+					checked,
 				),
 				"components": components,
 			});
