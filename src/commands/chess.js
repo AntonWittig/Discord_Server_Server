@@ -197,6 +197,7 @@ exports.select = async (interaction, i, args = []) => {
 				instance.turn() === "b",
 			),
 		});
+		interaction.deferUpdate();
 	}
 	// Reply with a rejection message if its not the invoking users turn
 	else {
@@ -294,7 +295,6 @@ exports.move = async (interaction, i, args = []) => {
 				// Set this interaction as the last interaction
 				game.set("lastInteraction", interaction);
 			}
-			interaction.deferUpdate();
 		}
 		else {
 			interaction.reply({ content: "Invalid move.", ephemeral: true });
