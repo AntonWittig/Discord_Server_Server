@@ -198,6 +198,7 @@ exports.select = async (interaction, i, args = []) => {
 				instance.turn() === "w",
 			),
 		});
+		console.log("test");
 	}
 	// Reply with a rejection message if its not the invoking users turn
 	else {
