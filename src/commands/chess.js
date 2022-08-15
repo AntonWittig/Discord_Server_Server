@@ -135,7 +135,7 @@ exports.select = async (interaction, i, args = []) => {
 		if (!piece) {
 			const pieces = [...new Set(moves
 				.map(move => move.color + move.piece))];
-			const components = [new MessageActionRow()];
+			const components = [];
 			let rowIndex = 0;
 			for (let j = 0; j < pieces.length; j++) {
 				if (j % 5 === 0) {
