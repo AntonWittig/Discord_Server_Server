@@ -240,11 +240,13 @@ exports.move = async (interaction, i, args = []) => {
 			const components = [];
 			let rowIndex = -1;
 			const moves = instance.moves({ "verbose": true });
+			console.log(moves);
 			for (let j = 0; j < moves.length; j++) {
 				if (j % 5 === 0) {
 					components.push(new MessageActionRow());
 					rowIndex++;
 				}
+				console.log(moves[j].color + moves[j].piece);
 				components[rowIndex].addComponents([
 					new MessageButton()
 						.setCustomId(`chess_select_${moves[j].color + moves[j].piece}_${i}`)
@@ -254,7 +256,7 @@ exports.move = async (interaction, i, args = []) => {
 					"content": chessRnd.renderGame(
 						instance.board(),
 						[],
-						instance.turn() === "w",
+						instance.turn() === "b",
 					),
 					"components": components,
 				});
