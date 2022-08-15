@@ -173,7 +173,7 @@ exports.select = async (interaction, i, args = []) => {
 				components[rowIndex]
 					.addComponent(new MessageButton()
 						.setCustomId(`chess_${mainCommand}_${piece}_${squares[j]}_${i}`)
-						.setLabel().setStyle("SECONDARY"));
+						.setLabel(squares[j]).setStyle("SECONDARY"));
 				if (j === squares.length - 1) {
 					if (squares.length % 5 === 0) {
 						components.push(new MessageActionRow());
