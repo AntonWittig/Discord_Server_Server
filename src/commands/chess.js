@@ -141,7 +141,7 @@ exports.select = async (interaction, i, args = []) => {
 					components.push(new MessageActionRow());
 					rowIndex++;
 				}
-				if (pieces.length === 1) {
+				if (!pieces.some(p => p.slice(1) === pieces[j].slice(1))) {
 					components[rowIndex]
 						.addComponents([new MessageButton()
 							.setCustomId(`chess_select_${pieces[j]}_${moves[0].from}_${i}`)
