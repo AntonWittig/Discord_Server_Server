@@ -113,13 +113,13 @@ exports.select = async (interaction, i, args = []) => {
 
 	// Extract correct game from the games dictionary
 	const game = games.get(`game${i}`);
+	const message = game.get("message");
+	const instance = game.get("instance");
 	// Send a rejection message if the game has already ended
 	if (!game) {
 		interaction.reply({ content: "The game has already ended.", ephemeral: true });
 		return;
 	}
-	const message = game.get("message");
-	const instance = game.get("instance");
 	// Check if its the invoking users turn
 	if (interaction.user.id === game.get("nextTurnID")) {
 		let moveFilter = { "verbose": true };
@@ -217,15 +217,15 @@ exports.move = async (interaction, i, args = []) => {
 	const from = args[1];
 	const to = args[2];
 
+	// Extract correct game from the games dictionary
+	const game = games.get(`game${i}`);
+	const message = game.get("message");
+	const instance = game.get("instance");
 	// Send a rejection message if the game has already ended
 	if (!game) {
 		interaction.reply({ content: "The game has already ended.", ephemeral: true });
 		return;
 	}
-	// Extract correct game from the games dictionary
-	const game = games.get(`game${i}`);
-	const message = game.get("message");
-	const instance = game.get("instance");
 	// Check if its the invoking users turn
 	if (interaction.user.id === game.get("nextTurnID")) {
 		// Check if the move is valid
