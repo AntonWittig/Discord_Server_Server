@@ -105,10 +105,10 @@ const general = {
 			// Handle game components
 			componentHandling ? componentHandling(components) : null;
 			// Send a message with the rendered board and the updated components to the thread
-			let messagecontent = renderNamespace.renderGame(originalBoard);
-			const message = thread.send({
+			thread.send({
 				components: originalComponents,
-				content: messagecontent.slice(0, 1999),
+				content: renderNamespace.renderGame(originalBoard),
+				split: true,
 			}).then(msg => {
 			// Add the game message and the current(initial) board to the game dictionary
 				game.set("message", msg);
@@ -118,16 +118,6 @@ const general = {
 					.then(startInfo => {
 						game.set("lastInteraction", startInfo);
 					});
-			});
-			while (messagecontent.length > 2000) {
-				messagecontent = messagecontent.slice(2000);
-				console.log(messagecontent);
-				message.then(msg => {
-					msg.content.append(messagecontent.slice(0, 1999));
-				});
-			}
-			message.then(msg => {
-				msg.content.append(messagecontent.slice(0, 1999));
 			});
 		});
 	},
