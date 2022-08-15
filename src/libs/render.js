@@ -153,7 +153,6 @@ const chess = {
 					if (i !== board.length - 1) renderedBoard += "\n";
 				}
 			}
-			console.log("renderedBoard: " + renderedBoard);
 			return renderedBoard;
 		}
 	},

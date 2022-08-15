@@ -105,18 +105,29 @@ const general = {
 			// Handle game components
 			componentHandling ? componentHandling(components) : null;
 			// Send a message with the rendered board and the updated components to the thread
-			thread.send({
+			let messagecontent = renderNamespace.renderGame(originalBoard);
+			const message = thread.send({
 				components: originalComponents,
-				content: renderNamespace.renderGame(originalBoard),
-			}).then(message => {
+				content: messagecontent.slice(0, 1999),
+			}).then(msg => {
 			// Add the game message and the current(initial) board to the game dictionary
-				game.set("message", message);
-				game.set("board", gameNamespace.parseBoard(message.content));
+				game.set("message", msg);
+				game.set("board", gameNamespace.parseBoard(msg.content));
 			}).then(() => {
 				thread.send({ content: `It's <@${game.get("nextTurnID")}>s turn.`, fetchReply: true })
 					.then(startInfo => {
 						game.set("lastInteraction", startInfo);
 					});
+			});
+			while (messagecontent.length > 2000) {
+				messagecontent = messagecontent.slice(2000);
+				console.log(messagecontent);
+				message.then(msg => {
+					msg.content.append(messagecontent.slice(0, 1999));
+				});
+			}
+			message.then(msg => {
+				msg.content.append(messagecontent.slice(0, 1999));
 			});
 		});
 	},
