@@ -130,6 +130,8 @@ exports.select = async (interaction, i, args = []) => {
 			moveFilter = { "verbose": true, "piece": piece };
 		}
 		const moves = instance.moves(moveFilter);
+		console.log(moveFilter);
+		console.log(moves);
 		if (!piece) {
 			const pieces = [...new Set(moves
 				.map(move => move.color + move.piece))];
@@ -185,6 +187,7 @@ exports.select = async (interaction, i, args = []) => {
 							.setLabel("🔙").setStyle("DANGER"));
 				}
 			}
+			console.log(components);
 			message.edit({ "components": components });
 		}
 		game.get("message").edit({
