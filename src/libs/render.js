@@ -92,64 +92,14 @@ const chess = {
 		return chess.pawnMoveTypes[piece.substring(2, 3)];
 	},
 
-	// TODO
-	getValidMoves: function(position, board) {
-		const validMoves = [];
-		if (position.x < 0 || position.x >= 8
-			|| position.y < 0 || position.y >= 8) return validMoves;
-
+	renderPiece: function(board, position, attacked = false, checked = "") {
 		const piece = board[position.y][position.x];
-		if (piece === "e") return validMoves;
-
-		const pieceType = general.getPieceType(piece);
-		const pieceTeam = general.getPieceTeam(piece);
-
-		let availableMoves;
-		if (pieceType !== "p") {
-			availableMoves = chess.moves[pieceType];
-		}
-		else {
-			availableMoves = chess.moves[pieceType][pieceTeam];
-		}
-
-		const stillAvailable = Array(availableMoves.amount).fill(true);
-		for (let i = 1; i < availableMoves.times + 1; i++) {
-			for (let j = 0; j < availableMoves.amount; j++) {
-				if (!stillAvailable[j]) continue;
-				const x = position.x + availableMoves.x[j] * i;
-				const y = position.y + availableMoves.y[j] * i;
-				if (x >= 0 && x < 8 && y >= 0 && y < 8) {
-					const attackedPiece = board[y][x];
-					if (attackedPiece === "e" || general.getPieceTeam(attackedPiece) !== pieceTeam) {
-						if (pieceType === "p"
-							&& ((j < 2 && attackedPiece !== "e")
-								|| (j >= 2 && attackedPiece === "e"))) {
-							if (j === 1) stillAvailable[2] = false;
-							stillAvailable[j] = false;
-							continue;
-						}
-						validMoves.push({ "x": x, "y": y });
-					}
-					else {
-						stillAvailable[j] = false;
-					}
-				}
-				else {
-					stillAvailable[j] = false;
-				}
-			}
-		}
-		return validMoves;
-	},
-
-	// TODO
-	renderPiece: function(board, position, attacked = false, blackChecked = false, whiteChecked = false) {
-		const piece = board[position.y][position.x];
+		console.log("renderPiece: " + piece);
 
 		let baseColor = chess.getBaseColor(position.x, position.y);
-		if (general.getPieceType(piece) === "k") {
-			if ((blackChecked && general.getPieceTeam(piece) === "b")
-				|| (whiteChecked && general.getPieceTeam(piece) === "w")) {
+		if (piece.type === "k") {
+			if ((checked === "b" && piece.color === "b")
+				|| (checked === "w" && piece.color === "w")) {
 				baseColor = chess.baseBoardColors[3];
 			}
 		}
@@ -157,35 +107,53 @@ const chess = {
 			baseColor = chess.baseBoardColors[2];
 		}
 
-		const emojiDict = chess.emojiIDs[piece];
+		const id = piece ? piece.color + piece.type : "e";
+		const emojiDict = chess.emojiIDs[id];
 		const emojiName = emojiDict.name + baseColor;
 		const emojiID = emojiDict[baseColor];
 		return "<:" + emojiName + ":" + emojiID + ">";
 	},
 
-	renderChess: function(board, activePosition = undefined) {
+	translatePositionToXY: function(position) {
+		if (typeof position === "string" && position.length === 2) {
+			return { x: position.charCodeAt(0) - 97, y: position.charCodeAt(1) - 49 };
+		}
+		return null;
+	},
+
+	translatePositionToNotation: function(position) {
+		if (typeof position === "object" && position.x && position.y) {
+			return String.fromCharCode(position.x + 97) + (position.y + 1);
+		}
+		return null;
+	},
+
+	// TODO: call with chessinstance.moves{verbose: true}
+	renderGame: function(board, attackedPositions = [], flipped = false) {
 		if (board !== undefined && board !== null && board.length === 8) {
 			let renderedBoard = "";
-			const attackedPositions = activePosition ? chess.getValidMoves(activePosition, board) : [];
-			for (let i = 0; i < board.length; i++) {
-				for (let j = 0; j < board[i].length; j++) {
-					const attacked = attackedPositions.some(pos => pos.x === j && pos.y === i);
-					renderedBoard += chess.renderPiece(board, i, j, attacked);
+			if (flipped) {
+				for (let i = board.length - 1; i >= 0; i--) {
+					for (let j = board[i].length - 1; j >= 0; j--) {
+						const attacked = attackedPositions.some(
+							pos => pos.Contains(chess.translatePositionToNotation({ x: j, y: i })));
+						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
+					}
+					if (i !== board.length - 1) renderedBoard += "\n";
 				}
-				if (i !== board.length - 1) renderedBoard += "\n";
+			}
+			else {
+				for (let i = 0; i < board.length; i++) {
+					for (let j = 0; j < board[i].length; j++) {
+						const attacked = attackedPositions.some(
+							pos => pos.Contains(chess.translatePositionToNotation({ x: j, y: i })));
+						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
+					}
+					if (i !== board.length - 1) renderedBoard += "\n";
+				}
 			}
 			return renderedBoard;
 		}
-	},
-
-	flipBoard: function(board) {
-		board.reverse();
-		for (let i = 0; i < board.length; i++) {
-			board[i].reverse();
-		}
-		chess.moves.p.b.y.forEach(element => element *= -1);
-		chess.moves.p.w.y.forEach(element => element *= -1);
-		return board;
 	},
 	// #endregion
 };
@@ -222,7 +190,7 @@ const tictactoe = {
 	 * The board to render
 	 * @returns	{String}				The rendered board
 	 */
-	renderTicTacToe: function(board) {
+	renderGame: function(board) {
 		// Initialize the rendered board
 		let renderedBoard = "";
 		// Loop through the board

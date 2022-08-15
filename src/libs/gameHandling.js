@@ -2,6 +2,9 @@
 // Require the necessary discord.js class
 const { MessageActionRow, MessageButton } = require("discord.js");
 
+// Require the chess module for handling chess games
+const chessjs = require("chess.js");
+
 // Require the path module for accessing the correct files
 const path = require("node:path");
 
@@ -9,7 +12,7 @@ const path = require("node:path");
 const libPath = [__dirname];
 const { generalMsgHnd } = require(path.join(...libPath, "messageHandling.js"));
 const { generalBtnHnd } = require(path.join(...libPath, "buttonHandling.js"));
-const { tictactoeRnd } = require(path.join(...libPath, "render.js"));
+const { tictactoeRnd, chessRnd } = require(path.join(...libPath, "render.js"));
 const deepClone = require(path.join(...libPath, "deepClone.js"));
 // #endregion
 
@@ -71,7 +74,19 @@ const general = {
 	 * @param	{Array<Array<String>>}			originalBoard
 	 * The original/initial board of the game
 	 */
-	startGame: function(interaction, game, gameType, originalComponents, componentHandling, originalBoard) {
+	startGame: function(interaction, game, gameType, originalBoard = [], originalComponents = [], componentHandling = null) {
+		// Define namespaces depending on game type
+		let gameNamespace, renderNamespace = {};
+		switch (gameType) {
+		case GameType.TicTacToe:
+			gameNamespace = tictactoe;
+			renderNamespace = tictactoeRnd;
+			break;
+		case GameType.Chess:
+			gameNamespace = chess;
+			renderNamespace = chessRnd;
+			break;
+		}
 		// Remove Buttons from the invitation message and append that it has been accepted
 		generalBtnHnd.removeAllMessageButtons(game.get("invitation"))
 			.then(() => {
@@ -87,17 +102,17 @@ const general = {
 			// Copy the original components matrix
 			const components = deepClone(originalComponents);
 			// Handle game components
-			componentHandling(components);
+			componentHandling ? componentHandling(components) : null;
 			// Send a message with the rendered board and the updated components to the thread
 			thread.send({
-				content: tictactoeRnd.renderTicTacToe(originalBoard),
 				components: originalComponents,
+				content: renderNamespace.renderGame(originalBoard),
 			}).then(message => {
 			// Add the game message and the current(initial) board to the game dictionary
 				game.set("message", message);
-				game.set("board", tictactoe.parseBoard(message.content));
+				game.set("board", gameNamespace.parseBoard(message.content));
 			}).then(() => {
-				thread.send({ content: `It's <@${game.get("nextTurnID")}>s turn to place a symbol.`, fetchReply: true })
+				thread.send({ content: `It's <@${game.get("nextTurnID")}>s turn.`, fetchReply: true })
 					.then(startInfo => {
 						game.set("lastInteraction", startInfo);
 					});
@@ -272,7 +287,7 @@ const tictactoe = {
 			}
 		};
 		// Call general startGame function
-		general.startGame(interaction, game, GameType.TicTacToe, tictactoe.originalComponents, componentsHandling, tictactoe.originalBoard);
+		general.startGame(interaction, game, GameType.TicTacToe, tictactoe.originalBoard, tictactoe.originalComponents, componentsHandling);
 	},
 
 	/**
@@ -309,6 +324,22 @@ const chessRep = {
 };
 
 const chess = {
+	// Define ascii representations of the pieces
+	ascii: {
+		bk: "♚",
+		bq: "♛",
+		br: "♜",
+		bb: "♝",
+		bn: "♞",
+		bp: "♟",
+		wk: "♔",
+		wq: "♕",
+		wr: "♖",
+		wb: "♗",
+		wn: "♘",
+		wp: "♙",
+	},
+
 	// Define the representations of the emojis as board representations
 	representations: {
 		black_king_white: chessRep.bk, black_king_black: chessRep.bk, black_king_check: chessRep.bk,
@@ -325,6 +356,21 @@ const chess = {
 		white_pawn_white: chessRep.wp, white_pawn_black: chessRep.wp, white_pawn_green: chessRep.wp,
 		empty: chessRep.e,
 	},
+
+	// Define the original game interaction components for making moves
+	originalComponents: [
+	// First row
+		new MessageActionRow().addComponents([
+			// White pawn selecting button
+			new MessageButton()
+				.setCustomId("chess_select_wp_")
+				.setLabel(chess.ascii.wp).setStyle("SECONDARY"),
+			// White knight selecting button
+			new MessageButton()
+				.setCustomId("chess_select_wn_")
+				.setLabel(chess.ascii.wn).setStyle("SECONDARY"),
+		]),
+	],
 	// #endregion
 
 	/**
@@ -333,6 +379,7 @@ const chess = {
 	 * The message to extract the board data from.
 	 * @return	{Array<Array<String>>}	The board of the game
 	 */
+	// TODO
 	parseBoard: function(message) {
 		console.log("chess.parseBoard");
 		console.log(typeof message);
@@ -340,6 +387,53 @@ const chess = {
 		return general.parseBoard(message, chess.representations);
 	},
 
+	/**
+	 * Start a chess game.
+	 * @param	{Interaction<CacheType>}		interaction
+	 * The interaction of a user accepting the invitation
+	 * @param	{Map<String, Object|String>}	game
+	 * The game to which the user was invited/ the game to start
+	 * @param	{Integer}						gameIndex
+	 * the index of the game in the games dictionary
+	 */
+	startGame: function(interaction, game, gameIndex) {
+		// By default ignore index
+		gameIndex;
+
+		game.whiteID = game.whiteID === null ? interaction.user.id : game.whiteID;
+		game.blackID = game.blackID === null ? interaction.user.id : game.blackID;
+		// Create game instance
+		const chessInstance = new chessjs.Chess();
+		game.set("instance", chessInstance);
+		// Define function to handle game components
+		const componentsHandling = (components) => {
+			// Loop through the components and the component rows set the correct custom IDs
+			for (let j = 0; j < components.length; j++) {
+			// Copy the original components row
+				const componentRow = deepClone(components[j].components);
+				for (let k = 0; k < componentRow.length; k++) {
+				// Set the custom ID of the component to include the game index(i)
+					const newID = componentRow[k].customId + gameIndex;
+					componentRow[k].setCustomId(newID);
+				}
+				// Replace original component rows with copied component rows
+				components[j].setComponents(componentRow);
+			}
+		};
+		// Call general startGame function
+		general.startGame(interaction, game, GameType.Chess, chessInstance.board(), chess.originalComponents, componentsHandling);
+	},
+
+	/**
+	 * End a game after a player has won or a draw has been reached
+	 * @param	{Map<String, Map>}	games
+	 * The games dictionary holding the dictionarys of all active games
+	 * @param	{Integer}			gameIndex
+	 * The index of the game in the games dictionary
+	 */
+	endGame: function(games, gameIndex) {
+		general.endGame(games, gameIndex);
+	},
 };
 exports.chessFnct = chess;
 // #endregion
