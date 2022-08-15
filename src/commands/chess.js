@@ -124,10 +124,10 @@ exports.select = async (interaction, i, args = []) => {
 	if (interaction.user.id === game.get("nextTurnID")) {
 		let moveFilter = { "verbose": true };
 		if (square) {
-			moveFilter = { "verbose": true, "piece": piece, "square": square };
+			moveFilter = { "verbose": true, "piece": piece[1], "square": square };
 		}
 		else if (piece) {
-			moveFilter = { "verbose": true, "piece": piece };
+			moveFilter = { "verbose": true, "piece": piece[1] };
 		}
 		const moves = instance.moves(moveFilter);
 		console.log(moveFilter);

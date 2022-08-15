@@ -148,7 +148,7 @@ const chess = {
 							pos => pos.Contains(chess.translatePositionToNotation({ x: j, y: i })));
 						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
 					}
-					renderedBoard += "\n";
+					if (i !== board.length - 1) renderedBoard += "\n";
 				}
 			}
 			return renderedBoard;
