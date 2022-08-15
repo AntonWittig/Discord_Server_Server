@@ -148,6 +148,7 @@ exports.select = async (interaction, i, args = []) => {
 					amountPerType[m.piece].froms += m.from;
 				}
 			}
+			console.log(amountPerType);
 			const components = [];
 			let rowIndex = -1;
 			for (let j = 0; j < pieces.length; j++) {
@@ -156,15 +157,19 @@ exports.select = async (interaction, i, args = []) => {
 					rowIndex++;
 				}
 				if (amountPerType[pieces[j][1]] === 1) {
+					console.log("only one " + pieces[j]);
 					components[rowIndex]
 						.addComponents([new MessageButton()
 							.setCustomId(`chess_select_${pieces[j]}_${amountPerType[pieces[j][1]].froms}_${i}`)
 							.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
 				}
-				components[rowIndex]
-					.addComponents([new MessageButton()
-						.setCustomId(`chess_select_${pieces[j]}_${i}`)
-						.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
+				else {
+					console.log("multiple " + pieces[j]);
+					components[rowIndex]
+						.addComponents([new MessageButton()
+							.setCustomId(`chess_select_${pieces[j]}_${i}`)
+							.setLabel(chessVars.ascii[pieces[j]]).setStyle("SECONDARY")]);
+				}
 			}
 			message.edit({ "components": components });
 		}
