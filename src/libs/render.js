@@ -114,7 +114,9 @@ const chess = {
 	},
 
 	translatePositionToNotation: function(position) {
-		if (typeof position === "object" && position.x && position.y) {
+		if (typeof position === "object"
+			&& position.x >= 0 && position.x < 8
+			&& position.y >= 0 && position.y < 8) {
 			return String.fromCharCode(position.x + 97) + (8 - position.y);
 		}
 		return null;
