@@ -3,8 +3,9 @@
 const { MessageActionRow, MessageButton } = require("discord.js");
 
 // Import the chess module for handling chess games
-const chessjs = import("chess.js");
-
+const chessPromise = import("chess.js");
+let chessjs;
+chessPromise.then(chess => { chessjs = chess; });
 // Require the path module for accessing the correct files
 const path = require("node:path");
 
