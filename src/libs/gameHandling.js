@@ -432,7 +432,7 @@ const chess = {
 			}
 		};
 		// Call general startGame function
-		general.startGame(interaction, game, GameType.Chess, chessInstance.board, chessVars.originalComponents, componentsHandling);
+		general.startGame(interaction, game, GameType.Chess, chessInstance.board(), chessVars.originalComponents, componentsHandling);
 	},
 
 	/**
