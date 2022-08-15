@@ -32,19 +32,19 @@ exports.general = general;
 const chess = {
 	// #region VARIABLES
 	emojiIDs: {
-		"bk": { "name": "black_king_", "white": "989558908886585355", "black": "989558906822992012", "check": "989558907976429568" },
-		"bq": { "name": "black_queen_", "white": "989558921968619601", "black": "989558917539446844", "green": "989558921196863488" },
-		"br": { "name": "black_rook_", "white": "989558925680582686", "black": "989558923491180554", "green": "989558924673953792" },
-		"bn": { "name": "black_knight_", "white": "989558913022181486", "black": "989558910413316166", "green": "989558911768096818" },
-		"bb": { "name": "black_bishop_", "white": "989558905761837106", "black": "989558903584997456", "green": "989558904738422864" },
-		"bp": { "name": "black_pawn_", "white": "989558916465721485", "black": "989558914301448242", "green": "989558915425521755" },
-		"wk": { "name": "white_king_", "white": "989558932546678824", "black": "989558930260787300", "check": "989558931464532018" },
-		"wq": { "name": "white_queen_", "white": "989558945284763728", "black": "989558942843666503", "green": "989558943594471445" },
-		"wr": { "name": "white_rook_", "white": "989558948703137852", "black": "989558946576621588", "green": "989558947696484442" },
-		"wn": { "name": "white_knight_", "white": "989558935889522758", "black": "989558933343596657", "green": "989558934715117618" },
-		"wb": { "name": "white_bishop_", "white": "989558929212207175", "black": "989558926855008356", "green": "989558928041992243" },
-		"wp": { "name": "white_pawn_", "white": "989558939387576342", "black": "989558937193967686", "green": "989558938234155089" },
-		"e": { "name": "empty_", "white": "989551992256995359", "black": "989551977379799120", "green": "989551963739947059" },
+		"bk": { "name": "b_king", "white": "989558908886585355", "black": "989558906822992012", "check": "989558907976429568" },
+		"bq": { "name": "b_queen", "white": "989558921968619601", "black": "989558917539446844", "green": "989558921196863488" },
+		"br": { "name": "b_rook", "white": "989558925680582686", "black": "989558923491180554", "green": "989558924673953792" },
+		"bn": { "name": "b_knight", "white": "989558913022181486", "black": "989558910413316166", "green": "989558911768096818" },
+		"bb": { "name": "b_bishop", "white": "989558905761837106", "black": "989558903584997456", "green": "989558904738422864" },
+		"bp": { "name": "b_pawn", "white": "989558916465721485", "black": "989558914301448242", "green": "989558915425521755" },
+		"wk": { "name": "w_king", "white": "989558932546678824", "black": "989558930260787300", "check": "989558931464532018" },
+		"wq": { "name": "w_queen", "white": "989558945284763728", "black": "989558942843666503", "green": "989558943594471445" },
+		"wr": { "name": "w_rook", "white": "989558948703137852", "black": "989558946576621588", "green": "989558947696484442" },
+		"wn": { "name": "w_knight", "white": "989558935889522758", "black": "989558933343596657", "green": "989558934715117618" },
+		"wb": { "name": "w_bishop", "white": "989558929212207175", "black": "989558926855008356", "green": "989558928041992243" },
+		"wp": { "name": "w_pawn", "white": "989558939387576342", "black": "989558937193967686", "green": "989558938234155089" },
+		"e": { "name": "_", "white": "989551992256995359", "black": "989551977379799120", "green": "989551963739947059" },
 	},
 
 	baseBoardColors: {
@@ -109,7 +109,7 @@ const chess = {
 
 		const id = piece ? piece.color + piece.type : "e";
 		const emojiDict = chess.emojiIDs[id];
-		const emojiName = emojiDict.name + baseColor;
+		const emojiName = emojiDict.name;
 		const emojiID = emojiDict[baseColor];
 		console.log("emojiName: " + emojiName + "; emojiID: " + emojiID);
 		return "<:" + emojiName + ":" + emojiID + ">";
