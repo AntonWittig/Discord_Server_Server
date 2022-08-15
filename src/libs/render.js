@@ -129,21 +129,24 @@ const chess = {
 
 	// TODO: call with chessinstance.moves{verbose: true}
 	renderGame: function(board, attackedPositions = [], flipped = false) {
+		console.log(attackedPositions);
 		if (board !== undefined && board !== null && board.length === 8) {
 			let renderedBoard = "";
 			if (flipped) {
 				for (let i = board.length - 1; i >= 0; i--) {
 					for (let j = board[i].length - 1; j >= 0; j--) {
+						console.log(board[i][j]);
 						const attacked = attackedPositions.some(
 							pos => pos.Contains(chess.translatePositionToNotation({ x: j, y: i })));
 						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
 					}
-					if (i !== board.length - 1) renderedBoard += "\n";
+					if (i !== 0) renderedBoard += "\n";
 				}
 			}
 			else {
 				for (let i = 0; i < board.length; i++) {
 					for (let j = 0; j < board[i].length; j++) {
+						console.log(board[i][j]);
 						const attacked = attackedPositions.some(
 							pos => pos.Contains(chess.translatePositionToNotation({ x: j, y: i })));
 						renderedBoard += chess.renderPiece(board, { x: j, y: i }, attacked);
