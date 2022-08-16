@@ -167,7 +167,7 @@ exports.execute = async (interaction) => {
 		}
 		const imagePaths = cardsDrawn.map(
 			card => `${romanize(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reversed" : ""}.png`);
-
+		console.log(imagePaths);
 		const oldIndex = index;
 		index++;
 		joinImages(imagePaths, options).then(
