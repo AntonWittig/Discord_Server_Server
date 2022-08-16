@@ -114,7 +114,6 @@ exports.execute = async (interaction) => {
 		const pattern = patterns.find(p => p.type === interaction.options.getString("pattern")) || patterns[0];
 		const privacy = interaction.options.getString("privacy") || "public";
 		const topic = interaction.options.getString("topic");
-		console.log([...topic]);
 		const topicInt = [...topic].map(char => ("" + char).charCodeAt(0)).reduce((a, b) => a + b, 0);
 
 		const embed = new EmbedBuilder()
@@ -150,6 +149,7 @@ exports.execute = async (interaction) => {
 			cards: cardsDrawn,
 		});
 		index++;
+		console.log(embed);
 		interaction.reply({ embeds: [embed] });
 		break;
 	}
