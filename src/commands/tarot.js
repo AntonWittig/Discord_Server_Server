@@ -150,7 +150,7 @@ exports.execute = async (interaction) => {
 		});
 		index++;
 		console.log(embed);
-		interaction.reply({ embeds: [embed] });
+		interaction.channel.send({ embeds: [embed] });
 		break;
 	}
 	case "detail":
