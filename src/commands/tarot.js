@@ -190,7 +190,7 @@ exports.execute = async (interaction) => {
 				});
 		}
 		else {
-			channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] }).then(
+			channel.send({ files: imageRows }).then(
 				message => {
 					console.log(message);
 					embed.setImage(message.attachments.first().url);
