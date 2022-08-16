@@ -132,7 +132,7 @@ exports.execute = async (interaction) => {
 					cardsDrawn.push(card);
 					embed.addFields({
 						name: romanize(card.number),
-						value: `<:${card.emojiname}:${card.emojiid}>`,
+						value: "https://drive.google.com/file/d/1JtQRMHTh-BMBB6G4tcA4yJDE1vYhCgMq/view?usp=sharing",
 						inline: true,
 					});
 				}
