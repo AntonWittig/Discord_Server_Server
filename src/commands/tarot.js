@@ -121,7 +121,7 @@ exports.execute = async (interaction) => {
 		const firstEmbed = new MessageEmbed()
 			.setTitle(pattern.name + " Reading")
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
-		embeds.push(firstEmbed);
+		// embeds.push(firstEmbed);
 
 		console.log(pattern);
 		console.log(pattern.rows);
@@ -158,7 +158,8 @@ exports.execute = async (interaction) => {
 			cards: cardsDrawn,
 		});
 		index++;
-		interaction.reply({ embeds: embeds });
+		interaction.reply({ embeds: firstEmbed });
+		interaction.channel.send({ embeds: embeds });
 		break;
 	}
 	case "detail":
