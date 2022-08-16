@@ -160,14 +160,12 @@ exports.execute = async (interaction) => {
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
 				...imagePath, `${romanize(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reverse" : ""}.png`));
-		console.log(imagePaths);
 
 		const oldIndex = index;
 		index++;
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const count = spread.pattern[i].reduce((accumulator, value) => value ? accumulator + 1 : accumulator, 0);
 			const rowPaths = imagePaths.splice(0, count);
-			console.log(rowPaths);
 			await joinImages(rowPaths, { direction: "horizontal" }).then(
 				img => {
 					console.log("testest");
@@ -184,13 +182,13 @@ exports.execute = async (interaction) => {
 					const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
 					img.toFile(finalImagePath);
 					imageRows.push(finalImagePath);
-					const file = new AttachmentBuilder(imageRows[0]);
+					const file = new AttachmentBuilder().setFile(finalImagePath);
 					embed.setImage(`attachment://reading${oldIndex}.png`);
 					interaction.reply({ embeds: [embed], files: [file] });
 				});
 		}
 		else {
-			const file = new AttachmentBuilder(imageRows[0]);
+			const file = new AttachmentBuilder().setFile(imageRows[0]);
 			embed.setImage(`attachment://reading${oldIndex}.png`);
 			interaction.reply({ embeds: [embed], files: [file] });
 		}
