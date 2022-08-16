@@ -111,7 +111,7 @@ exports.data = new SlashCommandBuilder()
 exports.execute = async (interaction) => {
 	switch (interaction.options.getSubcommand()) {
 	case "read": {
-		const pattern = patterns.find(p => p.type === interaction.options.getString("pattern"));
+		const pattern = patterns.find(p => p.type === interaction.options.getString("pattern")) || patterns[0];
 		const privacy = interaction.options.getString("privacy") || "public";
 		const topic = interaction.options.getString("topic");
 		console.log([...topic]);
