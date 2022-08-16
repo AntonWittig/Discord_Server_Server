@@ -137,7 +137,7 @@ exports.execute = async (interaction) => {
 						value: card.name,
 						inline: true,
 					});
-					embeds.push(new EmbedBuilder().setImage(cards[0].imageurl));
+					embeds.push(new MessageEmbed().setImage(cards[0].imageurl));
 				}
 				else {
 					firstEmbed.addFields({
