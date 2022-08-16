@@ -154,9 +154,20 @@ exports.execute = async (interaction) => {
 			}
 		}
 
+		const options = {};
+		switch (pattern.type) {
+		case "single":
+			break;
+		case "three":
+			options.direction = "horizontal";
+			break;
+		}
+		const imagePaths = cardsDrawn.map(
+			card => `${card.number}-${card.name.replaceAll(" ", "")}.png`);
+
 		const oldIndex = index;
 		index++;
-		joinImages([path.join(...imagePath, "0-TheFool.png")]).then(
+		joinImages(imagePaths, options).then(
 			img => {
 				img.toFile(path.join(...assetPath, `reading${oldIndex}.png`)).then(
 					() => {

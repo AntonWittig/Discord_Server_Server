@@ -64,7 +64,8 @@ client.once("ready", () => {
 // When an interaction with the client is created, run this code
 client.on("interactionCreate", async (interaction) => {
 	if (interaction.isCommand()) {
-		console.log(`${interaction.user.tag} issued the command ${interaction.commandName}\n${interaction.options}`);
+		console.log(`${interaction.user.tag} issued the command ${interaction.commandName}`);
+		console.log(interaction.options);
 		const command = client.commands.get(interaction.commandName);
 
 		if (command) {
