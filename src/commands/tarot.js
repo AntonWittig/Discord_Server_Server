@@ -135,7 +135,6 @@ exports.execute = async (interaction) => {
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const row = spread.pattern[i];
 			for (let j = 0; j < row.length; j++) {
-				console.log(row[j]);
 				if (row[j]) {
 					const card = drawCard(interaction, topicInt);
 					cardsDrawn.push(card);
@@ -159,7 +158,6 @@ exports.execute = async (interaction) => {
 		}
 
 		const imageRows = [];
-
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
 				...imagePath, `${romanize(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reverse" : ""}.png`));
@@ -171,16 +169,15 @@ exports.execute = async (interaction) => {
 			const rowPaths = imagePaths.splice(0, count);
 			await joinImages(rowPaths, { direction: "horizontal" }).then(
 				img => {
-					console.log("testest");
 					const iString = spread.pattern.length === 1 ? "" : `_${i}`;
 					const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
 					img.toFile(rowPath);
 					imageRows.push(rowPath);
 				});
 		}
-
+		console.log(imageRows);
 		if (spread.pattern.length > 1) {
-			joinImages(imagePaths, { direction: "vertical" }).then(
+			joinImages(imageRows, { direction: "vertical" }).then(
 				(img) => {
 					const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
 					img.toFile(finalImagePath);
@@ -195,6 +192,7 @@ exports.execute = async (interaction) => {
 		else {
 			channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] }).then(
 				message => {
+					console.log(message);
 					embed.setImage(message.attachments.first().url);
 					interaction.reply({ embeds: [embed] });
 				});
