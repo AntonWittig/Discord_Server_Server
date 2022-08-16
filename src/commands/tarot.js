@@ -74,14 +74,14 @@ exports.data = new SlashCommandBuilder()
 				};
 			})))
 		.addStringOption(option => option
-			.setName("question/topic")
+			.setName("topic")
 			.setDescription("Specify the topic or question of your reading."))
 		.addStringOption(option => option
 			.setName("privacy")
 			.setDescription("Specify the level of privacy of your reading.")
 			.addChoices(
 				{ name: "public", value: "public" },
-				{ name: "private question/topic", value: "privateQT" },
+				{ name: "private topic", value: "privateT" },
 				{ name: "private reading", value: "private" })))
 	.addSubcommand(subcommand => subcommand
 		.setName("detail")
@@ -89,8 +89,7 @@ exports.data = new SlashCommandBuilder()
 		.addStringOption(option => option
 			.setName("card")
 			.setDescription("Choose a card to investigate.")
-			.setRequired(true)
-			.setAutocomplete(true))
+			.setRequired(true))
 		.addBooleanOption(option => option
 			.setName("reversed")
 			.setDescription("Choose whether the card is read upside down or not.")))
@@ -114,12 +113,12 @@ exports.execute = async (interaction) => {
 	case "read": {
 		const pattern = patterns.find(p => p.type === interaction.options.getStringOption("pattern"));
 		const privacy = interaction.options.getStringOption("privacy") || "public";
-		const topic = interaction.options.getStringOption("question/topic");
+		const topic = interaction.options.getStringOption("topic");
 		const topicInt = topic.map(letter => letter.CharCodeAt(0)).reduce((a, b) => a + b, 0);
 
 		const embed = new EmbedBuilder()
 			.setTitle(pattern.name + " Reading")
-			.setDescription(privacy === "public" ? "The question/topic: " + topic : "The question/topic of this reading is private.");
+			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
 
 		const cardsDrawn = [];
 		for (const row in pattern.rows) {
