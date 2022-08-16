@@ -134,13 +134,15 @@ exports.execute = async (interaction) => {
 		const cardsDrawn = [];
 		for (let i = 0; i < spread.rows.length; i++) {
 			const row = spread.rows[i];
+			console.log(row);
 			for (let j = 0; j < row.length; j++) {
+				console.log(row[j]);
 				if (parseInt(row[j])) {
 					const card = drawCard(interaction, topicInt);
 					cardsDrawn.push(card);
 					embed.addFields({
 						name: romanize(card.number),
-						value: card.name,
+						value: card.reversed ? card.name + "\nReversed" : card.name,
 						inline: true,
 					});
 				}
@@ -173,7 +175,7 @@ exports.execute = async (interaction) => {
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
 				...imagePath, `${romanize(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reversed" : ""}.png`));
-		console.log(imagePaths);
+
 		const oldIndex = index;
 		index++;
 		joinImages(imagePaths, options).then(
