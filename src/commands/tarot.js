@@ -166,7 +166,7 @@ exports.execute = async (interaction) => {
 		index++;
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const count = spread.pattern[i].reduce((accumulator, value) => value ? accumulator + 1 : accumulator, 0);
-			const rowPaths = imagePath.splice(0, count);
+			const rowPaths = imagePaths.splice(0, count);
 			console.log(rowPaths);
 			await joinImages(rowPaths, { direction: "horizontal" }).then(
 				img => {
