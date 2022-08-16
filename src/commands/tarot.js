@@ -111,9 +111,9 @@ exports.data = new SlashCommandBuilder()
 exports.execute = async (interaction) => {
 	switch (interaction.options.getSubcommand()) {
 	case "read": {
-		const pattern = patterns.find(p => p.type === interaction.options.getStringOption("pattern"));
-		const privacy = interaction.options.getStringOption("privacy") || "public";
-		const topic = interaction.options.getStringOption("topic");
+		const pattern = patterns.find(p => p.type === interaction.options.getString("pattern"));
+		const privacy = interaction.options.getString("privacy") || "public";
+		const topic = interaction.options.getString("topic");
 		const topicInt = topic.map(letter => letter.CharCodeAt(0)).reduce((a, b) => a + b, 0);
 
 		const embed = new EmbedBuilder()
