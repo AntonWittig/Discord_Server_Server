@@ -153,7 +153,7 @@ exports.execute = async (interaction) => {
 				embed.addFields({ name: "\u200B", value: "\u200B" });
 			}
 		}
-
+		console.log(embed);
 		const oldIndex = index;
 		index++;
 		joinImages([path.join(...imagePath, "0-TheFool.png")])
