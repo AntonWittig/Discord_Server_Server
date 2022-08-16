@@ -152,4 +152,4 @@ gitupdate.sh
 update.sh
 
 # ignore image files
-*.png
+# *.png
