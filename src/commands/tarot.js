@@ -132,7 +132,7 @@ exports.execute = async (interaction) => {
 					cardsDrawn.push(card);
 					embed.addFields({
 						name: romanize(card.number),
-						value: "https://drive.google.com/file/d/1JtQRMHTh-BMBB6G4tcA4yJDE1vYhCgMq/preview",
+						value: "https://media.discordapp.net/attachments/1008882716239990836/1009164103350239263/0-TheFool.png",
 						inline: true,
 					});
 				}
