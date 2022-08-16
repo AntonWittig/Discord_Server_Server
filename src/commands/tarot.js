@@ -163,18 +163,17 @@ exports.execute = async (interaction) => {
 
 		const oldIndex = index;
 		index++;
-		console.log("testa");
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const count = spread.pattern[i].reduce((accumulator, value) => value ? accumulator + 1 : accumulator, 0);
 			const rowPaths = imagePath.splice(0, count);
-			console.log("testb");
+			console.log(rowPaths);
 			await joinImages(rowPaths, { direction: "horizontal" }).then(
 				img => {
+					console.log("testest");
 					const iString = spread.pattern.length === 1 ? "" : `_${i}`;
 					const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
 					img.toFile(rowPath);
 					imageRows.push(rowPath);
-					console.log("testc");
 				});
 		}
 
