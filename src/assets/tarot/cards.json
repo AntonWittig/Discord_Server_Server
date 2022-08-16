@@ -502,7 +502,7 @@
 	},
 	{
 		"number": 0,
-		"name": "The Fool Reversed",
+		"name": "The Fool",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "air",
@@ -525,7 +525,7 @@
 	},
 	{
 		"number": 1,
-		"name": "The Magician Reversed",
+		"name": "The Magician",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "air",
@@ -547,7 +547,7 @@
 	},
 	{
 		"number": 2,
-		"name": "The High Priestess Reversed",
+		"name": "The High Priestess",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "water",
@@ -567,7 +567,7 @@
 	},
 	{
 		"number": 3,
-		"name": "The Empress Reversed",
+		"name": "The Empress",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "earth",
@@ -588,7 +588,7 @@
 	},
 	{
 		"number": 4,
-		"name": "The Emperor Reversed",
+		"name": "The Emperor",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "fire",
@@ -610,7 +610,7 @@
 	},
 	{
 		"number": 5,
-		"name": "The Hierophant Reversed",
+		"name": "The Hierophant",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "earth",
@@ -631,7 +631,7 @@
 	},
 	{
 		"number": 6,
-		"name": "The Lovers Reversed",
+		"name": "The Lovers",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "air",
@@ -652,7 +652,7 @@
 	},
 	{
 		"number": 7,
-		"name": "The Chariot Reversed",
+		"name": "The Chariot",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "water",
@@ -672,7 +672,7 @@
 	},
 	{
 		"number": 8,
-		"name": "Justice Reversed",
+		"name": "Justice",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "air",
@@ -694,7 +694,7 @@
 	},
 	{
 		"number": 9,
-		"name": "The Hermit Reversed",
+		"name": "The Hermit",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "earth",
@@ -716,7 +716,7 @@
 	},
 	{
 		"number": 10,
-		"name": "Wheel of Fortune Reversed",
+		"name": "Wheel of Fortune",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "fire",
@@ -738,7 +738,7 @@
 	},
 	{
 		"number": 11,
-		"name": "Strength Reversed",
+		"name": "Strength",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "fire",
@@ -760,7 +760,7 @@
 	},
 	{
 		"number": 12,
-		"name": "The Hanged Man Reversed",
+		"name": "The Hanged Man",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "water",
@@ -780,7 +780,7 @@
 	},
 	{
 		"number": 13,
-		"name": "Death Reversed",
+		"name": "Death",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "water",
@@ -802,7 +802,7 @@
 	},
 	{
 		"number": 14,
-		"name": "Temperance Reversed",
+		"name": "Temperance",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "fire",
@@ -823,7 +823,7 @@
 	},
 	{
 		"number": 15,
-		"name": "The Devil Reversed",
+		"name": "The Devil",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "earth",
@@ -843,7 +843,7 @@
 	},
 	{
 		"number": 16,
-		"name": "The Tower Reversed",
+		"name": "The Tower",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "fire",
@@ -864,7 +864,7 @@
 	},
 	{
 		"number": 17,
-		"name": "The Star Reversed",
+		"name": "The Star",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "air",
@@ -885,7 +885,7 @@
 	},
 	{
 		"number": 18,
-		"name": "The Moon Reversed",
+		"name": "The Moon",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "water",
@@ -907,7 +907,7 @@
 	},
 	{
 		"number": 19,
-		"name": "The Sun Reversed",
+		"name": "The Sun",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "fire",
@@ -928,7 +928,7 @@
 	},
 	{
 		"number": 20,
-		"name": "Judgement Reversed",
+		"name": "Judgement",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "fire",
@@ -949,7 +949,7 @@
 	},
 	{
 		"number": 21,
-		"name": "The World Reversed",
+		"name": "The World",
 		"suit": "trumps",
 		"reversed": true,
 		"element": "earth",

@@ -166,7 +166,7 @@ exports.execute = async (interaction) => {
 			break;
 		}
 		const imagePaths = cardsDrawn.map(
-			card => `${romanize(card.number)}-${card.name.replaceAll(" ", "")}.png`);
+			card => `${romanize(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reversed" : ""}.png`);
 
 		const oldIndex = index;
 		index++;
