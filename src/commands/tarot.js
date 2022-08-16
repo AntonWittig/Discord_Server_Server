@@ -168,7 +168,8 @@ exports.execute = async (interaction) => {
 			const rowPaths = imagePath.splice(0, count);
 			await joinImages(rowPaths, { direction: "horizontal" }).then(
 				img => {
-					const rowPath = path.join(...assetPath, `reading${oldIndex}_${i}.png`);
+					const iString = spread.pattern.length === 1 ? "" : `_${i}`;
+					const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
 					img.toFile(rowPath);
 					imageRows.push(rowPath);
 				});
@@ -179,6 +180,7 @@ exports.execute = async (interaction) => {
 				(img) => {
 					const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
 					img.toFile(finalImagePath);
+					imageRows.push(finalImagePath);
 					const file = new AttachmentBuilder(imageRows[0]);
 					embed.setImage(`attachment://reading${oldIndex}.png`);
 					interaction.reply({ embeds: [embed], files: [file] });
@@ -186,7 +188,7 @@ exports.execute = async (interaction) => {
 		}
 		else {
 			const file = new AttachmentBuilder(imageRows[0]);
-			embed.setImage(`attachment://reading${oldIndex}_0.png`);
+			embed.setImage(`attachment://reading${oldIndex}.png`);
 			interaction.reply({ embeds: [embed], files: [file] });
 		}
 
@@ -198,7 +200,7 @@ exports.execute = async (interaction) => {
 		});
 
 		setTimeout(() => {
-			fs.unlinkSync(path.join(...assetPath, `reading${oldIndex}.png`));
+			imageRows.forEach(row => fs.unlinkSync(row));
 		}, 2000);
 		break;
 	}
