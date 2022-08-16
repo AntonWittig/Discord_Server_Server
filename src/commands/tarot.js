@@ -132,7 +132,7 @@ exports.execute = async (interaction) => {
 					cardsDrawn.push(card);
 					embed.addFields({
 						name: romanize(card.number),
-						value: "https://drive.google.com/file/d/1JtQRMHTh-BMBB6G4tcA4yJDE1vYhCgMq/view?usp=sharing",
+						value: "https://drive.google.com/file/d/1JtQRMHTh-BMBB6G4tcA4yJDE1vYhCgMq/preview",
 						inline: true,
 					});
 				}
