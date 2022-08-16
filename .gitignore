@@ -150,3 +150,6 @@ screenlog.*
 # automatic updating
 gitupdate.sh
 update.sh
+
+# ignore image files
+*.png

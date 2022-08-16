@@ -9,6 +9,7 @@ const path = require("node:path");
 
 // Create path to the json sources
 const assetPath = [__dirname, "..", "assets", "tarot"];
+const imagePath = [__dirname, "..", "assets", "tarot", "images"];
 // Require card data json file
 const cards = require(path.join(...assetPath, "cards.json"));
 const patterns = require(path.join(...assetPath, "patterns.json"));
@@ -151,7 +152,7 @@ exports.execute = async (interaction) => {
 			}
 		}
 
-		embed.setImage(joinImages(["https://cdn.discordapp.com/attachments/1008882716239990836/1009164103350239263/0-TheFool.png"]));
+		embed.setImage(joinImages([path.join(...imagePath, "0-TheFool.png")]));
 		readings.set(`reading${index}`, {
 			pattern: pattern.type,
 			topic: topic,
