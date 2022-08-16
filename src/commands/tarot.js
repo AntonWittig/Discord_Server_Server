@@ -15,6 +15,8 @@ const imagePath = [__dirname, "..", "assets", "tarot", "images"];
 const cards = require(path.join(...assetPath, "cards.json"));
 const patterns = require(path.join(...assetPath, "patterns.json"));
 
+let channel;
+
 const readings = new Map();
 let index = 0;
 
@@ -114,6 +116,7 @@ exports.data = new SlashCommandBuilder()
 
 // Execute the command
 exports.execute = async (interaction) => {
+	if (!channel) channel = interaction.client.channels.cache.find(c => c.id === "1009205115711914075");
 	switch (interaction.options.getSubcommand()) {
 	case "read": {
 		const pattern = patterns.find(p => p.type === interaction.options.getString("pattern")) || patterns[0];
@@ -158,6 +161,10 @@ exports.execute = async (interaction) => {
 				img.toFile(path.join(...assetPath, `reading${oldIndex}.png`))
 					.then(
 						() => {
+							channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] })
+								.then((message) => {
+									console.log(message);
+								});
 							embed.setImage(path.join(...assetPath, `reading${oldIndex}.png`));
 							interaction.reply({ embeds: [embed] });
 						},
