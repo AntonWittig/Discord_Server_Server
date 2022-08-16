@@ -51,6 +51,9 @@ function romanize(num) {
 			}
 		}
 	}
+	else if (num === 0) {
+		roman = "0";
+	}
 	return roman;
 }
 
@@ -163,7 +166,7 @@ exports.execute = async (interaction) => {
 			break;
 		}
 		const imagePaths = cardsDrawn.map(
-			card => `${card.number}-${card.name.replaceAll(" ", "")}.png`);
+			card => `${romanize(card.number)}-${card.name.replaceAll(" ", "")}.png`);
 
 		const oldIndex = index;
 		index++;
