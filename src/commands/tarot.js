@@ -124,8 +124,6 @@ exports.execute = async (interaction) => {
 			.setTitle(pattern.name + " Reading")
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
 
-		console.log(pattern);
-		console.log(pattern.rows);
 		const cardsDrawn = [];
 		for (let i = 0; i < pattern.rows.length; i++) {
 			const row = pattern.rows[i];
@@ -160,6 +158,7 @@ exports.execute = async (interaction) => {
 			cards: cardsDrawn,
 		});
 		index++;
+		console.log(embed);
 		interaction.reply({ embeds: [embed] });
 		break;
 	}
