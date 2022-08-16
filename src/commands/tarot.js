@@ -1,5 +1,5 @@
 // Require the necessary discord.js class
-const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 
 // Require the path module for accessing the command src
@@ -137,7 +137,7 @@ exports.execute = async (interaction) => {
 						value: card.name,
 						inline: true,
 					});
-					embeds.push(new MessageEmbed().setImage(cards[0].imageurl));
+					embeds.push(new MessageEmbed().setURL("http://www.google.com").setImage(cards[0].imageurl));
 				}
 				else {
 					firstEmbed.addFields({
