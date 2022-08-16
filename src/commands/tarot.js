@@ -1,4 +1,4 @@
-const joinImages = require("join-images");
+const { joinImages } = require("join-images");
 
 // Require the necessary discord.js class
 const { SlashCommandBuilder } = require("@discordjs/builders");
