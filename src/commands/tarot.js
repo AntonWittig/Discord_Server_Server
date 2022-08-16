@@ -12,7 +12,7 @@ const cards = require(path.join(...assetPath, "cards.json"));
 const patterns = require(path.join(...assetPath, "patterns.json"));
 
 const readings = new Map();
-const index = 0;
+let index = 0;
 
 const empty = {
 	emojiname: "",
@@ -142,6 +142,13 @@ exports.execute = async (interaction) => {
 			}
 			embed.addFields({ name: "\u200B", value: "\u200B" });
 		}
+		readings.set(`reading${index}`, {
+			pattern: pattern.type,
+			topic: topic,
+			privacy: privacy,
+			cards: cardsDrawn,
+		});
+		index++;
 		interaction.reply({ embeds: [embed] });
 		break;
 	}
