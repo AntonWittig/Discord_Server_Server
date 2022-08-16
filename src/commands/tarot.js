@@ -124,11 +124,10 @@ exports.execute = async (interaction) => {
 		console.log(pattern);
 		console.log(pattern.rows);
 		const cardsDrawn = [];
-		for (const row in pattern.rows) {
-			console.log(row);
-			for (const char in row) {
-				console.log(char);
-				if (parseInt(char)) {
+		for (let i = 0; i < pattern.rows.length; i++) {
+			const row = pattern.rows[i];
+			for (let j = 0; j < row.length; j++) {
+				if (parseInt(row[j])) {
 					const card = drawCard(interaction, topicInt);
 					cardsDrawn.push(card);
 					embed.addFields({
