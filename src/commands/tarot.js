@@ -153,7 +153,7 @@ exports.execute = async (interaction) => {
 					});
 				}
 			}
-			if (i < spread.rows.length - 1) {
+			if (i < spread.pattern.length - 1) {
 				embed.addFields({ name: "\u200B", value: "\u200B" });
 			}
 		}
