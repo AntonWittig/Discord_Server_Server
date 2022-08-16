@@ -123,7 +123,7 @@ exports.execute = async (interaction) => {
 
 		console.log(pattern);
 		const cardsDrawn = [];
-		for (const row in pattern.rows) {
+		for (const row in pattern["rows"]) {
 			console.log(row);
 			for (const char in row) {
 				console.log(char);
@@ -154,7 +154,7 @@ exports.execute = async (interaction) => {
 		});
 		index++;
 		console.log(embed);
-		interaction.channel.send({ embeds: [embed] });
+		interaction.reply({ embeds: [embed] });
 		break;
 	}
 	case "detail":
