@@ -123,7 +123,9 @@ exports.execute = async (interaction) => {
 
 		const cardsDrawn = [];
 		for (const row in pattern.rows) {
+			console.log(row);
 			for (const char in row) {
+				console.log(char);
 				if (parseInt(char)) {
 					const card = drawCard(interaction, topicInt);
 					cardsDrawn.push(card);
