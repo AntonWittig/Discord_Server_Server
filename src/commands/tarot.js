@@ -114,6 +114,7 @@ exports.execute = async (interaction) => {
 		const pattern = patterns.find(p => p.type === interaction.options.getString("pattern"));
 		const privacy = interaction.options.getString("privacy") || "public";
 		const topic = interaction.options.getString("topic");
+		console.log([...topic]);
 		const topicInt = [...topic].map(letter => letter.CharCodeAt(0)).reduce((a, b) => a + b, 0);
 
 		const embed = new EmbedBuilder()
