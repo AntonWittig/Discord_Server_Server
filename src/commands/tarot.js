@@ -165,7 +165,7 @@ exports.execute = async (interaction) => {
 								.then((message) => {
 									console.log(message);
 								});
-							embed.setImage(path.join(...assetPath, `reading${oldIndex}.png`));
+							// embed.setImage(path.join(...assetPath, `reading${oldIndex}.png`));
 							interaction.reply({ embeds: [embed] });
 						},
 					);
