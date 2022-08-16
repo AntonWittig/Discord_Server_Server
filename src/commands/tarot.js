@@ -150,7 +150,7 @@ exports.execute = async (interaction) => {
 			}
 		}
 
-		embed.setImage(joinImages([path.join(...imagePath, "0-TheFool.png")]));
+		embed.setImage(await joinImages([path.join(...imagePath, "0-TheFool.png")]));
 		readings.set(`reading${index}`, {
 			pattern: pattern.type,
 			topic: topic,
