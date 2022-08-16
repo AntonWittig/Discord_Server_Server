@@ -1,16 +1,19 @@
 [
 	{
 		"name": "Single Card",
+		"type": "single",
 		"amount": 1,
 		"rows": ["1"]
 	},
 	{
 		"name": "Three Cards",
+		"type": "three",
 		"amount": 3,
 		"rows": ["111"]
 	},
 	{
 		"name": "Cross",
+		"type": "cross",
 		"amount": 5,
 		"rows": ["010", "111", "010"]
 	}

@@ -67,14 +67,20 @@ exports.data = new SlashCommandBuilder()
 		.addStringOption(option => option
 			.setName("pattern")
 			.setDescription("Choose a pattern to specify intents for your reading.")
-			.addChoices(patterns.map(pattern => pattern.name)))
+			.addChoices(...patterns.map(pattern => new {
+				name: pattern.name,
+				value: pattern.type,
+			})))
 		.addStringOption(option => option
 			.setName("question/topic")
 			.setDescription("Specify the topic or question of your reading."))
 		.addStringOption(option => option
 			.setName("privacy")
 			.setDescription("Specify the level of privacy of your reading.")
-			.addChoices(["public", "private question/topic", "private reading"])))
+			.addChoices(
+				{ name: "public", value: "public" },
+				{ name: "private question/topic", value: "privateQT" },
+				{ name: "private reading", value: "private" })))
 	.addSubcommand(subcommand => subcommand
 		.setName("detail")
 		.setDescription("Investigate a card to get a more detailed description.")
@@ -82,7 +88,7 @@ exports.data = new SlashCommandBuilder()
 			.setName("card")
 			.setDescription("Choose a card to investigate.")
 			.setRequired(true)
-			.addChoices(cards.map(card => card.name)))
+			.setAutocomplete(true))
 		.addBooleanOption(option => option
 			.setName("reversed")
 			.setDescription("Choose whether the card is read upside down or not.")))
@@ -93,13 +99,16 @@ exports.data = new SlashCommandBuilder()
 			.setName("pattern")
 			.setDescription("Choose a pattern to get help on.")
 			.setRequired(true)
-			.addChoices(patterns.map(pattern => pattern.name))));
+			.addChoices(...patterns.map(pattern => new {
+				name: pattern.name,
+				value: pattern.type,
+			}))));
 
 // Execute the command
 exports.execute = async (interaction) => {
 	switch (interaction.options.getSubcommand()) {
 	case "read": {
-		const pattern = patterns.find(p => p.name === interaction.options.getStringOption("pattern"));
+		const pattern = patterns.find(p => p.type === interaction.options.getStringOption("pattern"));
 		const privacy = interaction.options.getStringOption("privacy") || "public";
 		const topic = interaction.options.getStringOption("question/topic");
 		const topicInt = topic.map(letter => letter.CharCodeAt(0)).reduce((a, b) => a + b, 0);
