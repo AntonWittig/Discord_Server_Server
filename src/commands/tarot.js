@@ -6,6 +6,7 @@ const { MessageEmbed } = require("discord.js");
 
 // Require the path module for accessing the command src
 const path = require("node:path");
+const fs = require("node:fs");
 
 // Create path to the json sources
 const assetPath = [__dirname, "..", "assets", "tarot"];
@@ -150,16 +151,29 @@ exports.execute = async (interaction) => {
 			}
 		}
 
-		embed.setImage(await joinImages([path.join(...imagePath, "0-TheFool.png")]));
-		readings.set(`reading${index}`, {
+		const oldIndex = index;
+		index++;
+		joinImages([path.join(...imagePath, "0-TheFool.png")])
+			.then(img => {
+				img.toFile(path.join(...assetPath, `reading${oldIndex}`))
+					.then(
+						() => {
+							embed.setImage(path.join(...assetPath, `reading${oldIndex}`));
+							interaction.reply({ embeds: [embed] });
+						},
+					);
+			});
+
+		readings.set(`reading${oldIndex}`, {
 			pattern: pattern.type,
 			topic: topic,
 			privacy: privacy,
 			cards: cardsDrawn,
 		});
-		index++;
 		console.log(embed);
-		interaction.reply({ embeds: [embed] });
+		setTimeout(() => {
+			fs.unlinkSync(path.join(...assetPath, `reading${oldIndex}`));
+		}, 2000);
 		break;
 	}
 	case "detail":
