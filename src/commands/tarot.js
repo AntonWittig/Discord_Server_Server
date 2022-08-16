@@ -132,12 +132,11 @@ exports.execute = async (interaction) => {
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
 
 		const cardsDrawn = [];
-		for (let i = 0; i < spread.rows.length; i++) {
-			const row = spread.rows[i];
-			console.log(row);
+		for (let i = 0; i < spread.pattern.length; i++) {
+			const row = spread.pattern[i];
 			for (let j = 0; j < row.length; j++) {
 				console.log(row[j]);
-				if (parseInt(row[j])) {
+				if (row[j]) {
 					const card = drawCard(interaction, topicInt);
 					cardsDrawn.push(card);
 					embed.addFields({
@@ -174,7 +173,7 @@ exports.execute = async (interaction) => {
 		}
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
-				...imagePath, `${romanize(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reversed" : ""}.png`));
+				...imagePath, `${romanize(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reverse" : ""}.png`));
 
 		const oldIndex = index;
 		index++;

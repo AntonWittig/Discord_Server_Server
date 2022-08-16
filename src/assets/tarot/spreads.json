@@ -3,18 +3,22 @@
 		"name": "Single Card",
 		"type": "single",
 		"amount": 1,
-		"rows": ["1"]
+		"pattern": [[true]]
 	},
 	{
 		"name": "Three Cards",
 		"type": "three",
 		"amount": 3,
-		"rows": ["111"]
+		"pattern": [[true, true, true]]
 	},
 	{
 		"name": "Cross",
 		"type": "cross",
 		"amount": 5,
-		"rows": ["010", "111", "010"]
+		"pattern": [
+			[false, true, false],
+			[true, true, true],
+			[false, true, false]
+		]
 	}
 ]
