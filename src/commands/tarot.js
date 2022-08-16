@@ -1,7 +1,7 @@
 const { joinImages } = require("join-images");
 
 // Require the necessary discord.js class
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, AttachmentBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 
 // Require the path module for accessing the command src
@@ -179,13 +179,15 @@ exports.execute = async (interaction) => {
 				(img) => {
 					const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
 					img.toFile(finalImagePath);
-					embed.setImage(`attachment://${finalImagePath}`);
-					interaction.reply({ embeds: [embed] });
+					const file = new AttachmentBuilder(imageRows[0]);
+					embed.setImage(`attachment://reading${oldIndex}.png`);
+					interaction.reply({ embeds: [embed], files: [file] });
 				});
 		}
 		else {
-			embed.setImage(`attachment://${imageRows[0]}`);
-			interaction.reply({ embeds: [embed] });
+			const file = new AttachmentBuilder(imageRows[0]);
+			embed.setImage(`attachment://reading${oldIndex}_0.png`);
+			interaction.reply({ embeds: [embed], files: [file] });
 		}
 
 		readings.set(`reading${oldIndex}`, {
