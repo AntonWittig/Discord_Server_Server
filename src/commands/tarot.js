@@ -153,22 +153,20 @@ exports.execute = async (interaction) => {
 				embed.addFields({ name: "\u200B", value: "\u200B" });
 			}
 		}
-		console.log(embed);
+
 		const oldIndex = index;
 		index++;
-		joinImages([path.join(...imagePath, "0-TheFool.png")])
-			.then(img => {
-				img.toFile(path.join(...assetPath, `reading${oldIndex}.png`))
-					.then(
-						() => {
-							channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] })
-								.then((message) => {
-									console.log(message);
-								});
-							// embed.setImage(path.join(...assetPath, `reading${oldIndex}.png`));
-							interaction.reply({ embeds: [embed] });
-						},
-					);
+		joinImages([path.join(...imagePath, "0-TheFool.png")]).then(
+			img => {
+				img.toFile(path.join(...assetPath, `reading${oldIndex}.png`)).then(
+					() => {
+						channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] }).then(
+							(message) => {
+								embed.setImage(message.attachments.first().url);
+								interaction.reply({ embeds: [embed] });
+							});
+					},
+				);
 			});
 
 		readings.set(`reading${oldIndex}`, {
@@ -177,7 +175,7 @@ exports.execute = async (interaction) => {
 			privacy: privacy,
 			cards: cardsDrawn,
 		});
-		console.log(embed);
+
 		setTimeout(() => {
 			fs.unlinkSync(path.join(...assetPath, `reading${oldIndex}.png`));
 		}, 2000);
