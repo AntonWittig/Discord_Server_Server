@@ -67,9 +67,11 @@ exports.data = new SlashCommandBuilder()
 		.addStringOption(option => option
 			.setName("pattern")
 			.setDescription("Choose a pattern to specify intents for your reading.")
-			.addChoices(...patterns.map(pattern => new {
-				name: pattern.name,
-				value: pattern.type,
+			.addChoices(...patterns.map(pattern => {
+				return {
+					name: pattern.name,
+					value: pattern.type,
+				};
 			})))
 		.addStringOption(option => option
 			.setName("question/topic")
@@ -99,9 +101,11 @@ exports.data = new SlashCommandBuilder()
 			.setName("pattern")
 			.setDescription("Choose a pattern to get help on.")
 			.setRequired(true)
-			.addChoices(...patterns.map(pattern => new {
-				name: pattern.name,
-				value: pattern.type,
+			.addChoices(...patterns.map(pattern => {
+				return {
+					name: pattern.name,
+					value: pattern.type,
+				};
 			}))));
 
 // Execute the command
