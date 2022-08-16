@@ -1,4 +1,4 @@
-const mergeImages = require("merge-images");
+const joinImages = require("join-images");
 
 // Require the necessary discord.js class
 const { SlashCommandBuilder } = require("@discordjs/builders");
@@ -151,7 +151,7 @@ exports.execute = async (interaction) => {
 			}
 		}
 
-		embed.setImage(mergeImages(["https://cdn.discordapp.com/attachments/1008882716239990836/1009164103350239263/0-TheFool.png"]));
+		embed.setImage(joinImages(["https://cdn.discordapp.com/attachments/1008882716239990836/1009164103350239263/0-TheFool.png"]));
 		readings.set(`reading${index}`, {
 			pattern: pattern.type,
 			topic: topic,
