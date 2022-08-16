@@ -1,6 +1,5 @@
 // Require the necessary discord.js class
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
-const { userInfo } = require("node:os");
 
 // Require the path module for accessing the command src
 const path = require("node:path");
@@ -79,6 +78,7 @@ exports.data = new SlashCommandBuilder()
 		.addStringOption(option => option
 			.setName("privacy")
 			.setDescription("Specify the level of privacy of your reading.")
+			.setRequired(true)
 			.addChoices(
 				{ name: "public", value: "public" },
 				{ name: "private topic", value: "privateT" },
