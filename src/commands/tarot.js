@@ -122,8 +122,9 @@ exports.execute = async (interaction) => {
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
 
 		console.log(pattern);
+		console.log(pattern.rows);
 		const cardsDrawn = [];
-		for (const row in pattern["rows"]) {
+		for (const row in pattern.rows) {
 			console.log(row);
 			for (const char in row) {
 				console.log(char);
