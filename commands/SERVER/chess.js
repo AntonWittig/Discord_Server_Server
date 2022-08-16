@@ -17,3 +17,5 @@ exports.accept = chessSrc.accept;
 exports.decline = chessSrc.decline;
 exports.select = chessSrc.select;
 exports.move = chessSrc.move;
+
+// TODO: surrender button, draw button, win probability, promoten/flags for moves/ official notation, border/square notation better
