@@ -15,8 +15,8 @@ const readings = new Map();
 let index = 0;
 
 const empty = {
-	emojiname: "",
-	emojiid: "",
+	emojiname: "empty",
+	emojiid: "1009137557281439755",
 };
 
 const romanLetters = {
@@ -135,7 +135,7 @@ exports.execute = async (interaction) => {
 				}
 				else {
 					embed.addFields({
-						name: " ",
+						name: `<:${empty.emojiname}:${empty.emojiid}>`,
 						value: `<:${empty.emojiname}:${empty.emojiid}>`,
 						inline: true,
 					});
