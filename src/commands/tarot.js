@@ -144,7 +144,9 @@ exports.execute = async (interaction) => {
 					});
 				}
 			}
-			embed.addFields({ name: "\u200B", value: "\u200B" });
+			if (i < pattern.rows.length - 1) {
+				embed.addFields({ name: "\u200B", value: "\u200B" });
+			}
 		}
 		readings.set(`reading${index}`, {
 			pattern: pattern.type,
