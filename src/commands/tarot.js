@@ -13,7 +13,7 @@ const assetPath = [__dirname, "..", "assets", "tarot"];
 const imagePath = [__dirname, "..", "assets", "tarot", "images"];
 // Require card data json file
 const cards = require(path.join(...assetPath, "cards.json"));
-const patterns = require(path.join(...assetPath, "patterns.json"));
+const spreads = require(path.join(...assetPath, "spreads.json"));
 
 let channel;
 
@@ -78,12 +78,12 @@ exports.data = new SlashCommandBuilder()
 			.setDescription("Specify the topic or question of your reading.")
 			.setRequired(true))
 		.addStringOption(option => option
-			.setName("pattern")
-			.setDescription("Choose a pattern to specify intents for your reading.")
-			.addChoices(...patterns.map(pattern => {
+			.setName("spread")
+			.setDescription("Choose a spread to specify intents for your reading.")
+			.addChoices(...spreads.map(spread => {
 				return {
-					name: pattern.name,
-					value: pattern.type,
+					name: spread.name,
+					value: spread.type,
 				};
 			})))
 		.addStringOption(option => option
@@ -105,15 +105,15 @@ exports.data = new SlashCommandBuilder()
 			.setDescription("Choose whether the card is read upside down or not.")))
 	.addSubcommand(subcommand => subcommand
 		.setName("help")
-		.setDescription("Get help on the interpretation of patterns.")
+		.setDescription("Get help on the interpretation of spreads.")
 		.addStringOption(option => option
-			.setName("pattern")
-			.setDescription("Choose a pattern to get help on.")
+			.setName("spread")
+			.setDescription("Choose a spread to get help on.")
 			.setRequired(true)
-			.addChoices(...patterns.map(pattern => {
+			.addChoices(...spreads.map(spread => {
 				return {
-					name: pattern.name,
-					value: pattern.type,
+					name: spread.name,
+					value: spread.type,
 				};
 			}))));
 
@@ -122,18 +122,18 @@ exports.execute = async (interaction) => {
 	if (!channel) channel = interaction.client.channels.cache.find(c => c.id === "1009205115711914075");
 	switch (interaction.options.getSubcommand()) {
 	case "read": {
-		const pattern = patterns.find(p => p.type === interaction.options.getString("pattern")) || patterns[0];
+		const spread = spreads.find(p => p.type === interaction.options.getString("spread")) || spreads[0];
 		const privacy = interaction.options.getString("privacy") || "public";
 		const topic = interaction.options.getString("topic");
 		const topicInt = [...topic].map(char => ("" + char).charCodeAt(0)).reduce((a, b) => a + b, 0);
 
 		const embed = new MessageEmbed()
-			.setTitle(pattern.name + " Reading")
+			.setTitle(spread.name + " Reading")
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
 
 		const cardsDrawn = [];
-		for (let i = 0; i < pattern.rows.length; i++) {
-			const row = pattern.rows[i];
+		for (let i = 0; i < spread.rows.length; i++) {
+			const row = spread.rows[i];
 			for (let j = 0; j < row.length; j++) {
 				if (parseInt(row[j])) {
 					const card = drawCard(interaction, topicInt);
@@ -152,17 +152,22 @@ exports.execute = async (interaction) => {
 					});
 				}
 			}
-			if (i < pattern.rows.length - 1) {
+			if (i < spread.rows.length - 1) {
 				embed.addFields({ name: "\u200B", value: "\u200B" });
 			}
 		}
 
 		const options = {};
-		switch (pattern.type) {
+		switch (spread.type) {
 		case "single":
 			break;
 		case "three":
 			options.direction = "horizontal";
+			break;
+		case "cross":
+			options.direction = "vertical";
+			options.align = "center";
+			options.margin = "1 2 3 4";
 			break;
 		}
 		const imagePaths = cardsDrawn.map(
@@ -185,7 +190,7 @@ exports.execute = async (interaction) => {
 			});
 
 		readings.set(`reading${oldIndex}`, {
-			pattern: pattern.type,
+			spread: spread.type,
 			topic: topic,
 			privacy: privacy,
 			cards: cardsDrawn,
