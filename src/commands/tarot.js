@@ -16,7 +16,7 @@ let index = 0;
 
 const empty = {
 	emojiname: "empty",
-	emojiid: "1009137557281439755",
+	emojiid: "1009166030473543841",
 };
 
 const romanLetters = {
@@ -117,9 +117,11 @@ exports.execute = async (interaction) => {
 		const topic = interaction.options.getString("topic");
 		const topicInt = [...topic].map(char => ("" + char).charCodeAt(0)).reduce((a, b) => a + b, 0);
 
-		const embed = new MessageEmbed()
+		const embeds = [];
+		const firstEmbed = new MessageEmbed()
 			.setTitle(pattern.name + " Reading")
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
+		embeds.push(firstEmbed);
 
 		console.log(pattern);
 		console.log(pattern.rows);
@@ -130,14 +132,15 @@ exports.execute = async (interaction) => {
 				if (parseInt(row[j])) {
 					const card = drawCard(interaction, topicInt);
 					cardsDrawn.push(card);
-					embed.addFields({
+					firstEmbed.addFields({
 						name: romanize(card.number),
-						value: "https://media.discordapp.net/attachments/1008882716239990836/1009164103350239263/0-TheFool.png",
+						value: card.name,
 						inline: true,
 					});
+					embeds.push(new MessageEmbed().setImage(cards[0].imageurl));
 				}
 				else {
-					embed.addFields({
+					firstEmbed.addFields({
 						name: `<:${empty.emojiname}:${empty.emojiid}>`,
 						value: `<:${empty.emojiname}:${empty.emojiid}>`,
 						inline: true,
@@ -145,7 +148,7 @@ exports.execute = async (interaction) => {
 				}
 			}
 			if (i < pattern.rows.length - 1) {
-				embed.addFields({ name: "\u200B", value: "\u200B" });
+				firstEmbed.addFields({ name: "\u200B", value: "\u200B" });
 			}
 		}
 		readings.set(`reading${index}`, {
@@ -155,8 +158,7 @@ exports.execute = async (interaction) => {
 			cards: cardsDrawn,
 		});
 		index++;
-		console.log(embed);
-		interaction.reply({ embeds: [embed] });
+		interaction.reply({ embeds: embeds });
 		break;
 	}
 	case "detail":
