@@ -15,8 +15,6 @@ const imagePath = [__dirname, "..", "assets", "tarot", "images"];
 const cards = require(path.join(...assetPath, "cards.json"));
 const spreads = require(path.join(...assetPath, "spreads.json"));
 
-let channel;
-
 const readings = new Map();
 let index = 0;
 
@@ -119,7 +117,6 @@ exports.data = new SlashCommandBuilder()
 
 // Execute the command
 exports.execute = async (interaction) => {
-	if (!channel) channel = interaction.client.channels.cache.find(c => c.id === "1009205115711914075");
 	switch (interaction.options.getSubcommand()) {
 	case "read": {
 		const spread = spreads.find(p => p.type === interaction.options.getString("spread")) || spreads[0];
@@ -158,37 +155,38 @@ exports.execute = async (interaction) => {
 			}
 		}
 
-		const options = {};
-		switch (spread.type) {
-		case "single":
-			break;
-		case "three":
-			options.direction = "horizontal";
-			break;
-		case "cross":
-			options.direction = "vertical";
-			options.align = "center";
-			options.margin = "1 2 3 4";
-			break;
-		}
+		const imageRows = [];
+
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
 				...imagePath, `${romanize(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reverse" : ""}.png`));
 
 		const oldIndex = index;
 		index++;
-		joinImages(imagePaths, options).then(
-			img => {
-				img.toFile(path.join(...assetPath, `reading${oldIndex}.png`)).then(
-					() => {
-						channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] }).then(
-							(message) => {
-								embed.setImage(message.attachments.first().url);
-								interaction.reply({ embeds: [embed] });
-							});
-					},
-				);
-			});
+		for (let i = 0; i < spread.pattern.length; i++) {
+			const count = spread.pattern[i].reduce((accumulator, value) => value ? accumulator + 1 : accumulator, 0);
+			const rowPaths = imagePath.splice(0, count);
+			await joinImages(rowPaths, { direction: "horizontal" }).then(
+				img => {
+					const rowPath = path.join(...assetPath, `reading${oldIndex}_${i}.png`);
+					img.toFile(rowPath);
+					imageRows.push(rowPath);
+				});
+		}
+
+		if (spread.pattern.length > 1) {
+			joinImages(imagePaths, { direction: "vertical" }).then(
+				(img) => {
+					const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
+					img.toFile(finalImagePath);
+					embed.setImage(`attachment://${finalImagePath}`);
+					interaction.reply({ embeds: [embed] });
+				});
+		}
+		else {
+			embed.setImage(`attachment://${imageRows[0]}`);
+			interaction.reply({ embeds: [embed] });
+		}
 
 		readings.set(`reading${oldIndex}`, {
 			spread: spread.type,
