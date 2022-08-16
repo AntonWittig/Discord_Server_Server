@@ -18,6 +18,8 @@ const spreads = require(path.join(...assetPath, "spreads.json"));
 const readings = new Map();
 let index = 0;
 
+let channel;
+
 const empty = {
 	emojiname: "empty",
 	emojiid: "1009166030473543841",
@@ -117,6 +119,7 @@ exports.data = new SlashCommandBuilder()
 
 // Execute the command
 exports.execute = async (interaction) => {
+	if (!channel) channel = interaction.client.channels.cache.find(c => c.id === "1009205115711914075");
 	switch (interaction.options.getSubcommand()) {
 	case "read": {
 		const spread = spreads.find(p => p.type === interaction.options.getString("spread")) || spreads[0];
@@ -182,15 +185,19 @@ exports.execute = async (interaction) => {
 					const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
 					img.toFile(finalImagePath);
 					imageRows.push(finalImagePath);
-					const file = new Attachment().setFile(finalImagePath);
-					embed.setImage(`attachment://reading${oldIndex}.png`);
-					interaction.reply({ embeds: [embed], files: [file] });
+					channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] }).then(
+						message => {
+							embed.setImage(message.attachments.first().url);
+							interaction.reply({ embeds: [embed] });
+						});
 				});
 		}
 		else {
-			const file = new Attachment().setFile(imageRows[0]);
-			embed.setImage(`attachment://reading${oldIndex}.png`);
-			interaction.reply({ embeds: [embed], files: [file] });
+			channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] }).then(
+				message => {
+					embed.setImage(message.attachments.first().url);
+					interaction.reply({ embeds: [embed] });
+				});
 		}
 
 		readings.set(`reading${oldIndex}`, {
