@@ -1,5 +1,5 @@
 // Require the necessary discord.js class
-const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 
 // Require the path module for accessing the command src
@@ -127,21 +127,21 @@ exports.execute = async (interaction) => {
 				if (parseInt(char)) {
 					const card = drawCard(interaction, topicInt);
 					cardsDrawn.push(card);
-					// embed.addFields({
-					// 	name: romanize(card.number),
-					// 	value: `<:${card.emojiname}:${card.emojiid}>`,
-					// 	inline: true,
-					// });
+					embed.addFields({
+						name: romanize(card.number),
+						value: `<:${card.emojiname}:${card.emojiid}>`,
+						inline: true,
+					});
 				}
 				else {
-					// embed.addFields({
-					// 	name: " ",
-					// 	value: `<:${empty.emojiname}:${empty.emojiid}>`,
-					// 	inline: true,
-					// });
+					embed.addFields({
+						name: " ",
+						value: `<:${empty.emojiname}:${empty.emojiid}>`,
+						inline: true,
+					});
 				}
 			}
-			// embed.addFields({ name: "\u200B", value: "\u200B" });
+			embed.addFields({ name: "\u200B", value: "\u200B" });
 		}
 		readings.set(`reading${index}`, {
 			pattern: pattern.type,
