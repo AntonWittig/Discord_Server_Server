@@ -115,7 +115,7 @@ exports.execute = async (interaction) => {
 		const privacy = interaction.options.getString("privacy") || "public";
 		const topic = interaction.options.getString("topic");
 		console.log([...topic]);
-		const topicInt = [...topic].map(letter => letter.CharCodeAt(0)).reduce((a, b) => a + b, 0);
+		const topicInt = [...topic].map(char => ("" + char).charCodeAt(0)).reduce((a, b) => a + b, 0);
 
 		const embed = new EmbedBuilder()
 			.setTitle(pattern.name + " Reading")
