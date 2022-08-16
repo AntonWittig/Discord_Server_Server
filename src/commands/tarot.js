@@ -121,6 +121,7 @@ exports.execute = async (interaction) => {
 			.setTitle(pattern.name + " Reading")
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
 
+		console.log(pattern);
 		const cardsDrawn = [];
 		for (const row in pattern.rows) {
 			console.log(row);
