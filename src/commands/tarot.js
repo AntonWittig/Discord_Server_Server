@@ -64,6 +64,10 @@ exports.data = new SlashCommandBuilder()
 		.setName("read")
 		.setDescription("Let the server read your cards for a question or topic of your choice.")
 		.addStringOption(option => option
+			.setName("topic")
+			.setDescription("Specify the topic or question of your reading.")
+			.setRequired(true))
+		.addStringOption(option => option
 			.setName("pattern")
 			.setDescription("Choose a pattern to specify intents for your reading.")
 			.addChoices(...patterns.map(pattern => {
@@ -73,12 +77,8 @@ exports.data = new SlashCommandBuilder()
 				};
 			})))
 		.addStringOption(option => option
-			.setName("topic")
-			.setDescription("Specify the topic or question of your reading."))
-		.addStringOption(option => option
 			.setName("privacy")
 			.setDescription("Specify the level of privacy of your reading.")
-			.setRequired(true)
 			.addChoices(
 				{ name: "public", value: "public" },
 				{ name: "private topic", value: "privateT" },
