@@ -155,10 +155,10 @@ exports.execute = async (interaction) => {
 		index++;
 		joinImages([path.join(...imagePath, "0-TheFool.png")])
 			.then(img => {
-				img.toFile(path.join(...assetPath, `reading${oldIndex}`))
+				img.toFile(path.join(...assetPath, `reading${oldIndex}.png`))
 					.then(
 						() => {
-							embed.setImage(path.join(...assetPath, `reading${oldIndex}`));
+							embed.setImage(path.join(...assetPath, `reading${oldIndex}.png`));
 							interaction.reply({ embeds: [embed] });
 						},
 					);
@@ -172,7 +172,7 @@ exports.execute = async (interaction) => {
 		});
 		console.log(embed);
 		setTimeout(() => {
-			fs.unlinkSync(path.join(...assetPath, `reading${oldIndex}`));
+			fs.unlinkSync(path.join(...assetPath, `reading${oldIndex}.png`));
 		}, 2000);
 		break;
 	}
