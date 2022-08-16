@@ -1,5 +1,6 @@
 // Require the necessary discord.js class
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const { MessageEmbed } = require("discord.js");
 
 // Require the path module for accessing the command src
 const path = require("node:path");
@@ -116,7 +117,7 @@ exports.execute = async (interaction) => {
 		const topic = interaction.options.getString("topic");
 		const topicInt = [...topic].map(char => ("" + char).charCodeAt(0)).reduce((a, b) => a + b, 0);
 
-		const embed = new EmbedBuilder()
+		const embed = new MessageEmbed()
 			.setTitle(pattern.name + " Reading")
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
 
