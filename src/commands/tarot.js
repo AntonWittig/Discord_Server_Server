@@ -1,3 +1,5 @@
+const mergeImages = require("merge-images");
+
 // Require the necessary discord.js class
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
@@ -117,11 +119,9 @@ exports.execute = async (interaction) => {
 		const topic = interaction.options.getString("topic");
 		const topicInt = [...topic].map(char => ("" + char).charCodeAt(0)).reduce((a, b) => a + b, 0);
 
-		const embeds = [];
-		const firstEmbed = new MessageEmbed()
+		const embed = new MessageEmbed()
 			.setTitle(pattern.name + " Reading")
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
-		// embeds.push(firstEmbed);
 
 		console.log(pattern);
 		console.log(pattern.rows);
@@ -132,15 +132,14 @@ exports.execute = async (interaction) => {
 				if (parseInt(row[j])) {
 					const card = drawCard(interaction, topicInt);
 					cardsDrawn.push(card);
-					firstEmbed.addFields({
+					embed.addFields({
 						name: romanize(card.number),
 						value: card.name,
 						inline: true,
 					});
-					embeds.push(new MessageEmbed().setURL("http://www.google.com").setImage(cards[0].imageurl));
 				}
 				else {
-					firstEmbed.addFields({
+					embed.addFields({
 						name: `<:${empty.emojiname}:${empty.emojiid}>`,
 						value: `<:${empty.emojiname}:${empty.emojiid}>`,
 						inline: true,
@@ -148,9 +147,11 @@ exports.execute = async (interaction) => {
 				}
 			}
 			if (i < pattern.rows.length - 1) {
-				firstEmbed.addFields({ name: "\u200B", value: "\u200B" });
+				embed.addFields({ name: "\u200B", value: "\u200B" });
 			}
 		}
+
+		embed.setImage(mergeImages(["https://cdn.discordapp.com/attachments/1008882716239990836/1009164103350239263/0-TheFool.png"]));
 		readings.set(`reading${index}`, {
 			pattern: pattern.type,
 			topic: topic,
@@ -158,8 +159,7 @@ exports.execute = async (interaction) => {
 			cards: cardsDrawn,
 		});
 		index++;
-		interaction.reply({ embeds: [firstEmbed] });
-		interaction.channel.send({ embeds: embeds });
+		interaction.reply({ embeds: [embed] });
 		break;
 	}
 	case "detail":
