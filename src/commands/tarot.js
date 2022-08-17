@@ -157,6 +157,7 @@ exports.execute = async (interaction) => {
 			}
 		}
 
+		const options = {};
 		const imageRows = [];
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
@@ -170,7 +171,7 @@ exports.execute = async (interaction) => {
 			console.log(imagePaths);
 			console.log(rowPaths);
 			console.log(count);
-			joinImages(rowPaths, { direction: "horizontal" }).then(
+			joinImages(rowPaths).then(
 				img => {
 					const iString = spread.pattern.length === 1 ? "" : `_${i}`;
 					const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
@@ -185,7 +186,7 @@ exports.execute = async (interaction) => {
 		while (imageRows.length < spread.pattern.length) { continue; }
 		console.log(imageRows);
 		if (imageRows.length > 1) {
-			joinImages(imageRows, { direction: "vertical" }).then(
+			joinImages(imageRows).then(
 				(img) => {
 					const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
 					img.toFile(finalImagePath).then(
