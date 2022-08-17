@@ -1,84 +1,53 @@
-const { joinImages } = require("join-images");
-
+// #region IMPORTS
 // Require the necessary discord.js class
-const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
+const { SlashCommandBuilder } = require("@discordjs/builders");
 
-// Require the path module for accessing the command src
+// Require the path module for accessing the correct files
 const path = require("node:path");
 const fs = require("node:fs");
 
-// Create path to the json sources
+// Require the join-images module to combine multiple cards into one image
+const { joinImages } = require("join-images");
+
+// Require the card and spread data json files
 const assetPath = [__dirname, "..", "assets", "tarot"];
-const imagePath = [__dirname, "..", "assets", "tarot", "images"];
-// Require card data json file
 const cards = require(path.join(...assetPath, "cards.json"));
 const spreads = require(path.join(...assetPath, "spreads.json"));
 
-const readings = new Map();
-let index = 0;
+// Require the necessary libraries for the command
+const libPath = [__dirname, "..", "libs"];
+const { generalNumHnd } = require(path.join(...libPath, "NumberHandling.js"));
+const { generalArrHnd } = require(path.join(...libPath, "arrayHandling.js"));
+const { generalRndHnd } = require(path.join(...libPath, "randomHandling.js"));
+const deepClone = require(path.join(...libPath, "deepClone.js"));
 
+// Create source paths for the json files and the card images
+const imagePath = [__dirname, "..", "assets", "tarot", "images"];
+// #endregion
+
+// #region VARIABLES
+// Storage managment variables for the active readings
+const readings = new Map();
+let storageIndex = 0;
+
+// Channel variable to send images to to fetch them as url
 let channel;
 
+// Emoji data of empty card
 const empty = {
-	emojiname: "empty",
-	emojiid: "1009166030473543841",
+	emojiName: "empty",
+	emojiID: "1009166030473543841",
+	imageName: "empty.png",
 };
+// #endregion
 
-const romanLetters = {
-	M: 1000,
-	CM: 900,
-	D: 500,
-	CD: 400,
-	C: 100,
-	XC: 90,
-	L: 50,
-	XL: 40,
-	X: 10,
-	IX: 9,
-	V: 5,
-	IV: 4,
-	I: 1,
-};
-
-function romanize(num) {
-	let roman = "";
-	if (num) {
-		for (const [key, value] of Object.entries(romanLetters)) {
-			while (num >= value) {
-				roman += key;
-				num -= value;
-			}
-		}
-	}
-	else if (num === 0) {
-		roman = "0";
-	}
-	return roman;
-}
-
-function drawCard(interaction, drawFrom, additionalSubtrahend = 0) {
-	let draw = Math.floor(Math.random() * Number.MAX_VALUE);
-	draw -= parseInt(interaction.user.id);
-	draw -= Date.now();
-	draw -= additionalSubtrahend;
-	draw = draw % drawFrom.length;
-	return drawFrom[draw];
-}
-
-// Reorganize cards by spread order
-function orderCards(unorderedCards, spread) {
-	const orderedCards = [];
-	for (let i = 0; i < unorderedCards.length; i++) {
-		orderedCards.push(unorderedCards[spread.order[i]]);
-	}
-	return orderedCards;
-}
-
+// #region COMMAND
 // Initialize the command with a name and description
 exports.data = new SlashCommandBuilder()
 	.setName("tarot")
 	.setDescription("Interact with the server's tarot card deck.")
+	// Subcommand for doing tarot readings
 	.addSubcommand(subcommand => subcommand
 		.setName("read")
 		.setDescription("Let the server read your cards for a question or topic of your choice.")
@@ -102,6 +71,7 @@ exports.data = new SlashCommandBuilder()
 				{ name: "public", value: "public" },
 				{ name: "private topic", value: "privateT" },
 				{ name: "private reading", value: "private" })))
+	// Subcommand for getting details of a tarot card
 	.addSubcommand(subcommand => subcommand
 		.setName("detail")
 		.setDescription("Investigate a card to get a more detailed description.")
@@ -112,6 +82,7 @@ exports.data = new SlashCommandBuilder()
 		.addBooleanOption(option => option
 			.setName("reversed")
 			.setDescription("Choose whether the card is read upside down or not.")))
+	// Subcommand for getting interpretation help for a spread
 	.addSubcommand(subcommand => subcommand
 		.setName("help")
 		.setDescription("Get help on the interpretation of spreads.")
@@ -128,61 +99,85 @@ exports.data = new SlashCommandBuilder()
 
 // Execute the command
 exports.execute = async (interaction) => {
+	// Set channel to send all final images to, to get its url
 	if (!channel) channel = interaction.client.channels.cache.find(c => c.id === "1009205115711914075");
+	// Get the subcommand of the command
 	switch (interaction.options.getSubcommand()) {
+	// #region READ
 	case "read": {
+		// Get subcommand options
+		const topic = interaction.options.getString("topic");
 		const spread = spreads.find(p => p.type === interaction.options.getString("spread")) || spreads[0];
 		const privacy = interaction.options.getString("privacy") || "public";
-		const topic = interaction.options.getString("topic");
+		// Get an integer representation of the topic as the sum of the chars codes
 		const topicInt = [...topic].map(char => ("" + char).charCodeAt(0)).reduce((a, b) => a + b, 0);
 
+		// Initialize the embed of the reply with a title and description
 		const embed = new MessageEmbed()
 			.setTitle(spread.name + " Reading")
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
 
+		// Initialize the array of drawn cards and clone cards array to draw from
 		let cardsDrawn = [];
-		let drawFrom = cards.map(card => card);
+		let drawFrom = deepClone(cards);
+		// Draw as many cards as defined by the spread
 		for (let i = 0; i < spread.amount; i++) {
-			const card = drawCard(interaction, drawFrom, topicInt);
+			// Draw and store a random card that hasn't been drawn yet
+			const card = generalRndHnd.randFromArray(
+				drawFrom,
+				(arrayLength) => {
+					const draw = generalRndHnd.randMax() - (parseInt(interaction.user.id) + Date.now() + topicInt);
+					return draw % arrayLength;
+				});
 			cardsDrawn.push(card);
+			// Remove the drawn card from the cards to draw from
 			drawFrom = drawFrom.filter(c => c.name !== card.name);
 		}
-		cardsDrawn = orderCards(cardsDrawn, spread);
+		// Reorder the drawn cards to be correctly placed in the spread
+		cardsDrawn = generalArrHnd.reorderByArray(cardsDrawn, spread.order);
 
 		let cardsIndex = 0;
+		// Loop through the spread pattern rows
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const row = spread.pattern[i];
+			// Loop through the row's columns
 			for (let j = 0; j < row.length; j++) {
+				// Check if a card should be placed at the current position
 				if (row[j]) {
+					// Add the card number and name to the embed
 					const card = cardsDrawn[cardsIndex];
 					embed.addFields({
-						name: romanize(card.number),
+						name: generalNumHnd.romanizeArabic(card.number),
 						value: card.reversed ? card.name + "\nReversed" : card.name,
 						inline: true,
 					});
 					cardsIndex++;
 				}
+				// If no card should be placed at the current position, add an empty card
 				else {
 					embed.addFields({
-						name: `<:${empty.emojiname}:${empty.emojiid}>`,
-						value: `<:${empty.emojiname}:${empty.emojiid}>`,
+						name: `<:${empty.emojiName}:${empty.emojiID}>`,
+						value: `<:${empty.emojiName}:${empty.emojiID}>`,
 						inline: true,
 					});
 				}
 			}
+			// Add a newline after each row
 			if (i < spread.pattern.length - 1) {
 				embed.addFields({ name: "\u200B", value: "\u200B" });
 			}
 		}
 
-
-		const imageRows = [];
+		// Initialize the array of path strings for each drawn cards image
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
-				...imagePath, `${romanize(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reverse" : ""}.png`));
+				...imagePath,
+				`${generalNumHnd.romanizeArabic(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reverse" : ""}.png`));
 
-		const oldIndex = index;
-		index++;
+		//
+		const imageRows = [];
+		const oldIndex = storageIndex;
+		storageIndex++;
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const count = spread.pattern[i].reduce((accumulator, value) => value ? accumulator + 1 : accumulator, 0);
 			joinImages(imagePaths.splice(0, count), { direction: "horizontal" }).then(img => {
@@ -214,23 +209,53 @@ exports.execute = async (interaction) => {
 			});
 		}
 
+		// Store the data of the reading for later access
 		readings.set(`reading${oldIndex}`, {
+			timestamp: Date.now(),
+			user: interaction.user.id,
 			spread: spread.type,
 			topic: topic,
 			privacy: privacy,
 			cards: cardsDrawn,
 		});
 
+		// Delete all temporarily created image files
 		setTimeout(() => {
 			imageRows.forEach(row => fs.unlinkSync(row));
 		}, 2000);
+
+		// Redd sessions of readings from json file
+		fs.readFile(path.join(...assetPath, "readings.json"), "utf8", function readFileCallback(err, data) {
+			if (err) { console.log(err);}
+			else {
+				const obj = JSON.parse(data);
+				const objEntries = Object.entries(obj);
+				// Check if there is already a session for the current readings
+				const objkey = objEntries.map(([key, value]) => value.reading0.timestamp === readings.get("reading0").timestamp ? key : "").filter((e) => e !== "");
+				// Check if a session was found
+				if (objkey.length > 0) {
+					// Store the current readings in the existing session
+					obj[objkey[0]] = readings;
+				}
+				else {
+					// Store the current readings in a new session
+					obj[`session${objEntries.length}`] = readings;
+				}
+				// Store the json object in the file
+				const json = JSON.stringify(obj);
+				fs.writeFile(path.join(...assetPath, "readings.json"), json, "utf8");
+			}
+		});
 		break;
 	}
+	// #endregion
+	// #region DETAIL
 	case "detail":
 		break;
+	// #endregion
+	// #region HELP
 	case "help":
 		break;
-	default:
-		break;
+	// #endregion
 	}
 };

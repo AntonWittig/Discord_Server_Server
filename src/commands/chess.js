@@ -2,7 +2,6 @@
 // Require the necessary discord.js classes
 const { MessageActionRow, MessageButton, Message, Interaction } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
-// #endregion
 
 // Require the path module for accessing the correct files
 const path = require("node:path");
@@ -15,11 +14,12 @@ const { generalMsgHnd } = require(path.join(...libPath, "messageHandling.js"));
 const { chessFnct, chessVars } = require(path.join(...libPath, "gameHandling.js"));
 const { chessRnd } = require(path.join(...libPath, "render.js"));
 const { extractEmojiDataFromText } = require(path.join(...libPath, "messageHandling.js"));
+// #endregion
 
 // #region VARIABLES
 // Storage managment variables for the active games
 const games = new Map();
-let index = 0;
+let storageIndex = 0;
 
 // The time in milliseconds after which an unaccepted invitation will be closed (14minutes)
 const timeoutMs = 14 * 60 * 1000;
@@ -39,6 +39,8 @@ exports.data = new SlashCommandBuilder()
 
 // Execute the command
 exports.execute = async (interaction) => {
+	// Increment the game index and store current for timeout
+	const index = storageIndex++;
 	// Get the invoking user
 	const user = interaction.user;
 	// Get the opponent user and the start option
@@ -62,9 +64,6 @@ exports.execute = async (interaction) => {
 	const game = games.get(`game${index}`);
 	// Store reply as invitation
 	game.set("invitation", await interaction.fetchReply());
-	// Increment the game index and store current for timeout
-	const thisGameIndex = index;
-	index++;
 	// Close the invitation if after the specified time the game has not been accepted or declined or the game is over
 	setTimeout(() => {
 		if (game && game.has("invitation")) {
@@ -74,7 +73,7 @@ exports.execute = async (interaction) => {
 					generalMsgHnd.appendToMessage(game.get("invitation"), "**The invitation has been closed by the server, because it has not been accepted for too long.**");
 				});
 			// Remove the game from the games dictionary
-			games.delete(`game${thisGameIndex}`);
+			games.delete(`game${index}`);
 		}
 	}, timeoutMs);
 };
