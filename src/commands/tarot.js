@@ -171,23 +171,27 @@ exports.execute = async (interaction) => {
 				img => {
 					const iString = spread.pattern.length === 1 ? "" : `_${i}`;
 					const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
-					img.toFile(rowPath);
-					imageRows.push(rowPath);
+					img.toFile(rowPath).then(
+						() => {
+							imageRows.push(rowPath);
+						});
 				});
 		}
 		console.log(imageRows);
-		if (spread.pattern.length > 1) {
+		if (imageRows.length > 1) {
 			joinImages(imageRows, { direction: "vertical" }).then(
 				(img) => {
 					const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
-					img.toFile(finalImagePath);
-					imageRows.push(finalImagePath);
-					channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] }).then(
-						message => {
-							embed.setImage(message.attachments.first().url);
-							interaction.reply({ embeds: [embed] });
+					img.toFile(finalImagePath).then(
+						() => {
+							imageRows.push(finalImagePath);
+							channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] }).then(
+								message => {
+									embed.setImage(message.attachments.first().url);
+									interaction.reply({ embeds: [embed] });
+								}).catch(console.error);
 						});
-				});
+				}).catch(console.error);
 		}
 		else {
 			channel.send({ files: imageRows }).then(
@@ -195,7 +199,7 @@ exports.execute = async (interaction) => {
 					console.log(message);
 					embed.setImage(message.attachments.first().url);
 					interaction.reply({ embeds: [embed] });
-				});
+				}).catch(console.error);
 		}
 
 		readings.set(`reading${oldIndex}`, {
