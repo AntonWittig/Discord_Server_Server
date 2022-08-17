@@ -180,7 +180,7 @@ exports.execute = async (interaction) => {
 						});
 				});
 		}
-		while (imageRows.length < spread.pattern.length) { continue; }
+
 		console.log(imageRows);
 		if (imageRows.length > 1) {
 			joinImages(imageRows).then(
