@@ -166,7 +166,7 @@ exports.execute = async (interaction) => {
 		index++;
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const count = spread.pattern[i].reduce((accumulator, value) => value ? accumulator + 1 : accumulator, 0);
-			joinImages(imagePaths.splice(0, count)).then(img => {
+			joinImages(imagePaths.splice(0, count), { direction: "horizontal" }).then(img => {
 				const iString = spread.pattern.length === 1 ? "" : `_${i}`;
 				const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
 				img.toFile(rowPath).then(() => {
