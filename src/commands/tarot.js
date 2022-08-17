@@ -168,11 +168,9 @@ exports.execute = async (interaction) => {
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const count = spread.pattern[i].reduce((accumulator, value) => value ? accumulator + 1 : accumulator, 0);
 			const rowPaths = imagePaths.splice(0, count);
-			console.log(imagePaths);
-			console.log(rowPaths);
-			console.log(count);
 			joinImages(rowPaths).then(
 				img => {
+					console.log("reach");
 					const iString = spread.pattern.length === 1 ? "" : `_${i}`;
 					const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
 					console.log(rowPath);
