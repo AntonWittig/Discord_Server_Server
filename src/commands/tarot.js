@@ -66,6 +66,15 @@ function drawCard(interaction, additionalSubtrahend = 0) {
 	return cards[draw];
 }
 
+// Reorganize cards by spread order
+function orderCards(unorderedCards, spread) {
+	const orderedCards = [];
+	for (let i = 0; i < unorderedCards.length; i++) {
+		orderedCards.push(unorderedCards[spread.order[i]]);
+	}
+	return orderedCards;
+}
+
 // Initialize the command with a name and description
 exports.data = new SlashCommandBuilder()
 	.setName("tarot")
@@ -131,18 +140,24 @@ exports.execute = async (interaction) => {
 			.setTitle(spread.name + " Reading")
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
 
-		const cardsDrawn = [];
+		let cardsDrawn = [];
+		for (let i = 0; i < spread.amount; i++) {
+			const card = drawCard(interaction, topicInt);
+			cardsDrawn.push(card);
+		}
+		cardsDrawn = orderCards(cardsDrawn, spread);
+		let cardsIndex = 0;
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const row = spread.pattern[i];
 			for (let j = 0; j < row.length; j++) {
 				if (row[j]) {
-					const card = drawCard(interaction, topicInt);
-					cardsDrawn.push(card);
+					const card = cardsDrawn[cardsIndex];
 					embed.addFields({
 						name: romanize(card.number),
 						value: card.reversed ? card.name + "\nReversed" : card.name,
 						inline: true,
 					});
+					cardsIndex++;
 				}
 				else {
 					embed.addFields({
@@ -156,6 +171,7 @@ exports.execute = async (interaction) => {
 				embed.addFields({ name: "\u200B", value: "\u200B" });
 			}
 		}
+
 
 		const imageRows = [];
 		const imagePaths = cardsDrawn.map(
@@ -173,7 +189,7 @@ exports.execute = async (interaction) => {
 					imageRows.splice(i, 0, rowPath);
 					if (imageRows.length === spread.pattern.length) {
 						if (spread.pattern.length > 1) {
-							joinImages(imageRows, { align: "center" }).then((finalImg) => {
+							joinImages(imageRows, { align: spread.verticalalign }).then((finalImg) => {
 								const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
 								finalImg.toFile(finalImagePath).then(() => {
 									imageRows.push(finalImagePath);

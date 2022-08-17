@@ -3,13 +3,17 @@
 		"name": "Single Card",
 		"type": "single",
 		"amount": 1,
-		"pattern": [[true]]
+		"pattern": [[true]],
+		"order": [0],
+		"verticalalign": "center"
 	},
 	{
 		"name": "Three Cards",
 		"type": "three",
 		"amount": 3,
-		"pattern": [[true, true, true]]
+		"pattern": [[true, true, true]],
+		"order": [0, 1, 2],
+		"verticalalign": "center"
 	},
 	{
 		"name": "Cross",
@@ -19,6 +23,8 @@
 			[false, true, false],
 			[true, true, true],
 			[false, true, false]
-		]
+		],
+		"order" : [3, 2, 0, 4, 1],
+		"verticalalign": "center"
 	}
 ]
