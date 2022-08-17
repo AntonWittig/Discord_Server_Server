@@ -167,7 +167,7 @@ exports.execute = async (interaction) => {
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const count = spread.pattern[i].reduce((accumulator, value) => value ? accumulator + 1 : accumulator, 0);
 			const rowPaths = imagePaths.splice(0, count);
-			await joinImages(rowPaths, { direction: "horizontal" }).then(
+			joinImages(rowPaths, { direction: "horizontal" }).then(
 				img => {
 					const iString = spread.pattern.length === 1 ? "" : `_${i}`;
 					const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
@@ -177,6 +177,7 @@ exports.execute = async (interaction) => {
 						});
 				});
 		}
+		while (imageRows.length < spread.pattern.length) { continue;}
 		console.log(imageRows);
 		if (imageRows.length > 1) {
 			joinImages(imageRows, { direction: "vertical" }).then(
