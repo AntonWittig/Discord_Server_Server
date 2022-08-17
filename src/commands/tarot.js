@@ -179,8 +179,8 @@ exports.execute = async (interaction) => {
 						() => {
 							console.log("now");
 							imageRows.push(rowPath);
-						});
-				});
+						}).catch(console.error);
+				}).catch(console.error);
 		}
 		while (imageRows.length < spread.pattern.length) { continue; }
 		console.log(imageRows);
