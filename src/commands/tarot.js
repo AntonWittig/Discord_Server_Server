@@ -173,11 +173,12 @@ exports.execute = async (interaction) => {
 					const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
 					img.toFile(rowPath).then(
 						() => {
+							console.log("now");
 							imageRows.push(rowPath);
 						});
 				});
 		}
-		while (imageRows.length < spread.pattern.length) { continue;}
+		while (imageRows.length < spread.pattern.length) { console.log(imageRows); }
 		console.log(imageRows);
 		if (imageRows.length > 1) {
 			joinImages(imageRows, { direction: "vertical" }).then(
