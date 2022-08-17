@@ -173,7 +173,7 @@ exports.execute = async (interaction) => {
 					imageRows.splice(i, 0, rowPath);
 					if (imageRows.length === spread.pattern.length) {
 						if (spread.pattern.length > 1) {
-							joinImages(imageRows).then((finalImg) => {
+							joinImages(imageRows, { align: "center" }).then((finalImg) => {
 								const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
 								finalImg.toFile(finalImagePath).then(() => {
 									imageRows.push(finalImagePath);
