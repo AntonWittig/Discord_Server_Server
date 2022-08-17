@@ -170,7 +170,7 @@ exports.execute = async (interaction) => {
 				const iString = spread.pattern.length === 1 ? "" : `_${i}`;
 				const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
 				img.toFile(rowPath).then(() => {
-					imageRows.push(rowPath);
+					imageRows.splice(i, 0, rowPath);
 					if (imageRows.length === spread.pattern.length) {
 						if (spread.pattern.length > 1) {
 							joinImages(imageRows).then((finalImg) => {
