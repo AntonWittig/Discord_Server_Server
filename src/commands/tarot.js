@@ -1,7 +1,7 @@
 const { joinImages } = require("join-images");
 
 // Require the necessary discord.js class
-const { SlashCommandBuilder, Attachment } = require("@discordjs/builders");
+const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 
 // Require the path module for accessing the command src
@@ -57,13 +57,13 @@ function romanize(num) {
 	return roman;
 }
 
-function drawCard(interaction, additionalSubtrahend = 0) {
+function drawCard(interaction, drawFrom, additionalSubtrahend = 0) {
 	let draw = Math.floor(Math.random() * Number.MAX_VALUE);
 	draw -= parseInt(interaction.user.id);
 	draw -= Date.now();
 	draw -= additionalSubtrahend;
-	draw = draw % cards.length;
-	return cards[draw];
+	draw = draw % drawFrom.length;
+	return drawFrom[draw];
 }
 
 // Reorganize cards by spread order
@@ -141,11 +141,14 @@ exports.execute = async (interaction) => {
 			.setDescription(privacy === "public" ? "The topic: " + topic : "The topic of this reading is private.");
 
 		let cardsDrawn = [];
+		let drawFrom = cards.map(card => card);
 		for (let i = 0; i < spread.amount; i++) {
-			const card = drawCard(interaction, topicInt);
+			const card = drawCard(interaction, drawFrom, topicInt);
 			cardsDrawn.push(card);
+			drawFrom = drawFrom.filter(c => c.name !== card.name);
 		}
 		cardsDrawn = orderCards(cardsDrawn, spread);
+
 		let cardsIndex = 0;
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const row = spread.pattern[i];
