@@ -80,7 +80,7 @@ exports.data = new SlashCommandBuilder()
 		.setName("detail")
 		.setDescription("Investigate a card to get a more detailed description.")
 		.addStringOption(option => option
-			.setName("card name")
+			.setName("card")
 			.setDescription("Choose a card to investigate.")
 			.setRequired(true))
 		.addBooleanOption(option => option
@@ -91,7 +91,7 @@ exports.data = new SlashCommandBuilder()
 		.setName("help")
 		.setDescription("Get help on the interpretation of spreads.")
 		.addStringOption(option => option
-			.setName("spread name")
+			.setName("spread")
 			.setDescription("Choose a spread to get help on.")
 			.setRequired(true)
 			.addChoices(...spreads.map(spread => {
@@ -276,7 +276,7 @@ exports.execute = async (interaction) => {
 	// #endregion
 	// #region DETAIL
 	case "detail": {
-		const card = interaction.options.getString("card name");
+		const card = interaction.options.getString("card");
 		const reversed = interaction.options.getBoolean("reversed");
 
 		const cardsClone = deepClone(cards);
@@ -345,7 +345,7 @@ exports.execute = async (interaction) => {
 	// #endregion
 	// #region HELP
 	case "help": {
-		const spread = interaction.options.getString("spread name");
+		const spread = interaction.options.getString("spread");
 
 		const spreadClone = deepClone(cards);
 
