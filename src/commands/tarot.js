@@ -20,6 +20,7 @@ const libPath = [__dirname, "..", "libs"];
 const { generalNumHnd } = require(path.join(...libPath, "NumberHandling.js"));
 const { generalArrHnd } = require(path.join(...libPath, "arrayHandling.js"));
 const { generalRndHnd } = require(path.join(...libPath, "randomHandling.js"));
+const { generalStrHnd } = require(path.join(...libPath, "stringHandling.js"));
 const deepClone = require(path.join(...libPath, "deepClone.js"));
 
 // Create source paths for the json files and the card images
@@ -33,6 +34,9 @@ const tempPath = [__dirname, "..", "assets", "tarot", "temp"];
 const readings = new Map();
 let storageIndex = 0;
 
+// String matching threshhold
+const matchThresh = 0.8;
+
 // Emoji data of empty card
 const empty = {
 	number: undefined,
@@ -41,11 +45,6 @@ const empty = {
 	emojiID: "1009166030473543841",
 };
 // #endregion
-
-// TODO import from new string handler
-function capitalizeFirst(string) {
-	return string.charAt(0).toUpperCase() + string.slice(1);
-}
 
 // #region COMMAND
 // Initialize the command with a name and description
@@ -92,7 +91,7 @@ exports.data = new SlashCommandBuilder()
 		.setName("help")
 		.setDescription("Get help on the interpretation of spreads.")
 		.addStringOption(option => option
-			.setName("spread")
+			.setName("spread name")
 			.setDescription("Choose a spread to get help on.")
 			.setRequired(true)
 			.addChoices(...spreads.map(spread => {
@@ -282,79 +281,93 @@ exports.execute = async (interaction) => {
 
 		const cardsClone = deepClone(cards);
 
-		const comp1 = [...card].filter(char => char !== " ").reverse();
-
-		let longestMatchIndices = [];
-		let longestMatchLength = 0;
-
+		const matches = [];
 		for (let i = 0; i < cardsClone.length; i++) {
-			const comp2 = [...cardsClone[i].name].filter(char => char !== " ").reverse();
-			let currentMatchLength = 0;
-			for (let j = 0; j < comp2.length; j++) {
-				if (comp1[j - 1] === comp2[j]
-					|| comp1[j] === comp2[j]
-					|| comp1[j + 1] === comp2[j]) {
-					currentMatchLength++;
-				}
+			let cardInput = card;
+			if (card.toLowerCase().startsWith("the ")
+				&& !cardsClone[i].name.toLowerCase().startsWith("the ")) {
+				cardInput = card.replace("the ", "");
 			}
-			if (currentMatchLength > longestMatchLength && currentMatchLength > comp2.length / 2) {
-				longestMatchLength = currentMatchLength;
-				longestMatchIndices = [i];
+			else if (!card.toLowerCase().startsWith("the ")
+				&& cardsClone[i].name.toLowerCase().startsWith("the ")) {
+				cardInput = `the ${card}`;
 			}
-			else if (currentMatchLength === longestMatchLength) {
-				longestMatchIndices.push(i);
+			if (generalStrHnd.matchPercentage(cardInput, cardsClone[i].name) > matchThresh) {
+				matches.push(cardsClone[i]);
 			}
 		}
 
-		const longestMatchIndex = longestMatchIndices.filter(index => cardsClone[index].reversed === reversed).shift();
-		const cardObj = cardsClone[longestMatchIndex];
-		if (cardObj) {
-			const imgPath = path.join(
-				...imagesPath,
-				`${generalNumHnd.romanizeArabic(cardObj.number)}-
+		const match = matches.filter(obj => obj.reversed === reversed);
+		if (match.length === 0 || match.length > 1) {
+			interaction.reply({ content: "The server can not uniquely identify a card with that name.", ephemeral: true });
+			break;
+		}
+		const cardObj = match[0];
+
+		const imgPath = path.join(
+			...imagesPath,
+			`${generalNumHnd.romanizeArabic(cardObj.number)}-
 				${cardObj.name.replaceAll(" ", "")}
 				${cardObj.reversed ? "-Reverse" : ""}.png`);
-			const image = new MessageAttachment(imgPath);
-			const embed = new MessageEmbed()
-				.setTitle(`${generalNumHnd.romanizeArabic(cardObj.number)} - 
+		const image = new MessageAttachment(imgPath);
+		const embed = new MessageEmbed()
+			.setTitle(`${generalNumHnd.romanizeArabic(cardObj.number)} - 
 				${cardObj.name}
 				${cardObj.reversed ? " Reversed" : ""}`)
-				.setDescription(cardObj.keywords.join(", "))
-				.setThumbnail(image)
-				.addFields([
-					{
-						name: `Suit: ${capitalizeFirst(cardObj.suit)}`, value: "\u200B", inline: true,
-					},
-					{
-						name: `Element: ${capitalizeFirst(cardObj.element)}`, value: "\u200B", inline: true,
-					},
-					{
-						name: `Reigning Planet: ${capitalizeFirst(cardObj.reigningplanet)}`, value: "\u200B", inline: true,
-					},
-					{
-						name: `Message: ${capitalizeFirst(cardObj.message)}`, value: "\u200B", inline: false,
-					},
-					{
-						name: "Description:", value: cardObj.description, inline: false,
-					},
-					{
-						name: "Interpretation:", value: cardObj.interpretation, inline: false,
-					},
-					{
-						name: "Further Interpretation:", value: cardObj.url, inline: false,
-					},
-				]);
-			interaction.reply({ embeds: [embed] });
-		}
-		else {
-			interaction.reply({ content: "The server can not find a card with that name.", ephemeral: true });
-		}
+			.setDescription(cardObj.keywords.join(", "))
+			.setThumbnail(image)
+			.addFields([
+				{
+					name: `Suit: ${generalStrHnd.capitalizeFirst(cardObj.suit)}`, value: "\u200B", inline: true,
+				},
+				{
+					name: `Element: ${generalStrHnd.capitalizeFirst(cardObj.element)}`, value: "\u200B", inline: true,
+				},
+				{
+					name: `Reigning Planet: ${generalStrHnd.capitalizeFirst(cardObj.reigningplanet)}`, value: "\u200B", inline: true,
+				},
+				{
+					name: `Message: ${generalStrHnd.capitalizeFirst(cardObj.message)}`, value: "\u200B", inline: false,
+				},
+				{
+					name: "Description:", value: cardObj.description, inline: false,
+				},
+				{
+					name: "Interpretation:", value: cardObj.interpretation, inline: false,
+				},
+				{
+					name: "Further Interpretation:", value: cardObj.url, inline: false,
+				},
+			]);
+		interaction.reply({ embeds: [embed] });
 		break;
 	}
 	// #endregion
 	// #region HELP
-	case "help":
+	case "help": {
+		const spread = interaction.options.getString("spread name");
+
+		const spreadClone = deepClone(cards);
+
+		const matches = [];
+		for (let i = 0; i < spreadClone.length; i++) {
+			if (generalStrHnd.matchPercentage(spread, spreadClone[i].spread) > matchThresh) {
+				matches.push(spreadClone[i]);
+			}
+		}
+
+		if (matches.length === 0 || matches.length > 1) {
+			interaction.reply({ content: "The server can not uniquely identify a spread with that name.", ephemeral: true });
+			break;
+		}
+
+		const spreadObj = matches[0];
+		const embed = new MessageEmbed()
+			.setTitle(spreadObj.name + " Spread")
+			.setDescription("Amount of cards to draw: " + spreadObj.amount);
+		interaction.reply({ embeds: [embed] });
 		break;
+	}
 	// #endregion
 	}
 };
