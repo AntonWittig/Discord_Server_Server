@@ -297,7 +297,7 @@ exports.execute = async (interaction) => {
 					currentMatchLength++;
 				}
 			}
-			if (currentMatchLength > longestMatchLength && currentMatchLength > 7) {
+			if (currentMatchLength > longestMatchLength && currentMatchLength > comp2.length / 2) {
 				longestMatchLength = currentMatchLength;
 				longestMatchIndices = [i];
 			}
