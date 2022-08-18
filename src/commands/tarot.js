@@ -276,7 +276,7 @@ exports.execute = async (interaction) => {
 	// #endregion
 	// #region DETAIL
 	case "detail": {
-		let debug;
+		let debug = "";
 		const card = interaction.options.getString("card");
 		const reversed = interaction.options.getBoolean("reversed");
 
@@ -300,6 +300,7 @@ exports.execute = async (interaction) => {
 		}
 
 		const match = matches.filter(obj => obj.reversed === reversed);
+		debug += match.length + " " + match;
 		if (match.length === 0 || match.length > 1) {
 			interaction.reply({ content: "The server can not uniquely identify a card with that name. debug: " + debug, ephemeral: true });
 			break;
