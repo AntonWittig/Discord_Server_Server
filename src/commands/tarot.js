@@ -295,7 +295,7 @@ exports.execute = async (interaction) => {
 			}
 			if (generalStrHnd.matchPercentage(cardInput, cardsClone[i].name) > matchThresh) {
 				matches.push(cardsClone[i]);
-				debug += cardsClone[i].name + " ";
+				debug += cardsClone[i].name + i + " ";
 			}
 		}
 
