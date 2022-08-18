@@ -1,6 +1,6 @@
 // #region IMPORTS
 // Require the necessary discord.js class
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, MessageAttachment } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 // Require the path module for accessing the correct files
@@ -23,16 +23,15 @@ const { generalRndHnd } = require(path.join(...libPath, "randomHandling.js"));
 const deepClone = require(path.join(...libPath, "deepClone.js"));
 
 // Create source paths for the json files and the card images
-const imagePath = [__dirname, "..", "assets", "tarot", "images"];
+const imagesPath = [__dirname, "..", "assets", "tarot", "images"];
+// Create temp folder path to temporarily store the reading images
+const tempPath = [__dirname, "..", "assets", "tarot", "temp"];
 // #endregion
 
 // #region VARIABLES
 // Storage managment variables for the active readings
 const readings = new Map();
 let storageIndex = 0;
-
-// Channel variable to send images to to fetch them as url
-let imageChannel;
 
 // Emoji data of empty card
 const empty = {
@@ -42,6 +41,11 @@ const empty = {
 	emojiID: "1009166030473543841",
 };
 // #endregion
+
+// TODO import from new string handler
+function capitalizeFirst(string) {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 // #region COMMAND
 // Initialize the command with a name and description
@@ -77,7 +81,7 @@ exports.data = new SlashCommandBuilder()
 		.setName("detail")
 		.setDescription("Investigate a card to get a more detailed description.")
 		.addStringOption(option => option
-			.setName("card")
+			.setName("card name")
 			.setDescription("Choose a card to investigate.")
 			.setRequired(true))
 		.addBooleanOption(option => option
@@ -100,8 +104,6 @@ exports.data = new SlashCommandBuilder()
 
 // Execute the command
 exports.execute = async (interaction) => {
-	// Set channel to send all final images to, to get its url
-	if (!imageChannel) imageChannel = interaction.client.channels.cache.find(c => c.id === "1009205115711914075");
 	// Get the subcommand of the command
 	switch (interaction.options.getSubcommand()) {
 	// #region READ
@@ -153,7 +155,7 @@ exports.execute = async (interaction) => {
 				// Check if a card should be placed at the current position
 				if (row[j]) {
 					// Add the card number and name to the embed
-					embed.addFields({
+					embed.addField({
 						name: generalNumHnd.romanizeArabic(card.number),
 						value: card.reversed ? card.name + "\nReversed" : card.name,
 						inline: true,
@@ -161,7 +163,7 @@ exports.execute = async (interaction) => {
 				}
 				// If no card should be placed at the current position, add an empty card
 				else {
-					embed.addFields({
+					embed.addField({
 						name: `<:${card.emojiName}:${card.emojiID}>`,
 						value: `<:${card.emojiName}:${card.emojiID}>`,
 						inline: true,
@@ -171,14 +173,14 @@ exports.execute = async (interaction) => {
 
 			// Add a newline after each row
 			if (i < spread.pattern.length - 1) {
-				embed.addFields({ name: "\u200B", value: "\u200B" });
+				embed.addField({ name: "\u200B", value: "\u200B" });
 			}
 		}
 
 		// Initialize the array of path strings for each drawn cards image
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
-				...imagePath,
+				...imagesPath,
 				`${card.number ? generalNumHnd.romanizeArabic(card.number) + "-" : ""}
 				${card.name.replaceAll(" ", "")}
 				${card.reversed ? "-Reverse" : ""}.png`));
@@ -196,7 +198,7 @@ exports.execute = async (interaction) => {
 			joinImages(imagePaths.splice(0, spread.pattern[i]), { direction: "horizontal" }).then(img => {
 				// Build the path to store row image
 				const rowPath = path.join(
-					...assetPath,
+					...tempPath,
 					`reading${oldIndex}
 					${rowAmount === 1 ? "" : `_${i}`}.png`);
 				// Save the row image as a file to the path
@@ -206,27 +208,26 @@ exports.execute = async (interaction) => {
 					// Check if not all rows have been drawn yet
 					if (imageRows.length < rowAmount) return;
 					if (rowAmount === 1) {
-						// Send the final image to the image channel for fetching its url
-						imageChannel.send({ files: imageRows }).then(message => {
-							// Add the image url to the embed and reply with the embed
-							embed.setImage(message.attachments.first().url);
-							interaction.reply({ embeds: [embed] });
-						}).catch(console.error);
+						// Create the final image as an attachment
+						const image = new MessageAttachment(imageRows[0]);
+						// Add the image attachment to the embed and reply with the embed
+						embed.setImage(`attachment://${image}`);
+						interaction.reply({ embeds: [embed] });
 					}
 					else {
 						// Combine all row images to a full image if this is the last row
 						joinImages(imageRows, { align: spread.verticalalign }).then((finalImg) => {
 							// Build the path to store the full image
-							const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
+							const finalImagePath = path.join(...tempPath, `reading${oldIndex}.png`);
 							// Save the full image as a file to the path
 							finalImg.toFile(finalImagePath).then(() => {
 								// Save full image path and send the full image to the image channel for fetching its url
 								imageRows.push(finalImagePath);
-								imageChannel.send({ files: [finalImagePath] }).then(message => {
-									// Add the image url to the embed and reply with the embed
-									embed.setImage(message.attachments.first().url);
-									interaction.reply({ embeds: [embed] });
-								}).catch(console.error);
+								// Create the full image as an attachment
+								const image = new MessageAttachment(finalImagePath);
+								// Add the image attachment to the embed and reply with the embed
+								embed.setImage(`attachment://${image}`);
+								interaction.reply({ embeds: [embed] });
 							});
 						}).catch(console.error);
 					}
@@ -275,8 +276,81 @@ exports.execute = async (interaction) => {
 	}
 	// #endregion
 	// #region DETAIL
-	case "detail":
+	case "detail": {
+		const card = interaction.options.getString("card name");
+		const reversed = interaction.options.getBoolean("reversed");
+
+		const cardsClone = deepClone(cards);
+
+		const comp1 = [...card].filter(char => char !== " ").reverse();
+
+		let longestMatchIndices = [];
+		let longestMatchLength = 0;
+
+		for (let i = 0; i < cardsClone.length; i++) {
+			const comp2 = [...cardsClone[i].name].filter(char => char !== " ").reverse();
+			let currentMatchLength = 0;
+			for (let j = 0; j < comp2.length; j++) {
+				if (comp1[j - 1] === comp2[j]
+					|| comp1[j] === comp2[j]
+					|| comp1[j + 1] === comp2[j]) {
+					currentMatchLength++;
+				}
+			}
+			if (currentMatchLength > longestMatchLength && currentMatchLength > 7) {
+				longestMatchLength = currentMatchLength;
+				longestMatchIndices = [i];
+			}
+			else if (currentMatchLength === longestMatchLength) {
+				longestMatchIndices.push(i);
+			}
+		}
+
+		const longestMatchIndex = longestMatchIndices.filter(index => cardsClone[index].reversed === reversed).shift();
+		const cardObj = cardsClone[longestMatchIndex];
+		if (cardObj) {
+			const imgPath = path.join(
+				...imagesPath,
+				`${generalNumHnd.romanizeArabic(cardObj.number)}-
+				${cardObj.name.replaceAll(" ", "")}
+				${cardObj.reversed ? "-Reverse" : ""}.png`);
+			const image = new MessageAttachment(imgPath);
+			const embed = new MessageEmbed()
+				.setTitle(`${generalNumHnd.romanizeArabic(cardObj.number)} - 
+				${cardObj.name}
+				${cardObj.reversed ? " Reversed" : ""}`)
+				.setDescription(cardObj.keywords.join(", "))
+				.setThumbnail(image)
+				.addFields([
+					{
+						name: `Suit: ${capitalizeFirst(cardObj.suit)}`, value: "\u200B", inline: true,
+					},
+					{
+						name: `Element: ${capitalizeFirst(cardObj.element)}`, value: "\u200B", inline: true,
+					},
+					{
+						name: `Reigning Planet: ${capitalizeFirst(cardObj.reigningplanet)}`, value: "\u200B", inline: true,
+					},
+					{
+						name: `Message: ${capitalizeFirst(cardObj.message)}`, value: "\u200B", inline: false,
+					},
+					{
+						name: "Description:", value: cardObj.description, inline: false,
+					},
+					{
+						name: "Interpretation:", value: cardObj.interpretation, inline: false,
+					},
+					{
+						name: "Further Interpretation:", value: cardObj.url, inline: false,
+					},
+				]);
+			interaction.reply({ embeds: [embed] });
+		}
+		else {
+			interaction.reply({ content: "The server can not find a card with that name.", ephemeral: true });
+		}
 		break;
+	}
 	// #endregion
 	// #region HELP
 	case "help":
