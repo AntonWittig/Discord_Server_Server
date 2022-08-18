@@ -35,7 +35,7 @@ const readings = new Map();
 let storageIndex = 0;
 
 // String matching threshhold
-const matchThresh = 0.8;
+const matchThresh = 0.5;
 
 // Emoji data of empty card
 const empty = {
