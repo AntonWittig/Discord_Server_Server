@@ -32,13 +32,14 @@ const readings = new Map();
 let storageIndex = 0;
 
 // Channel variable to send images to to fetch them as url
-let channel;
+let imageChannel;
 
 // Emoji data of empty card
 const empty = {
+	number: undefined,
+	name: "Empty",
 	emojiName: "empty",
 	emojiID: "1009166030473543841",
-	imageName: "empty.png",
 };
 // #endregion
 
@@ -100,7 +101,7 @@ exports.data = new SlashCommandBuilder()
 // Execute the command
 exports.execute = async (interaction) => {
 	// Set channel to send all final images to, to get its url
-	if (!channel) channel = interaction.client.channels.cache.find(c => c.id === "1009205115711914075");
+	if (!imageChannel) imageChannel = interaction.client.channels.cache.find(c => c.id === "1009205115711914075");
 	// Get the subcommand of the command
 	switch (interaction.options.getSubcommand()) {
 	// #region READ
@@ -120,15 +121,22 @@ exports.execute = async (interaction) => {
 		// Initialize the array of drawn cards and clone cards array to draw from
 		let cardsDrawn = [];
 		let drawFrom = deepClone(cards);
+		const cardBooleans = spread.pattern.flat();
 		// Draw as many cards as defined by the spread
-		for (let i = 0; i < spread.amount; i++) {
+		for (const bool in cardBooleans) {
 			// Draw and store a random card that hasn't been drawn yet
-			const card = generalRndHnd.randFromArray(
-				drawFrom,
-				(arrayLength) => {
-					const draw = generalRndHnd.randMax() - (parseInt(interaction.user.id) + Date.now() + topicInt);
-					return draw % arrayLength;
-				});
+			let card;
+			if (bool) {
+				card = generalRndHnd.randFromArray(
+					drawFrom,
+					(arrayLength) => {
+						const draw = generalRndHnd.randMax() - (parseInt(interaction.user.id) + Date.now() + topicInt);
+						return draw % arrayLength;
+					});
+			}
+			else {
+				card = empty;
+			}
 			cardsDrawn.push(card);
 			// Remove the drawn card from the cards to draw from
 			drawFrom = drawFrom.filter(c => c.name !== card.name);
@@ -136,32 +144,31 @@ exports.execute = async (interaction) => {
 		// Reorder the drawn cards to be correctly placed in the spread
 		cardsDrawn = generalArrHnd.reorderByArray(cardsDrawn, spread.order);
 
-		let cardsIndex = 0;
 		// Loop through the spread pattern rows
 		for (let i = 0; i < spread.pattern.length; i++) {
 			const row = spread.pattern[i];
 			// Loop through the row's columns
 			for (let j = 0; j < row.length; j++) {
+				const card = cardsDrawn[i + j];
 				// Check if a card should be placed at the current position
 				if (row[j]) {
 					// Add the card number and name to the embed
-					const card = cardsDrawn[cardsIndex];
 					embed.addFields({
 						name: generalNumHnd.romanizeArabic(card.number),
 						value: card.reversed ? card.name + "\nReversed" : card.name,
 						inline: true,
 					});
-					cardsIndex++;
 				}
 				// If no card should be placed at the current position, add an empty card
 				else {
 					embed.addFields({
-						name: `<:${empty.emojiName}:${empty.emojiID}>`,
-						value: `<:${empty.emojiName}:${empty.emojiID}>`,
+						name: `<:${card.emojiName}:${card.emojiID}>`,
+						value: `<:${card.emojiName}:${card.emojiID}>`,
 						inline: true,
 					});
 				}
 			}
+
 			// Add a newline after each row
 			if (i < spread.pattern.length - 1) {
 				embed.addFields({ name: "\u200B", value: "\u200B" });
@@ -172,38 +179,56 @@ exports.execute = async (interaction) => {
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
 				...imagePath,
-				`${generalNumHnd.romanizeArabic(card.number)}-${card.name.replaceAll(" ", "")}${card.reversed ? "-Reverse" : ""}.png`));
+				`${card.number ? generalNumHnd.romanizeArabic(card.number) + "-" : ""}
+				${card.name.replaceAll(" ", "")}
+				${card.reversed ? "-Reverse" : ""}.png`));
 
-		//
+		// Initialize the array of image rows
 		const imageRows = [];
+		// Store current index
 		const oldIndex = storageIndex;
 		storageIndex++;
-		for (let i = 0; i < spread.pattern.length; i++) {
-			const count = spread.pattern[i].reduce((accumulator, value) => value ? accumulator + 1 : accumulator, 0);
-			joinImages(imagePaths.splice(0, count), { direction: "horizontal" }).then(img => {
-				const iString = spread.pattern.length === 1 ? "" : `_${i}`;
-				const rowPath = path.join(...assetPath, `reading${oldIndex}${iString}.png`);
+
+		const rowAmount = spread.pattern.length;
+		// Loop through the spread pattern rows
+		for (let i = 0; i < rowAmount; i++) {
+			// Combine images of the current row into one image
+			joinImages(imagePaths.splice(0, spread.pattern[i]), { direction: "horizontal" }).then(img => {
+				// Build the path to store row image
+				const rowPath = path.join(
+					...assetPath,
+					`reading${oldIndex}
+					${rowAmount === 1 ? "" : `_${i}`}.png`);
+				// Save the row image as a file to the path
 				img.toFile(rowPath).then(() => {
+					// Insert the row image into the image rows array (necessary because of asynchrony)
 					imageRows.splice(i, 0, rowPath);
-					if (imageRows.length === spread.pattern.length) {
-						if (spread.pattern.length > 1) {
-							joinImages(imageRows, { align: spread.verticalalign }).then((finalImg) => {
-								const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
-								finalImg.toFile(finalImagePath).then(() => {
-									imageRows.push(finalImagePath);
-									channel.send({ files: [path.join(...assetPath, `reading${oldIndex}.png`)] }).then(message => {
-										embed.setImage(message.attachments.first().url);
-										interaction.reply({ embeds: [embed] });
-									}).catch(console.error);
-								});
-							}).catch(console.error);
-						}
-						else {
-							channel.send({ files: imageRows }).then(message => {
-								embed.setImage(message.attachments.first().url);
-								interaction.reply({ embeds: [embed] });
-							}).catch(console.error);
-						}
+					// Check if not all rows have been drawn yet
+					if (imageRows.length < rowAmount) return;
+					if (rowAmount === 1) {
+						// Send the final image to the image channel for fetching its url
+						imageChannel.send({ files: imageRows }).then(message => {
+							// Add the image url to the embed and reply with the embed
+							embed.setImage(message.attachments.first().url);
+							interaction.reply({ embeds: [embed] });
+						}).catch(console.error);
+					}
+					else {
+						// Combine all row images to a full image if this is the last row
+						joinImages(imageRows, { align: spread.verticalalign }).then((finalImg) => {
+							// Build the path to store the full image
+							const finalImagePath = path.join(...assetPath, `reading${oldIndex}.png`);
+							// Save the full image as a file to the path
+							finalImg.toFile(finalImagePath).then(() => {
+								// Save full image path and send the full image to the image channel for fetching its url
+								imageRows.push(finalImagePath);
+								imageChannel.send({ files: [finalImagePath] }).then(message => {
+									// Add the image url to the embed and reply with the embed
+									embed.setImage(message.attachments.first().url);
+									interaction.reply({ embeds: [embed] });
+								}).catch(console.error);
+							});
+						}).catch(console.error);
 					}
 				});
 			});
