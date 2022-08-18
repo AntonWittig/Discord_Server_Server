@@ -276,9 +276,8 @@ exports.execute = async (interaction) => {
 	// #endregion
 	// #region DETAIL
 	case "detail": {
-		let debug = "";
 		const card = interaction.options.getString("card");
-		const reversed = interaction.options.getBoolean("reversed");
+		const reversed = interaction.options.getBoolean("reversed") || false;
 
 		const cardsClone = deepClone(cards);
 
@@ -295,14 +294,12 @@ exports.execute = async (interaction) => {
 			}
 			if (generalStrHnd.matchPercentage(cardInput, cardsClone[i].name) > matchThresh) {
 				matches.push(cardsClone[i]);
-				debug += cardsClone[i].name + i + " ";
 			}
 		}
 
 		const match = matches.filter(obj => obj.reversed === reversed);
-		debug += match.length + " " + match;
 		if (match.length === 0 || match.length > 1) {
-			interaction.reply({ content: "The server can not uniquely identify a card with that name. debug: " + debug, ephemeral: true });
+			interaction.reply({ content: "The server can not uniquely identify a card with that name.", ephemeral: true });
 			break;
 		}
 		const cardObj = match[0];
