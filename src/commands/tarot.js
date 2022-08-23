@@ -189,11 +189,9 @@ exports.execute = async (interaction) => {
 		storageIndex++;
 
 		const rowAmount = spread.pattern.length;
+
 		// Loop through the spread pattern rows
 		for (let i = 0; i < rowAmount; i++) {
-			// Combine images of the current row into one image
-			const row = imagePaths.splice(0, spread.pattern[i]);
-
 			// Declare function which combines images, stores them and sends them if ready
 			const combineAndSend = function(img) {
 				// Build the path to store row image
@@ -238,6 +236,8 @@ exports.execute = async (interaction) => {
 				});
 			};
 
+			// Combine images of the current row into one image
+			const row = imagePaths.splice(0, spread.pattern[i].length);
 			// Check if there is only one or more images in this row
 			console.log(row);
 			if (row.length === 1) {
