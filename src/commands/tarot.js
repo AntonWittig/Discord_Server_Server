@@ -310,7 +310,7 @@ exports.execute = async (interaction) => {
 				${cardObj.name.replaceAll(" ", "")}
 				${cardObj.reversed ? "-Reverse" : ""}.png`);
 		const image = new MessageAttachment(imgPath);
-		console.log(cardObj);
+		console.log(cardObj.name);
 		const embed = new MessageEmbed()
 			.setTitle(`${generalNumHnd.romanizeArabic(cardObj.number)} - 
 				${cardObj.name}
@@ -340,6 +340,7 @@ exports.execute = async (interaction) => {
 					name: "Further Interpretation:", value: cardObj.url, inline: false,
 				},
 			]);
+		console.log(embed.thumbnail);
 		interaction.reply({ embeds: [embed] });
 		break;
 	}
