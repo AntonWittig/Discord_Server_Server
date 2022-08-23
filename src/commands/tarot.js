@@ -280,7 +280,7 @@ exports.execute = async (interaction) => {
 		const reversed = interaction.options.getBoolean("reversed") || false;
 
 		const cardsClone = deepClone(cards);
-
+		console.log(cardsClone);
 		const matches = [];
 		for (let i = 0; i < cardsClone.length; i++) {
 			let cardInput = card;
@@ -304,16 +304,16 @@ exports.execute = async (interaction) => {
 		}
 		const cardObj = match[0];
 
+		const cardName = cardObj.name;
 		const imgPath = path.join(
 			...imagesPath,
 			`${generalNumHnd.romanizeArabic(cardObj.number)}-
-				${cardObj.name.replaceAll(" ", "")}
+				${cardName.replaceAll(" ", "")}
 				${cardObj.reversed ? "-Reverse" : ""}.png`);
 		const image = new MessageAttachment(imgPath);
-		console.log(cardObj.name);
 		const embed = new MessageEmbed()
 			.setTitle(`${generalNumHnd.romanizeArabic(cardObj.number)} - 
-				${cardObj.name}
+				${cardName}
 				${cardObj.reversed ? " Reversed" : ""}`)
 			.setDescription(cardObj.keywords.join(", "))
 			.setThumbnail(image)
