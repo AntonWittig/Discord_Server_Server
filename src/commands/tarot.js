@@ -265,8 +265,8 @@ exports.execute = async (interaction) => {
 			imageRows.forEach(row => fs.unlinkSync(row));
 		}, 2000);
 
-		// Redd sessions of readings from json file
-		fs.readFile(path.join(...assetPath, "readings.json"), "utf8", function readFileCallback(err, data) {
+		// Read sessions of readings from json file
+		fs.readFile(path.join(...assetPath, "readings.json"), function readFileCallback(err, data) {
 			if (err) { console.log(err);}
 			else {
 				const obj = JSON.parse(data);
@@ -284,7 +284,7 @@ exports.execute = async (interaction) => {
 				}
 				// Store the json object in the file
 				const json = JSON.stringify(obj);
-				fs.writeFile(path.join(...assetPath, "readings.json"), json, "utf8");
+				fs.writeFile(path.join(...assetPath, "readings.json"), json);
 			}
 		});
 		break;
