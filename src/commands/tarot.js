@@ -144,7 +144,6 @@ exports.execute = async (interaction) => {
 		}
 		// Reorder the drawn cards to be correctly placed in the spread
 		cardsDrawn = generalArrHnd.reorderByArray(cardsDrawn, spread.order);
-		console.log(embed.fields);
 
 		// Loop through the spread pattern rows
 		for (let i = 0; i < spread.pattern.length; i++) {
@@ -153,6 +152,9 @@ exports.execute = async (interaction) => {
 			for (let j = 0; j < row.length; j++) {
 				const card = cardsDrawn[i + j];
 				// Check if a card should be placed at the current position
+				console.log("i: " + i + " j: " + j);
+				console.log(card);
+				console.log(row);
 				if (row[j]) {
 					// Add the card number and name to the embed
 					embed.addField({
