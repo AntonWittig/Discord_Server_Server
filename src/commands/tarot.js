@@ -165,9 +165,11 @@ exports.execute = async (interaction) => {
 						value: card.reversed ? card.name + "\nReversed" : card.name,
 						inline: true,
 					});
+					const name = generalNumHnd.romanizeArabic(card.number);
+					const value = card.reversed ? card.name + "\nReversed" : card.name;
 					embed.addField({
-						name: generalNumHnd.romanizeArabic(card.number),
-						value: card.reversed ? card.name + "\nReversed" : card.name,
+						name: name,
+						value: value,
 						inline: true,
 					});
 				}
