@@ -266,7 +266,7 @@ exports.execute = async (interaction) => {
 		}, 2000);
 
 		// Read sessions of readings from json file
-		fs.readFile(path.join(...assetPath, "readings.json"), function readFileCallback(err, data) {
+		fs.readFile(path.join(...assetPath, "readings.json"), "utf8", function readFileCallback(err, data) {
 			if (err) { console.log(err);}
 			else {
 				const obj = JSON.parse(data);
@@ -284,7 +284,7 @@ exports.execute = async (interaction) => {
 				}
 				// Store the json object in the file
 				const json = JSON.stringify(obj);
-				fs.writeFile(path.join(...assetPath, "readings.json"), json);
+				fs.writeFile(path.join(...assetPath, "readings.json"), json, "utf8", function(err) { console.log(err); });
 			}
 		});
 		break;
