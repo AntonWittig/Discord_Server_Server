@@ -167,11 +167,7 @@ exports.execute = async (interaction) => {
 					const value = card.reversed ? card.name + "\nReversed" : card.name;
 					console.log(name);
 					console.log(value);
-					embed.addField({
-						name: name,
-						value: value,
-						inline: true,
-					});
+					embed.addField(name, value, true);
 					console.log("test");
 				}
 				// If no card should be placed at the current position, add an empty card
