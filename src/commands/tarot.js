@@ -192,12 +192,14 @@ exports.execute = async (interaction) => {
 		// Loop through the spread pattern rows
 		for (let i = 0; i < rowAmount; i++) {
 			// Combine images of the current row into one image
-			joinImages(imagePaths.splice(0, spread.pattern[i]), { direction: "horizontal" }).then(img => {
+			const row = imagePaths.splice(0, spread.pattern[i]);
+
+			// Declare function which combines images, stores them and sends them if ready
+			const combineAndSend = function(img) {
 				// Build the path to store row image
 				const rowPath = path.join(
 					...tempPath,
-					`reading${oldIndex}
-					${rowAmount === 1 ? "" : `_${i}`}.png`);
+					`reading${oldIndex}${rowAmount === 1 ? "" : `_${i}`}.png`);
 				// Save the row image as a file to the path
 				img.toFile(rowPath).then(() => {
 					// Insert the row image into the image rows array (necessary because of asynchrony)
@@ -234,6 +236,14 @@ exports.execute = async (interaction) => {
 						}).catch(console.error);
 					}
 				});
+			};
+
+			// Check if there is only one or more images in this row
+			if (row.length === 1) {
+				combineAndSend(row[0]);
+			}
+			joinImages(row, { direction: "horizontal" }).then(img => {
+				combineAndSend(img);
 			});
 		}
 
