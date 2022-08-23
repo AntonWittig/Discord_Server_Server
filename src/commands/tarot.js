@@ -144,6 +144,7 @@ exports.execute = async (interaction) => {
 		}
 		// Reorder the drawn cards to be correctly placed in the spread
 		cardsDrawn = generalArrHnd.reorderByArray(cardsDrawn, spread.order);
+		console.log(embed.fields);
 
 		// Loop through the spread pattern rows
 		for (let i = 0; i < spread.pattern.length; i++) {
@@ -175,6 +176,7 @@ exports.execute = async (interaction) => {
 				embed.addField({ name: "\u200B", value: "\u200B" });
 			}
 		}
+		console.log(embed.fields);
 
 		// Initialize the array of path strings for each drawn cards image
 		const imagePaths = cardsDrawn.map(
@@ -226,7 +228,6 @@ exports.execute = async (interaction) => {
 								const image = new MessageAttachment(finalImagePath);
 								// Add the image attachment to the embed and reply with the embed
 								embed.setImage(`attachment://${image}`);
-								console.log(embed.fields);
 								console.log(image);
 								console.log(imageRows);
 								interaction.reply({
