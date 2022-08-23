@@ -239,6 +239,7 @@ exports.execute = async (interaction) => {
 			};
 
 			// Check if there is only one or more images in this row
+			console.log(row);
 			if (row.length === 1) {
 				combineAndSend(row[0]);
 			}
