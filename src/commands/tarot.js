@@ -311,7 +311,7 @@ exports.execute = async (interaction) => {
 		const embed = new MessageEmbed()
 			.setTitle(`${generalNumHnd.romanizeArabic(cardObj.number)} - ${cardObj.name}${cardObj.reversed ? " Reversed" : ""}`)
 			.setDescription(cardObj.keywords.join(", "))
-			.setThumbnail(image)
+			.setThumbnail(`attachment://${image}`)
 			.addFields([
 				{
 					name: `Suit: ${generalStrHnd.capitalizeFirst(cardObj.suit)}`, value: "\u200B", inline: true,
