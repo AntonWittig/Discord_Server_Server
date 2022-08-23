@@ -304,14 +304,13 @@ exports.execute = async (interaction) => {
 		}
 		const cardObj = match[0];
 
-		const imgPath = path.join(
-			...imagesPath,
-			`${generalNumHnd.romanizeArabic(cardObj.number)}-${cardObj.name.replaceAll(" ", "")}${cardObj.reversed ? "-Reverse" : ""}.png`);
+		const fileName = `${generalNumHnd.romanizeArabic(cardObj.number)}-${cardObj.name.replaceAll(" ", "")}${cardObj.reversed ? "-Reverse" : ""}.png`;
+		const imgPath = path.join(...imagesPath, fileName);
 		const image = new MessageAttachment(imgPath);
 		const embed = new MessageEmbed()
 			.setTitle(`${generalNumHnd.romanizeArabic(cardObj.number)} - ${cardObj.name}${cardObj.reversed ? " Reversed" : ""}`)
 			.setDescription(cardObj.keywords.join(", "))
-			.setThumbnail(`attachment://${image}`)
+			.setThumbnail(`attachment://${fileName}`)
 			.addFields([
 				{
 					name: `Suit: ${generalStrHnd.capitalizeFirst(cardObj.suit)}`, value: "\u200B", inline: true,
@@ -336,7 +335,7 @@ exports.execute = async (interaction) => {
 				},
 			]);
 		console.log(embed.thumbnail);
-		interaction.reply({ embeds: [embed] });
+		interaction.reply({ embeds: [embed], files: [image] });
 		break;
 	}
 	// #endregion
