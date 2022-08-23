@@ -152,23 +152,11 @@ exports.execute = async (interaction) => {
 			for (let j = 0; j < row.length; j++) {
 				const card = cardsDrawn[i + j];
 				// Check if a card should be placed at the current position
-				console.log("i: " + i + " j: " + j);
-				console.log(card);
-				console.log(row);
 				if (row[j]) {
 					// Add the card number and name to the embed
-					console.log(true);
-					console.log({
-						name: generalNumHnd.romanizeArabic(card.number),
-						value: card.reversed ? card.name + "\nReversed" : card.name,
-						inline: true,
-					});
 					const name = generalNumHnd.romanizeArabic(card.number);
 					const value = card.reversed ? card.name + "\nReversed" : card.name;
-					console.log(name);
-					console.log(value);
 					embed.addField(name, value, true);
-					console.log("test");
 				}
 				// If no card should be placed at the current position, add an empty card
 				else {
@@ -185,7 +173,6 @@ exports.execute = async (interaction) => {
 				embed.addField({ name: "\u200B", value: "\u200B" });
 			}
 		}
-		console.log(embed.fields);
 
 		// Initialize the array of path strings for each drawn cards image
 		const imagePaths = cardsDrawn.map(
@@ -222,7 +209,9 @@ exports.execute = async (interaction) => {
 						const image = new MessageAttachment(imageRows[0]);
 						// Add the image attachment to the embed and reply with the embed
 						embed.setImage(`attachment://${image}`);
-						interaction.reply({ embeds: [embed] });
+						console.log(imageRows);
+						console.log(image);
+						interaction.reply({ embeds: [embed], files: [image] });
 					}
 					else {
 						// Combine all row images to a full image if this is the last row
@@ -237,8 +226,6 @@ exports.execute = async (interaction) => {
 								const image = new MessageAttachment(finalImagePath);
 								// Add the image attachment to the embed and reply with the embed
 								embed.setImage(`attachment://${image}`);
-								console.log(image);
-								console.log(imageRows);
 								interaction.reply({
 									embeds: [embed],
 									files: [imageRows[0]],
