@@ -265,28 +265,28 @@ exports.execute = async (interaction) => {
 			imageRows.forEach(row => fs.unlinkSync(row));
 		}, 2000);
 
-		// Read sessions of readings from json file
-		fs.readFile(path.join(...assetPath, "readings.json"), "utf8", function readFileCallback(err, data) {
-			if (err) { console.log(err);}
-			else {
-				const obj = JSON.parse(data);
-				const objEntries = Object.entries(obj);
-				// Check if there is already a session for the current readings
-				const objkey = objEntries.map(([key, value]) => value.reading0.timestamp === readings.get("reading0").timestamp ? key : "").filter((e) => e !== "");
-				// Check if a session was found
-				if (objkey.length > 0) {
-					// Store the current readings in the existing session
-					obj[objkey[0]] = readings;
-				}
-				else {
-					// Store the current readings in a new session
-					obj[`session${objEntries.length}`] = readings;
-				}
-				// Store the json object in the file
-				const json = JSON.stringify(obj);
-				fs.writeFile(path.join(...assetPath, "readings.json"), json, "utf8", function(err) { console.log(err); });
-			}
-		});
+		// // Read sessions of readings from json file
+		// fs.readFile(path.join(...assetPath, "readings.json"), "utf8", function readFileCallback(err, data) {
+		// 	if (err) { console.log(err);}
+		// 	else {
+		// 		const obj = JSON.parse(data);
+		// 		const objEntries = Object.entries(obj);
+		// 		// Check if there is already a session for the current readings
+		// 		const objkey = objEntries.map(([key, value]) => value.reading0.timestamp === readings.get("reading0").timestamp ? key : "").filter((e) => e !== "");
+		// 		// Check if a session was found
+		// 		if (objkey.length > 0) {
+		// 			// Store the current readings in the existing session
+		// 			obj[objkey[0]] = readings;
+		// 		}
+		// 		else {
+		// 			// Store the current readings in a new session
+		// 			obj[`session${objEntries.length}`] = readings;
+		// 		}
+		// 		// Store the json object in the file
+		// 		const json = JSON.stringify(obj);
+		// 		fs.writeFile(path.join(...assetPath, "readings.json"), json, "utf8", function(err) { if (err) console.log(err); });
+		// 	}
+		// });
 		break;
 	}
 	// #endregion
