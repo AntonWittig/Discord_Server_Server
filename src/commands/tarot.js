@@ -304,18 +304,12 @@ exports.execute = async (interaction) => {
 		}
 		const cardObj = match[0];
 
-		const cardName = cardObj.name;
-		console.log(cardName);
 		const imgPath = path.join(
 			...imagesPath,
-			`${generalNumHnd.romanizeArabic(cardObj.number)}-
-				${cardName.replaceAll(" ", "")}
-				${cardObj.reversed ? "-Reverse" : ""}.png`);
+			`${generalNumHnd.romanizeArabic(cardObj.number)}-${cardObj.name.replaceAll(" ", "")}${cardObj.reversed ? "-Reverse" : ""}.png`);
 		const image = new MessageAttachment(imgPath);
 		const embed = new MessageEmbed()
-			.setTitle(`${generalNumHnd.romanizeArabic(cardObj.number)} - 
-				${1}
-				${cardObj.reversed ? " Reversed" : ""}`)
+			.setTitle(`${generalNumHnd.romanizeArabic(cardObj.number)} - ${cardObj.name}${cardObj.reversed ? " Reversed" : ""}`)
 			.setDescription(cardObj.keywords.join(", "))
 			.setThumbnail(image)
 			.addFields([
