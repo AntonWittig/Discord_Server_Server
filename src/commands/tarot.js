@@ -10,6 +10,8 @@ const fs = require("node:fs");
 // Require the join-images module to combine multiple cards into one image
 const { joinImages } = require("join-images");
 
+const sharp = require("sharp");
+
 // Require the card and spread data json files
 const assetPath = [__dirname, "..", "assets", "tarot"];
 const cards = require(path.join(...assetPath, "cards.json"));
@@ -178,9 +180,7 @@ exports.execute = async (interaction) => {
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
 				...imagesPath,
-				`${card.number ? generalNumHnd.romanizeArabic(card.number) + "-" : ""}
-				${card.name.replaceAll(" ", "")}
-				${card.reversed ? "-Reverse" : ""}.png`));
+				`${card.number ? generalNumHnd.romanizeArabic(card.number) + "-" : ""}	${card.name.replaceAll(" ", "")}${card.reversed ? "-Reverse" : ""}.png`));
 
 		// Initialize the array of image rows
 		const imageRows = [];
@@ -241,7 +241,7 @@ exports.execute = async (interaction) => {
 			// Check if there is only one or more images in this row
 			console.log(row);
 			if (row.length === 1) {
-				combineAndSend(row[0]);
+				combineAndSend(sharp(row[0]));
 			}
 			else {
 				joinImages(row, { direction: "horizontal" }).then(img => {
