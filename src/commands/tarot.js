@@ -180,7 +180,7 @@ exports.execute = async (interaction) => {
 		const imagePaths = cardsDrawn.map(
 			card => path.join(
 				...imagesPath,
-				`${card.number ? generalNumHnd.romanizeArabic(card.number) + "-" : ""}	${card.name.replaceAll(" ", "")}${card.reversed ? "-Reverse" : ""}.png`));
+				`${card.number ? generalNumHnd.romanizeArabic(card.number) + "-" : ""}${card.name.replaceAll(" ", "")}${card.reversed ? "-Reverse" : ""}.png`));
 
 		// Initialize the array of image rows
 		const imageRows = [];
