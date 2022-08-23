@@ -242,9 +242,11 @@ exports.execute = async (interaction) => {
 			if (row.length === 1) {
 				combineAndSend(row[0]);
 			}
-			joinImages(row, { direction: "horizontal" }).then(img => {
-				combineAndSend(img);
-			});
+			else {
+				joinImages(row, { direction: "horizontal" }).then(img => {
+					combineAndSend(img);
+				});
+			}
 		}
 
 		// Store the data of the reading for later access
