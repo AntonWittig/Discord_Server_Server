@@ -157,6 +157,9 @@ exports.execute = async (interaction) => {
 				console.log(row);
 				if (row[j]) {
 					// Add the card number and name to the embed
+					console.log(true);
+					console.log("name: " + generalNumHnd.romanizeArabic(card.number));
+					console.log("value: " + card.reversed ? card.name + "\nReversed" : card.name);
 					embed.addField({
 						name: generalNumHnd.romanizeArabic(card.number),
 						value: card.reversed ? card.name + "\nReversed" : card.name,
