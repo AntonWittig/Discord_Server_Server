@@ -158,8 +158,6 @@ exports.execute = async (interaction) => {
 				if (row[j]) {
 					// Add the card number and name to the embed
 					console.log(true);
-					console.log("name: " + generalNumHnd.romanizeArabic(card.number));
-					console.log("value: " + card.reversed ? card.name + "\nReversed" : card.name);
 					console.log({
 						name: generalNumHnd.romanizeArabic(card.number),
 						value: card.reversed ? card.name + "\nReversed" : card.name,
@@ -167,11 +165,14 @@ exports.execute = async (interaction) => {
 					});
 					const name = generalNumHnd.romanizeArabic(card.number);
 					const value = card.reversed ? card.name + "\nReversed" : card.name;
+					console.log(name);
+					console.log(value);
 					embed.addField({
 						name: name,
 						value: value,
 						inline: true,
 					});
+					console.log("test");
 				}
 				// If no card should be placed at the current position, add an empty card
 				else {
