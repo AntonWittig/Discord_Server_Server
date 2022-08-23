@@ -250,15 +250,15 @@ exports.execute = async (interaction) => {
 			}
 		}
 
-		// Store the data of the reading for later access
-		readings.set(`reading${oldIndex}`, {
-			timestamp: Date.now(),
-			user: interaction.user.id,
-			spread: spread.type,
-			topic: topic,
-			privacy: privacy,
-			cards: cardsDrawn,
-		});
+		// // Store the data of the reading for later access
+		// readings.set(`reading${oldIndex}`, {
+		// 	timestamp: Date.now(),
+		// 	user: interaction.user.id,
+		// 	spread: spread.type,
+		// 	topic: topic,
+		// 	privacy: privacy,
+		// 	cards: cardsDrawn,
+		// });
 
 		// Delete all temporarily created image files
 		setTimeout(() => {
