@@ -305,6 +305,7 @@ exports.execute = async (interaction) => {
 		const cardObj = match[0];
 
 		const cardName = cardObj.name;
+		console.log(cardName);
 		const imgPath = path.join(
 			...imagesPath,
 			`${generalNumHnd.romanizeArabic(cardObj.number)}-
@@ -313,7 +314,7 @@ exports.execute = async (interaction) => {
 		const image = new MessageAttachment(imgPath);
 		const embed = new MessageEmbed()
 			.setTitle(`${generalNumHnd.romanizeArabic(cardObj.number)} - 
-				${cardName}
+				${1}
 				${cardObj.reversed ? " Reversed" : ""}`)
 			.setDescription(cardObj.keywords.join(", "))
 			.setThumbnail(image)
