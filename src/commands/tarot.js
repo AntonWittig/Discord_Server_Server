@@ -226,7 +226,13 @@ exports.execute = async (interaction) => {
 								const image = new MessageAttachment(finalImagePath);
 								// Add the image attachment to the embed and reply with the embed
 								embed.setImage(`attachment://${image}`);
-								interaction.reply({ embeds: [embed] });
+								console.log(embed.fields);
+								console.log(image);
+								console.log(imageRows);
+								interaction.reply({
+									embeds: [embed],
+									files: [imageRows[0]],
+								});
 							});
 						}).catch(console.error);
 					}
@@ -280,7 +286,6 @@ exports.execute = async (interaction) => {
 		const reversed = interaction.options.getBoolean("reversed") || false;
 
 		const cardsClone = deepClone(cards);
-		console.log(cardsClone);
 		const matches = [];
 		for (let i = 0; i < cardsClone.length; i++) {
 			let cardInput = card;
@@ -334,7 +339,6 @@ exports.execute = async (interaction) => {
 					name: "Further Interpretation:", value: cardObj.url, inline: false,
 				},
 			]);
-		console.log(embed.thumbnail);
 		interaction.reply({ embeds: [embed], files: [image] });
 		break;
 	}
